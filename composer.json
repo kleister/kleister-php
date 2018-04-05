@@ -1,0 +1,30 @@
+{
+    "name": "kleister/kleister",
+    "type": "library",
+    "description": "manage mod packs for minecraft",
+    "keywords": ["minecraft", "technic"],
+    "homepage": "https://kleister.webhippie.de",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Thomas Boerger",
+            "email": "thomas@webhippie.de"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "require-dev": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Kleister\\": "lib/Kleister"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Kleister\\Tests\\": "tests/Kleister/Tests"
+        }
+    }
+}
