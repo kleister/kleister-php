@@ -1,0 +1,4 @@
+variableNamingConvention: camelCase
+invokerPackage: Kleister
+packageName: kleister
+artifactVersion: 1.0.0-alpha1

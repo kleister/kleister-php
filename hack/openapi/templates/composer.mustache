@@ -1,8 +1,10 @@
 {
-    "name": "kleister/kleister",
+    "name": "{{gitUserId}}/{{packageName}}",
     "type": "library",
-    "version": "1.0.0-alpha1",
-    "description": "API definition for Kleister, manage mod packs for Minecraft",
+    {{#artifactVersion}}
+    "version": "{{artifactVersion}}",
+    {{/artifactVersion}}
+    "description": "{{{appDescription}}}",
     "keywords": [
         "openapitools",
         "openapi-generator",
@@ -14,7 +16,7 @@
         "minecraft",
         "technik"
     ],
-    "homepage": "https://github.com/kleister/kleister-php",
+    "homepage": "https://github.com/{{gitUserId}}/{{gitRepoId}}",
     "license": "Apache-2.0",
     "authors": [
         {
@@ -39,12 +41,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Kleister\\" : "lib/"
+            "{{escapedInvokerPackage}}\\" : "{{srcBasePath}}/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Kleister\\" : "test/"
+            "{{escapedInvokerPackage}}\\" : "{{testBasePath}}/"
         }
     }
 }
