@@ -125,7 +125,7 @@ class ProfileApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Profile|object|object
+     * @return \Kleister\Model\Profile|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function showProfile()
     {
@@ -141,7 +141,7 @@ class ProfileApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Profile|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Profile|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function showProfileWithHttpInfo()
     {
@@ -190,26 +190,26 @@ class ProfileApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -242,7 +242,7 @@ class ProfileApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -250,7 +250,7 @@ class ProfileApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -418,7 +418,7 @@ class ProfileApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\AuthToken|object|object|object
+     * @return \Kleister\Model\AuthToken|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function tokenProfile()
     {
@@ -434,7 +434,7 @@ class ProfileApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\AuthToken|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\AuthToken|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function tokenProfileWithHttpInfo()
     {
@@ -483,38 +483,38 @@ class ProfileApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -547,7 +547,7 @@ class ProfileApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -555,7 +555,7 @@ class ProfileApi
                 case 500:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -563,7 +563,7 @@ class ProfileApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -732,7 +732,7 @@ class ProfileApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Profile|object|object|object|object
+     * @return \Kleister\Model\Profile|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
     public function updateProfile($params)
     {
@@ -749,7 +749,7 @@ class ProfileApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Profile|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Profile|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function updateProfileWithHttpInfo($params)
     {
@@ -798,50 +798,50 @@ class ProfileApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\ValidationError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ValidationError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -874,7 +874,7 @@ class ProfileApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -882,7 +882,7 @@ class ProfileApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -890,7 +890,7 @@ class ProfileApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\ValidationError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -898,7 +898,7 @@ class ProfileApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);

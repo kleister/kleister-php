@@ -1,13 +1,14 @@
 <?php
 /**
- * InlineObjectTest
+ * ValidationErrorTest
  *
  * PHP version 5
  *
  * @category Class
  * @package  Kleister
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Thomas Boerger <thomas@webhippie.de>
+ * @license  http://www.apache.org/licenses/LICENSE-2.0.html Apache-2.0
+ * @link     https://github.com/kleister/kleister-php
  */
 
 /**
@@ -32,15 +33,16 @@ namespace Kleister;
 use PHPUnit\Framework\TestCase;
 
 /**
- * InlineObjectTest Class Doc Comment
+ * ValidationErrorTest Class Doc Comment
  *
  * @category    Class
- * @description InlineObject
+ * @description Validation error which shows failed fields
  * @package     Kleister
- * @author      OpenAPI Generator team
- * @link        https://openapi-generator.tech
+ * @author      Thomas Boerger <thomas@webhippie.de>
+ * @license     http://www.apache.org/licenses/LICENSE-2.0.html Apache-2.0
+ * @link        https://github.com/kleister/kleister-php
  */
-class InlineObjectTest extends TestCase
+class ValidationErrorTest extends TestCase
 {
 
     /**
@@ -72,23 +74,30 @@ class InlineObjectTest extends TestCase
     }
 
     /**
-     * Test "InlineObject"
+     * Test "ValidationError"
      */
-    public function testInlineObject()
+    public function testValidationError()
     {
     }
 
     /**
-     * Test attribute "username"
+     * Test attribute "status"
      */
-    public function testPropertyUsername()
+    public function testPropertyStatus()
     {
     }
 
     /**
-     * Test attribute "password"
+     * Test attribute "message"
      */
-    public function testPropertyPassword()
+    public function testPropertyMessage()
+    {
+    }
+
+    /**
+     * Test attribute "errors"
+     */
+    public function testPropertyErrors()
     {
     }
 }

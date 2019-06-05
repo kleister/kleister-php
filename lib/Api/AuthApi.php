@@ -122,11 +122,11 @@ class AuthApi
      *
      * Authenticate an user by credentials
      *
-     * @param  \Kleister\Model\InlineObject $params params (required)
+     * @param  \Kleister\Model\AuthLogin $params The credentials to authenticate (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\AuthToken|object|object
+     * @return \Kleister\Model\AuthToken|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function loginUser($params)
     {
@@ -139,11 +139,11 @@ class AuthApi
      *
      * Authenticate an user by credentials
      *
-     * @param  \Kleister\Model\InlineObject $params (required)
+     * @param  \Kleister\Model\AuthLogin $params The credentials to authenticate (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\AuthToken|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\AuthToken|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function loginUserWithHttpInfo($params)
     {
@@ -192,26 +192,26 @@ class AuthApi
                         $response->getHeaders()
                     ];
                 case 401:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -244,7 +244,7 @@ class AuthApi
                 case 401:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -252,7 +252,7 @@ class AuthApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -267,7 +267,7 @@ class AuthApi
      *
      * Authenticate an user by credentials
      *
-     * @param  \Kleister\Model\InlineObject $params (required)
+     * @param  \Kleister\Model\AuthLogin $params The credentials to authenticate (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -287,7 +287,7 @@ class AuthApi
      *
      * Authenticate an user by credentials
      *
-     * @param  \Kleister\Model\InlineObject $params (required)
+     * @param  \Kleister\Model\AuthLogin $params The credentials to authenticate (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -334,7 +334,7 @@ class AuthApi
     /**
      * Create request for operation 'loginUser'
      *
-     * @param  \Kleister\Model\InlineObject $params (required)
+     * @param  \Kleister\Model\AuthLogin $params The credentials to authenticate (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
@@ -432,7 +432,7 @@ class AuthApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\AuthToken|object|object
+     * @return \Kleister\Model\AuthToken|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function refreshAuth()
     {
@@ -448,7 +448,7 @@ class AuthApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\AuthToken|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\AuthToken|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function refreshAuthWithHttpInfo()
     {
@@ -497,26 +497,26 @@ class AuthApi
                         $response->getHeaders()
                     ];
                 case 401:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -549,7 +549,7 @@ class AuthApi
                 case 401:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -557,7 +557,7 @@ class AuthApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -726,7 +726,7 @@ class AuthApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\AuthVerify|object|object
+     * @return \Kleister\Model\AuthVerify|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function verifyAuth($token)
     {
@@ -743,7 +743,7 @@ class AuthApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\AuthVerify|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\AuthVerify|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function verifyAuthWithHttpInfo($token)
     {
@@ -792,26 +792,26 @@ class AuthApi
                         $response->getHeaders()
                     ];
                 case 401:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -844,7 +844,7 @@ class AuthApi
                 case 401:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -852,7 +852,7 @@ class AuthApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);

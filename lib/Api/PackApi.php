@@ -128,7 +128,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object|object|object|object|object
+     * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
     public function appendBuildToVersion($packId, $buildId, $params)
     {
@@ -147,7 +147,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function appendBuildToVersionWithHttpInfo($packId, $buildId, $params)
     {
@@ -184,68 +184,68 @@ class PackApi
             $responseBody = $response->getBody();
             switch($statusCode) {
                 case 200:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\ValidationError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ValidationError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = 'object';
+            $returnType = '\Kleister\Model\GeneralError';
             $responseBody = $response->getBody();
             if ($returnType === '\SplFileObject') {
                 $content = $responseBody; //stream goes to serializer
@@ -264,7 +264,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -272,7 +272,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -280,7 +280,7 @@ class PackApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -288,7 +288,7 @@ class PackApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\ValidationError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -296,7 +296,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -342,7 +342,7 @@ class PackApi
      */
     public function appendBuildToVersionAsyncWithHttpInfo($packId, $buildId, $params)
     {
-        $returnType = 'object';
+        $returnType = '\Kleister\Model\GeneralError';
         $request = $this->appendBuildToVersionRequest($packId, $buildId, $params);
 
         return $this->client
@@ -512,7 +512,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object|object|object|object|object
+     * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function appendPackToTeam($packId, $params)
     {
@@ -530,7 +530,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function appendPackToTeamWithHttpInfo($packId, $params)
     {
@@ -567,68 +567,68 @@ class PackApi
             $responseBody = $response->getBody();
             switch($statusCode) {
                 case 200:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = 'object';
+            $returnType = '\Kleister\Model\GeneralError';
             $responseBody = $response->getBody();
             if ($returnType === '\SplFileObject') {
                 $content = $responseBody; //stream goes to serializer
@@ -647,7 +647,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -655,7 +655,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -663,7 +663,7 @@ class PackApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -671,7 +671,7 @@ class PackApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -679,7 +679,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -723,7 +723,7 @@ class PackApi
      */
     public function appendPackToTeamAsyncWithHttpInfo($packId, $params)
     {
-        $returnType = 'object';
+        $returnType = '\Kleister\Model\GeneralError';
         $request = $this->appendPackToTeamRequest($packId, $params);
 
         return $this->client
@@ -878,7 +878,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object|object|object|object|object
+     * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function appendPackToUser($packId, $params)
     {
@@ -896,7 +896,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function appendPackToUserWithHttpInfo($packId, $params)
     {
@@ -933,68 +933,68 @@ class PackApi
             $responseBody = $response->getBody();
             switch($statusCode) {
                 case 200:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = 'object';
+            $returnType = '\Kleister\Model\GeneralError';
             $responseBody = $response->getBody();
             if ($returnType === '\SplFileObject') {
                 $content = $responseBody; //stream goes to serializer
@@ -1013,7 +1013,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1021,7 +1021,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1029,7 +1029,7 @@ class PackApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1037,7 +1037,7 @@ class PackApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1045,7 +1045,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1089,7 +1089,7 @@ class PackApi
      */
     public function appendPackToUserAsyncWithHttpInfo($packId, $params)
     {
-        $returnType = 'object';
+        $returnType = '\Kleister\Model\GeneralError';
         $request = $this->appendPackToUserRequest($packId, $params);
 
         return $this->client
@@ -1244,7 +1244,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Build|object|object|object|object
+     * @return \Kleister\Model\Build|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
     public function createBuild($packId, $params)
     {
@@ -1262,7 +1262,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Build|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Build|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function createBuildWithHttpInfo($packId, $params)
     {
@@ -1311,50 +1311,50 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\ValidationError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ValidationError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1387,7 +1387,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1395,7 +1395,7 @@ class PackApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1403,7 +1403,7 @@ class PackApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\ValidationError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1411,7 +1411,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1609,7 +1609,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Pack|object|object|object|object
+     * @return \Kleister\Model\Pack|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
     public function createPack($params)
     {
@@ -1626,7 +1626,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Pack|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Pack|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function createPackWithHttpInfo($params)
     {
@@ -1675,50 +1675,50 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\ValidationError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ValidationError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1751,7 +1751,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1759,7 +1759,7 @@ class PackApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1767,7 +1767,7 @@ class PackApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\ValidationError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1775,7 +1775,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1957,7 +1957,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object|object|object|object
+     * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function deleteBuild($packId, $buildId)
     {
@@ -1975,7 +1975,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function deleteBuildWithHttpInfo($packId, $buildId)
     {
@@ -2012,56 +2012,56 @@ class PackApi
             $responseBody = $response->getBody();
             switch($statusCode) {
                 case 200:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 400:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = 'object';
+            $returnType = '\Kleister\Model\GeneralError';
             $responseBody = $response->getBody();
             if ($returnType === '\SplFileObject') {
                 $content = $responseBody; //stream goes to serializer
@@ -2080,7 +2080,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2088,7 +2088,7 @@ class PackApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2096,7 +2096,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2104,7 +2104,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2148,7 +2148,7 @@ class PackApi
      */
     public function deleteBuildAsyncWithHttpInfo($packId, $buildId)
     {
-        $returnType = 'object';
+        $returnType = '\Kleister\Model\GeneralError';
         $request = $this->deleteBuildRequest($packId, $buildId);
 
         return $this->client
@@ -2309,7 +2309,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object|object|object|object
+     * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function deleteBuildFromVersion($packId, $buildId, $params)
     {
@@ -2328,7 +2328,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function deleteBuildFromVersionWithHttpInfo($packId, $buildId, $params)
     {
@@ -2365,56 +2365,56 @@ class PackApi
             $responseBody = $response->getBody();
             switch($statusCode) {
                 case 200:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 400:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = 'object';
+            $returnType = '\Kleister\Model\GeneralError';
             $responseBody = $response->getBody();
             if ($returnType === '\SplFileObject') {
                 $content = $responseBody; //stream goes to serializer
@@ -2433,7 +2433,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2441,7 +2441,7 @@ class PackApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2449,7 +2449,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2457,7 +2457,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2503,7 +2503,7 @@ class PackApi
      */
     public function deleteBuildFromVersionAsyncWithHttpInfo($packId, $buildId, $params)
     {
-        $returnType = 'object';
+        $returnType = '\Kleister\Model\GeneralError';
         $request = $this->deleteBuildFromVersionRequest($packId, $buildId, $params);
 
         return $this->client
@@ -2672,7 +2672,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object|object|object|object
+     * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function deletePack($packId)
     {
@@ -2689,7 +2689,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function deletePackWithHttpInfo($packId)
     {
@@ -2726,56 +2726,56 @@ class PackApi
             $responseBody = $response->getBody();
             switch($statusCode) {
                 case 200:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 400:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = 'object';
+            $returnType = '\Kleister\Model\GeneralError';
             $responseBody = $response->getBody();
             if ($returnType === '\SplFileObject') {
                 $content = $responseBody; //stream goes to serializer
@@ -2794,7 +2794,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2802,7 +2802,7 @@ class PackApi
                 case 400:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2810,7 +2810,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2818,7 +2818,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2860,7 +2860,7 @@ class PackApi
      */
     public function deletePackAsyncWithHttpInfo($packId)
     {
-        $returnType = 'object';
+        $returnType = '\Kleister\Model\GeneralError';
         $request = $this->deletePackRequest($packId);
 
         return $this->client
@@ -3005,7 +3005,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object|object|object|object|object
+     * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function deletePackFromTeam($packId, $params)
     {
@@ -3023,7 +3023,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function deletePackFromTeamWithHttpInfo($packId, $params)
     {
@@ -3060,68 +3060,68 @@ class PackApi
             $responseBody = $response->getBody();
             switch($statusCode) {
                 case 200:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = 'object';
+            $returnType = '\Kleister\Model\GeneralError';
             $responseBody = $response->getBody();
             if ($returnType === '\SplFileObject') {
                 $content = $responseBody; //stream goes to serializer
@@ -3140,7 +3140,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3148,7 +3148,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3156,7 +3156,7 @@ class PackApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3164,7 +3164,7 @@ class PackApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3172,7 +3172,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3216,7 +3216,7 @@ class PackApi
      */
     public function deletePackFromTeamAsyncWithHttpInfo($packId, $params)
     {
-        $returnType = 'object';
+        $returnType = '\Kleister\Model\GeneralError';
         $request = $this->deletePackFromTeamRequest($packId, $params);
 
         return $this->client
@@ -3371,7 +3371,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object|object|object|object|object
+     * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function deletePackFromUser($packId, $params)
     {
@@ -3389,7 +3389,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function deletePackFromUserWithHttpInfo($packId, $params)
     {
@@ -3426,68 +3426,68 @@ class PackApi
             $responseBody = $response->getBody();
             switch($statusCode) {
                 case 200:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = 'object';
+            $returnType = '\Kleister\Model\GeneralError';
             $responseBody = $response->getBody();
             if ($returnType === '\SplFileObject') {
                 $content = $responseBody; //stream goes to serializer
@@ -3506,7 +3506,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3514,7 +3514,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3522,7 +3522,7 @@ class PackApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3530,7 +3530,7 @@ class PackApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3538,7 +3538,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3582,7 +3582,7 @@ class PackApi
      */
     public function deletePackFromUserAsyncWithHttpInfo($packId, $params)
     {
-        $returnType = 'object';
+        $returnType = '\Kleister\Model\GeneralError';
         $request = $this->deletePackFromUserRequest($packId, $params);
 
         return $this->client
@@ -3737,7 +3737,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\BuildVersion[]|object|object
+     * @return \Kleister\Model\BuildVersion[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function listBuildVersions($packId, $buildId)
     {
@@ -3755,7 +3755,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\BuildVersion[]|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\BuildVersion[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function listBuildVersionsWithHttpInfo($packId, $buildId)
     {
@@ -3804,26 +3804,26 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -3856,7 +3856,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -3864,7 +3864,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4067,7 +4067,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Build[]|object|object
+     * @return \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function listBuilds($packId)
     {
@@ -4084,7 +4084,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Build[]|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function listBuildsWithHttpInfo($packId)
     {
@@ -4133,26 +4133,26 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -4185,7 +4185,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4193,7 +4193,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4379,7 +4379,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\TeamPack[]|object|object
+     * @return \Kleister\Model\TeamPack[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function listPackTeams($packId)
     {
@@ -4396,7 +4396,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\TeamPack[]|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\TeamPack[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function listPackTeamsWithHttpInfo($packId)
     {
@@ -4445,26 +4445,26 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -4497,7 +4497,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4505,7 +4505,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4691,7 +4691,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\UserPack[]|object|object
+     * @return \Kleister\Model\UserPack[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function listPackUsers($packId)
     {
@@ -4708,7 +4708,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\UserPack[]|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\UserPack[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function listPackUsersWithHttpInfo($packId)
     {
@@ -4757,26 +4757,26 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -4809,7 +4809,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4817,7 +4817,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5002,7 +5002,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Pack[]|object|object
+     * @return \Kleister\Model\Pack[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function listPacks()
     {
@@ -5018,7 +5018,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Pack[]|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Pack[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function listPacksWithHttpInfo()
     {
@@ -5067,26 +5067,26 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -5119,7 +5119,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5127,7 +5127,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5297,7 +5297,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object|object|object|object|object
+     * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function permitPackTeam($packId, $params)
     {
@@ -5315,7 +5315,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function permitPackTeamWithHttpInfo($packId, $params)
     {
@@ -5352,68 +5352,68 @@ class PackApi
             $responseBody = $response->getBody();
             switch($statusCode) {
                 case 200:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = 'object';
+            $returnType = '\Kleister\Model\GeneralError';
             $responseBody = $response->getBody();
             if ($returnType === '\SplFileObject') {
                 $content = $responseBody; //stream goes to serializer
@@ -5432,7 +5432,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5440,7 +5440,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5448,7 +5448,7 @@ class PackApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5456,7 +5456,7 @@ class PackApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5464,7 +5464,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5508,7 +5508,7 @@ class PackApi
      */
     public function permitPackTeamAsyncWithHttpInfo($packId, $params)
     {
-        $returnType = 'object';
+        $returnType = '\Kleister\Model\GeneralError';
         $request = $this->permitPackTeamRequest($packId, $params);
 
         return $this->client
@@ -5663,7 +5663,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object|object|object|object|object
+     * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function permitPackUser($packId, $params)
     {
@@ -5681,7 +5681,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function permitPackUserWithHttpInfo($packId, $params)
     {
@@ -5718,68 +5718,68 @@ class PackApi
             $responseBody = $response->getBody();
             switch($statusCode) {
                 case 200:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = 'object';
+            $returnType = '\Kleister\Model\GeneralError';
             $responseBody = $response->getBody();
             if ($returnType === '\SplFileObject') {
                 $content = $responseBody; //stream goes to serializer
@@ -5798,7 +5798,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5806,7 +5806,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5814,7 +5814,7 @@ class PackApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5822,7 +5822,7 @@ class PackApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5830,7 +5830,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5874,7 +5874,7 @@ class PackApi
      */
     public function permitPackUserAsyncWithHttpInfo($packId, $params)
     {
-        $returnType = 'object';
+        $returnType = '\Kleister\Model\GeneralError';
         $request = $this->permitPackUserRequest($packId, $params);
 
         return $this->client
@@ -6029,7 +6029,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Build|object|object
+     * @return \Kleister\Model\Build|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function showBuild($packId, $buildId)
     {
@@ -6047,7 +6047,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Build|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Build|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function showBuildWithHttpInfo($packId, $buildId)
     {
@@ -6096,26 +6096,26 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -6148,7 +6148,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6156,7 +6156,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6359,7 +6359,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Pack|object|object
+     * @return \Kleister\Model\Pack|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function showPack($packId)
     {
@@ -6376,7 +6376,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Pack|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Pack|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function showPackWithHttpInfo($packId)
     {
@@ -6425,26 +6425,26 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -6477,7 +6477,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6485,7 +6485,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6673,7 +6673,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Build|object|object|object|object
+     * @return \Kleister\Model\Build|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
     public function updateBuild($packId, $buildId, $params)
     {
@@ -6692,7 +6692,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Build|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Build|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function updateBuildWithHttpInfo($packId, $buildId, $params)
     {
@@ -6741,50 +6741,50 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\ValidationError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ValidationError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -6817,7 +6817,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6825,7 +6825,7 @@ class PackApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6833,7 +6833,7 @@ class PackApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\ValidationError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6841,7 +6841,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7057,7 +7057,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Pack|object|object|object|object
+     * @return \Kleister\Model\Pack|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
     public function updatePack($packId, $params)
     {
@@ -7075,7 +7075,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Pack|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Pack|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function updatePackWithHttpInfo($packId, $params)
     {
@@ -7124,50 +7124,50 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\ValidationError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ValidationError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -7200,7 +7200,7 @@ class PackApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7208,7 +7208,7 @@ class PackApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7216,7 +7216,7 @@ class PackApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\ValidationError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7224,7 +7224,7 @@ class PackApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);

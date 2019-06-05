@@ -1,6 +1,6 @@
 # Kleister\PackApi
 
-All URIs are relative to *http://http:/api/v1*
+All URIs are relative to *http://try.kleister.tech/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -30,7 +30,7 @@ Method | HTTP request | Description
 
 ## appendBuildToVersion
 
-> object appendBuildToVersion($packId, $buildId, $params)
+> \Kleister\Model\GeneralError appendBuildToVersion($packId, $buildId, $params)
 
 Assign a version to a build
 
@@ -70,7 +70,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -88,7 +88,7 @@ No authorization required
 
 ## appendPackToTeam
 
-> object appendPackToTeam($packId, $params)
+> \Kleister\Model\GeneralError appendPackToTeam($packId, $params)
 
 Assign a team to pack
 
@@ -126,7 +126,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -144,7 +144,7 @@ No authorization required
 
 ## appendPackToUser
 
-> object appendPackToUser($packId, $params)
+> \Kleister\Model\GeneralError appendPackToUser($packId, $params)
 
 Assign a user to pack
 
@@ -182,7 +182,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -310,7 +310,7 @@ No authorization required
 
 ## deleteBuild
 
-> object deleteBuild($packId, $buildId)
+> \Kleister\Model\GeneralError deleteBuild($packId, $buildId)
 
 Delete a specific build for a pack
 
@@ -348,7 +348,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -366,7 +366,7 @@ No authorization required
 
 ## deleteBuildFromVersion
 
-> object deleteBuildFromVersion($packId, $buildId, $params)
+> \Kleister\Model\GeneralError deleteBuildFromVersion($packId, $buildId, $params)
 
 Unlink a version from a build
 
@@ -406,7 +406,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -424,7 +424,7 @@ No authorization required
 
 ## deletePack
 
-> object deletePack($packId)
+> \Kleister\Model\GeneralError deletePack($packId)
 
 Delete a specific pack
 
@@ -460,7 +460,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -478,7 +478,7 @@ No authorization required
 
 ## deletePackFromTeam
 
-> object deletePackFromTeam($packId, $params)
+> \Kleister\Model\GeneralError deletePackFromTeam($packId, $params)
 
 Remove a team from pack
 
@@ -516,7 +516,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -534,7 +534,7 @@ No authorization required
 
 ## deletePackFromUser
 
-> object deletePackFromUser($packId, $params)
+> \Kleister\Model\GeneralError deletePackFromUser($packId, $params)
 
 Remove a user from pack
 
@@ -572,7 +572,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -858,7 +858,7 @@ No authorization required
 
 ## permitPackTeam
 
-> object permitPackTeam($packId, $params)
+> \Kleister\Model\GeneralError permitPackTeam($packId, $params)
 
 Update team perms for pack
 
@@ -896,7 +896,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -914,7 +914,7 @@ No authorization required
 
 ## permitPackUser
 
-> object permitPackUser($packId, $params)
+> \Kleister\Model\GeneralError permitPackUser($packId, $params)
 
 Update user perms for pack
 
@@ -952,7 +952,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 

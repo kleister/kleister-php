@@ -71,7 +71,7 @@ $api = new Kleister\Api\AuthApi(
     new GuzzleHttp\Client()
 );
 
-$params = new \Kleister\Model\InlineObject(); // \Kleister\Model\InlineObject | 
+$params = new \Kleister\Model\AuthLogin(); // \Kleister\Model\AuthLogin | The credentials to authenticate
 
 try {
     $result = $api->loginUser($params);
@@ -186,6 +186,7 @@ Class | Method | HTTP request | Description
 
 ## Documentation for models
 
+ - [AuthLogin](docs/Model/AuthLogin.md)
  - [AuthToken](docs/Model/AuthToken.md)
  - [AuthVerify](docs/Model/AuthVerify.md)
  - [Build](docs/Model/Build.md)
@@ -193,7 +194,7 @@ Class | Method | HTTP request | Description
  - [BuildVersionParams](docs/Model/BuildVersionParams.md)
  - [Forge](docs/Model/Forge.md)
  - [ForgeBuildParams](docs/Model/ForgeBuildParams.md)
- - [InlineObject](docs/Model/InlineObject.md)
+ - [GeneralError](docs/Model/GeneralError.md)
  - [Minecraft](docs/Model/Minecraft.md)
  - [MinecraftBuildParams](docs/Model/MinecraftBuildParams.md)
  - [Mod](docs/Model/Mod.md)
@@ -216,13 +217,31 @@ Class | Method | HTTP request | Description
  - [UserPack](docs/Model/UserPack.md)
  - [UserPackParams](docs/Model/UserPackParams.md)
  - [UserTeamParams](docs/Model/UserTeamParams.md)
+ - [ValidationError](docs/Model/ValidationError.md)
+ - [ValidationErrorErrors](docs/Model/ValidationErrorErrors.md)
  - [Version](docs/Model/Version.md)
  - [VersionBuildParams](docs/Model/VersionBuildParams.md)
 
 
 ## Documentation for authorization
 
-All endpoints do not require authorization.
+
+
+## BasicAuth
+
+
+- **Type**: HTTP basic authentication
+
+
+
+## HeaderAuth
+
+
+- **Type**: API key
+- **API key parameter name**: X-API-Key
+- **Location**: HTTP header
+
+
 
 
 ## Security

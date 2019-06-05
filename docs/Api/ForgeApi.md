@@ -1,6 +1,6 @@
 # Kleister\ForgeApi
 
-All URIs are relative to *http://http:/api/v1*
+All URIs are relative to *http://try.kleister.tech/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -285,7 +285,7 @@ No authorization required
 
 ## updateForge
 
-> object updateForge()
+> \Kleister\Model\GeneralError updateForge()
 
 Update the available Forge versions
 
@@ -317,7 +317,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 

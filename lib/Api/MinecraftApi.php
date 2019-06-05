@@ -127,7 +127,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Build[]|object|object|object|object
+     * @return \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
     public function appendMinecraftToBuild($minecraftId, $params)
     {
@@ -145,7 +145,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Build[]|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function appendMinecraftToBuildWithHttpInfo($minecraftId, $params)
     {
@@ -194,50 +194,50 @@ class MinecraftApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\ValidationError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ValidationError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -270,7 +270,7 @@ class MinecraftApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -278,7 +278,7 @@ class MinecraftApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -286,7 +286,7 @@ class MinecraftApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\ValidationError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -294,7 +294,7 @@ class MinecraftApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -493,7 +493,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Build[]|object|object|object|object
+     * @return \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
     public function deleteMinecraftFromBuild($minecraftId, $params)
     {
@@ -511,7 +511,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Build[]|object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function deleteMinecraftFromBuildWithHttpInfo($minecraftId, $params)
     {
@@ -560,50 +560,50 @@ class MinecraftApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 412:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 422:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\ValidationError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ValidationError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -636,7 +636,7 @@ class MinecraftApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -644,7 +644,7 @@ class MinecraftApi
                 case 412:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -652,7 +652,7 @@ class MinecraftApi
                 case 422:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\ValidationError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -660,7 +660,7 @@ class MinecraftApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -858,7 +858,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Build[]|object|object
+     * @return \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function listMinecraftBuilds($minecraftId)
     {
@@ -875,7 +875,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Build[]|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function listMinecraftBuildsWithHttpInfo($minecraftId)
     {
@@ -924,26 +924,26 @@ class MinecraftApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -976,7 +976,7 @@ class MinecraftApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -984,7 +984,7 @@ class MinecraftApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1169,7 +1169,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Minecraft[]|object|object
+     * @return \Kleister\Model\Minecraft[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function listMinecrafts()
     {
@@ -1185,7 +1185,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Minecraft[]|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Minecraft[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function listMinecraftsWithHttpInfo()
     {
@@ -1234,26 +1234,26 @@ class MinecraftApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1286,7 +1286,7 @@ class MinecraftApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1294,7 +1294,7 @@ class MinecraftApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1463,7 +1463,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Minecraft[]|object|object
+     * @return \Kleister\Model\Minecraft[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function searchMinecrafts($minecraftId)
     {
@@ -1480,7 +1480,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Minecraft[]|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Minecraft[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function searchMinecraftsWithHttpInfo($minecraftId)
     {
@@ -1529,26 +1529,26 @@ class MinecraftApi
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1581,7 +1581,7 @@ class MinecraftApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1589,7 +1589,7 @@ class MinecraftApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1774,7 +1774,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return object|object|object|object
+     * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
     public function updateMinecraft()
     {
@@ -1790,7 +1790,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
-     * @return array of object|object|object|object, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
     public function updateMinecraftWithHttpInfo()
     {
@@ -1827,56 +1827,56 @@ class MinecraftApi
             $responseBody = $response->getBody();
             switch($statusCode) {
                 case 200:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 403:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 case 503:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
                 default:
-                    if ('object' === '\SplFileObject') {
+                    if ('\Kleister\Model\GeneralError' === '\SplFileObject') {
                         $content = $responseBody; //stream goes to serializer
                     } else {
                         $content = $responseBody->getContents();
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, 'object', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\GeneralError', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
             }
 
-            $returnType = 'object';
+            $returnType = '\Kleister\Model\GeneralError';
             $responseBody = $response->getBody();
             if ($returnType === '\SplFileObject') {
                 $content = $responseBody; //stream goes to serializer
@@ -1895,7 +1895,7 @@ class MinecraftApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1903,7 +1903,7 @@ class MinecraftApi
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1911,7 +1911,7 @@ class MinecraftApi
                 case 503:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1919,7 +1919,7 @@ class MinecraftApi
                 default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        'object',
+                        '\Kleister\Model\GeneralError',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1959,7 +1959,7 @@ class MinecraftApi
      */
     public function updateMinecraftAsyncWithHttpInfo()
     {
-        $returnType = 'object';
+        $returnType = '\Kleister\Model\GeneralError';
         $request = $this->updateMinecraftRequest();
 
         return $this->client

@@ -1,6 +1,6 @@
 # Kleister\TeamApi
 
-All URIs are relative to *http://http:/api/v1*
+All URIs are relative to *http://try.kleister.tech/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -26,7 +26,7 @@ Method | HTTP request | Description
 
 ## appendTeamToMod
 
-> object appendTeamToMod($teamId, $params)
+> \Kleister\Model\GeneralError appendTeamToMod($teamId, $params)
 
 Assign a mod to team
 
@@ -64,7 +64,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -82,7 +82,7 @@ No authorization required
 
 ## appendTeamToPack
 
-> object appendTeamToPack($teamId, $params)
+> \Kleister\Model\GeneralError appendTeamToPack($teamId, $params)
 
 Assign a pack to team
 
@@ -120,7 +120,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -138,7 +138,7 @@ No authorization required
 
 ## appendTeamToUser
 
-> object appendTeamToUser($teamId, $params)
+> \Kleister\Model\GeneralError appendTeamToUser($teamId, $params)
 
 Assign a user to team
 
@@ -176,7 +176,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -248,7 +248,7 @@ No authorization required
 
 ## deleteTeam
 
-> object deleteTeam($teamId)
+> \Kleister\Model\GeneralError deleteTeam($teamId)
 
 Delete a specific team
 
@@ -284,7 +284,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -302,7 +302,7 @@ No authorization required
 
 ## deleteTeamFromMod
 
-> object deleteTeamFromMod($teamId, $params)
+> \Kleister\Model\GeneralError deleteTeamFromMod($teamId, $params)
 
 Remove a mod from team
 
@@ -340,7 +340,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -358,7 +358,7 @@ No authorization required
 
 ## deleteTeamFromPack
 
-> object deleteTeamFromPack($teamId, $params)
+> \Kleister\Model\GeneralError deleteTeamFromPack($teamId, $params)
 
 Remove a pack from team
 
@@ -396,7 +396,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -414,7 +414,7 @@ No authorization required
 
 ## deleteTeamFromUser
 
-> object deleteTeamFromUser($teamId, $params)
+> \Kleister\Model\GeneralError deleteTeamFromUser($teamId, $params)
 
 Remove a user from team
 
@@ -452,7 +452,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -682,7 +682,7 @@ No authorization required
 
 ## permitTeamMod
 
-> object permitTeamMod($teamId, $params)
+> \Kleister\Model\GeneralError permitTeamMod($teamId, $params)
 
 Update mod perms for team
 
@@ -720,7 +720,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -738,7 +738,7 @@ No authorization required
 
 ## permitTeamPack
 
-> object permitTeamPack($teamId, $params)
+> \Kleister\Model\GeneralError permitTeamPack($teamId, $params)
 
 Update pack perms for team
 
@@ -776,7 +776,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -794,7 +794,7 @@ No authorization required
 
 ## permitTeamUser
 
-> object permitTeamUser($teamId, $params)
+> \Kleister\Model\GeneralError permitTeamUser($teamId, $params)
 
 Update user perms for team
 
@@ -832,7 +832,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 

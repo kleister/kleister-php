@@ -1,6 +1,6 @@
 # Kleister\ModApi
 
-All URIs are relative to *http://http:/api/v1*
+All URIs are relative to *http://try.kleister.tech/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -30,7 +30,7 @@ Method | HTTP request | Description
 
 ## appendModToTeam
 
-> object appendModToTeam($modId, $params)
+> \Kleister\Model\GeneralError appendModToTeam($modId, $params)
 
 Assign a team to mod
 
@@ -68,7 +68,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -86,7 +86,7 @@ No authorization required
 
 ## appendModToUser
 
-> object appendModToUser($modId, $params)
+> \Kleister\Model\GeneralError appendModToUser($modId, $params)
 
 Assign a user to mod
 
@@ -124,7 +124,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -142,7 +142,7 @@ No authorization required
 
 ## appendVersionToBuild
 
-> object appendVersionToBuild($modId, $versionId, $params)
+> \Kleister\Model\GeneralError appendVersionToBuild($modId, $versionId, $params)
 
 Assign a build to a version
 
@@ -182,7 +182,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -310,7 +310,7 @@ No authorization required
 
 ## deleteMod
 
-> object deleteMod($modId)
+> \Kleister\Model\GeneralError deleteMod($modId)
 
 Delete a specific mod
 
@@ -346,7 +346,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -364,7 +364,7 @@ No authorization required
 
 ## deleteModFromTeam
 
-> object deleteModFromTeam($modId, $params)
+> \Kleister\Model\GeneralError deleteModFromTeam($modId, $params)
 
 Remove a team from mod
 
@@ -402,7 +402,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -420,7 +420,7 @@ No authorization required
 
 ## deleteModFromUser
 
-> object deleteModFromUser($modId, $params)
+> \Kleister\Model\GeneralError deleteModFromUser($modId, $params)
 
 Remove a user from mod
 
@@ -458,7 +458,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -476,7 +476,7 @@ No authorization required
 
 ## deleteVersion
 
-> object deleteVersion($modId, $versionId)
+> \Kleister\Model\GeneralError deleteVersion($modId, $versionId)
 
 Delete a specific version for a mod
 
@@ -514,7 +514,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -532,7 +532,7 @@ No authorization required
 
 ## deleteVersionFromBuild
 
-> object deleteVersionFromBuild($modId, $versionId, $params)
+> \Kleister\Model\GeneralError deleteVersionFromBuild($modId, $versionId, $params)
 
 Unlink a build from a version
 
@@ -572,7 +572,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -858,7 +858,7 @@ No authorization required
 
 ## permitModTeam
 
-> object permitModTeam($modId, $params)
+> \Kleister\Model\GeneralError permitModTeam($modId, $params)
 
 Update team perms for mod
 
@@ -896,7 +896,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 
@@ -914,7 +914,7 @@ No authorization required
 
 ## permitModUser
 
-> object permitModUser($modId, $params)
+> \Kleister\Model\GeneralError permitModUser($modId, $params)
 
 Update user perms for mod
 
@@ -952,7 +952,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-**object**
+[**\Kleister\Model\GeneralError**](../Model/GeneralError.md)
 
 ### Authorization
 

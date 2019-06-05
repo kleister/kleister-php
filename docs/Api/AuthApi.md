@@ -1,6 +1,6 @@
 # Kleister\AuthApi
 
-All URIs are relative to *http://http:/api/v1*
+All URIs are relative to *http://try.kleister.tech/api/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
@@ -28,7 +28,7 @@ $apiInstance = new Kleister\Api\AuthApi(
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
-$params = new \Kleister\Model\InlineObject(); // \Kleister\Model\InlineObject | 
+$params = new \Kleister\Model\AuthLogin(); // \Kleister\Model\AuthLogin | The credentials to authenticate
 
 try {
     $result = $apiInstance->loginUser($params);
@@ -44,7 +44,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **params** | [**\Kleister\Model\InlineObject**](../Model/InlineObject.md)|  |
+ **params** | [**\Kleister\Model\AuthLogin**](../Model/AuthLogin.md)| The credentials to authenticate |
 
 ### Return type
 

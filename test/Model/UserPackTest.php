@@ -6,8 +6,9 @@
  *
  * @category Class
  * @package  Kleister
- * @author   OpenAPI Generator team
- * @link     https://openapi-generator.tech
+ * @author   Thomas Boerger <thomas@webhippie.de>
+ * @license  http://www.apache.org/licenses/LICENSE-2.0.html Apache-2.0
+ * @link     https://github.com/kleister/kleister-php
  */
 
 /**
@@ -37,8 +38,9 @@ use PHPUnit\Framework\TestCase;
  * @category    Class
  * @description UserPack
  * @package     Kleister
- * @author      OpenAPI Generator team
- * @link        https://openapi-generator.tech
+ * @author      Thomas Boerger <thomas@webhippie.de>
+ * @license     http://www.apache.org/licenses/LICENSE-2.0.html Apache-2.0
+ * @link        https://github.com/kleister/kleister-php
  */
 class UserPackTest extends TestCase
 {
