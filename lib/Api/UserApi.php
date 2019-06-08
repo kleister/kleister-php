@@ -123,15 +123,15 @@ class UserApi
      * Assign a mod to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to assign (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function appendUserToMod($userId, $params)
+    public function appendUserToMod($userId, $userMod)
     {
-        list($response) = $this->appendUserToModWithHttpInfo($userId, $params);
+        list($response) = $this->appendUserToModWithHttpInfo($userId, $userMod);
         return $response;
     }
 
@@ -141,15 +141,15 @@ class UserApi
      * Assign a mod to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to assign (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendUserToModWithHttpInfo($userId, $params)
+    public function appendUserToModWithHttpInfo($userId, $userMod)
     {
-        $request = $this->appendUserToModRequest($userId, $params);
+        $request = $this->appendUserToModRequest($userId, $userMod);
 
         try {
             $options = $this->createHttpClientOption();
@@ -310,14 +310,14 @@ class UserApi
      * Assign a mod to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to assign (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendUserToModAsync($userId, $params)
+    public function appendUserToModAsync($userId, $userMod)
     {
-        return $this->appendUserToModAsyncWithHttpInfo($userId, $params)
+        return $this->appendUserToModAsyncWithHttpInfo($userId, $userMod)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -331,15 +331,15 @@ class UserApi
      * Assign a mod to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to assign (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendUserToModAsyncWithHttpInfo($userId, $params)
+    public function appendUserToModAsyncWithHttpInfo($userId, $userMod)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendUserToModRequest($userId, $params);
+        $request = $this->appendUserToModRequest($userId, $userMod);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -379,12 +379,12 @@ class UserApi
      * Create request for operation 'appendUserToMod'
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to assign (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendUserToModRequest($userId, $params)
+    protected function appendUserToModRequest($userId, $userMod)
     {
         // verify the required parameter 'userId' is set
         if ($userId === null || (is_array($userId) && count($userId) === 0)) {
@@ -392,10 +392,10 @@ class UserApi
                 'Missing the required parameter $userId when calling appendUserToMod'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'userMod' is set
+        if ($userMod === null || (is_array($userMod) && count($userMod) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendUserToMod'
+                'Missing the required parameter $userMod when calling appendUserToMod'
             );
         }
 
@@ -418,8 +418,8 @@ class UserApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($userMod)) {
+            $_tempBody = $userMod;
         }
 
         if ($multipart) {
@@ -489,15 +489,15 @@ class UserApi
      * Assign a pack to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to assign (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function appendUserToPack($userId, $params)
+    public function appendUserToPack($userId, $userPack)
     {
-        list($response) = $this->appendUserToPackWithHttpInfo($userId, $params);
+        list($response) = $this->appendUserToPackWithHttpInfo($userId, $userPack);
         return $response;
     }
 
@@ -507,15 +507,15 @@ class UserApi
      * Assign a pack to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to assign (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendUserToPackWithHttpInfo($userId, $params)
+    public function appendUserToPackWithHttpInfo($userId, $userPack)
     {
-        $request = $this->appendUserToPackRequest($userId, $params);
+        $request = $this->appendUserToPackRequest($userId, $userPack);
 
         try {
             $options = $this->createHttpClientOption();
@@ -676,14 +676,14 @@ class UserApi
      * Assign a pack to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to assign (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendUserToPackAsync($userId, $params)
+    public function appendUserToPackAsync($userId, $userPack)
     {
-        return $this->appendUserToPackAsyncWithHttpInfo($userId, $params)
+        return $this->appendUserToPackAsyncWithHttpInfo($userId, $userPack)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -697,15 +697,15 @@ class UserApi
      * Assign a pack to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to assign (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendUserToPackAsyncWithHttpInfo($userId, $params)
+    public function appendUserToPackAsyncWithHttpInfo($userId, $userPack)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendUserToPackRequest($userId, $params);
+        $request = $this->appendUserToPackRequest($userId, $userPack);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -745,12 +745,12 @@ class UserApi
      * Create request for operation 'appendUserToPack'
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to assign (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendUserToPackRequest($userId, $params)
+    protected function appendUserToPackRequest($userId, $userPack)
     {
         // verify the required parameter 'userId' is set
         if ($userId === null || (is_array($userId) && count($userId) === 0)) {
@@ -758,10 +758,10 @@ class UserApi
                 'Missing the required parameter $userId when calling appendUserToPack'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'userPack' is set
+        if ($userPack === null || (is_array($userPack) && count($userPack) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendUserToPack'
+                'Missing the required parameter $userPack when calling appendUserToPack'
             );
         }
 
@@ -784,8 +784,8 @@ class UserApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($userPack)) {
+            $_tempBody = $userPack;
         }
 
         if ($multipart) {
@@ -855,15 +855,15 @@ class UserApi
      * Assign a team to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to assign (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function appendUserToTeam($userId, $params)
+    public function appendUserToTeam($userId, $userTeam)
     {
-        list($response) = $this->appendUserToTeamWithHttpInfo($userId, $params);
+        list($response) = $this->appendUserToTeamWithHttpInfo($userId, $userTeam);
         return $response;
     }
 
@@ -873,15 +873,15 @@ class UserApi
      * Assign a team to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to assign (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendUserToTeamWithHttpInfo($userId, $params)
+    public function appendUserToTeamWithHttpInfo($userId, $userTeam)
     {
-        $request = $this->appendUserToTeamRequest($userId, $params);
+        $request = $this->appendUserToTeamRequest($userId, $userTeam);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1042,14 +1042,14 @@ class UserApi
      * Assign a team to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to assign (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendUserToTeamAsync($userId, $params)
+    public function appendUserToTeamAsync($userId, $userTeam)
     {
-        return $this->appendUserToTeamAsyncWithHttpInfo($userId, $params)
+        return $this->appendUserToTeamAsyncWithHttpInfo($userId, $userTeam)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1063,15 +1063,15 @@ class UserApi
      * Assign a team to user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to assign (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendUserToTeamAsyncWithHttpInfo($userId, $params)
+    public function appendUserToTeamAsyncWithHttpInfo($userId, $userTeam)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendUserToTeamRequest($userId, $params);
+        $request = $this->appendUserToTeamRequest($userId, $userTeam);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1111,12 +1111,12 @@ class UserApi
      * Create request for operation 'appendUserToTeam'
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to assign (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendUserToTeamRequest($userId, $params)
+    protected function appendUserToTeamRequest($userId, $userTeam)
     {
         // verify the required parameter 'userId' is set
         if ($userId === null || (is_array($userId) && count($userId) === 0)) {
@@ -1124,10 +1124,10 @@ class UserApi
                 'Missing the required parameter $userId when calling appendUserToTeam'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'userTeam' is set
+        if ($userTeam === null || (is_array($userTeam) && count($userTeam) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendUserToTeam'
+                'Missing the required parameter $userTeam when calling appendUserToTeam'
             );
         }
 
@@ -1150,8 +1150,8 @@ class UserApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($userTeam)) {
+            $_tempBody = $userTeam;
         }
 
         if ($multipart) {
@@ -1220,15 +1220,15 @@ class UserApi
      *
      * Create a new user
      *
-     * @param  \Kleister\Model\User $params The user data to create (required)
+     * @param  \Kleister\Model\User $user The user data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\User|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function createUser($params)
+    public function createUser($user)
     {
-        list($response) = $this->createUserWithHttpInfo($params);
+        list($response) = $this->createUserWithHttpInfo($user);
         return $response;
     }
 
@@ -1237,15 +1237,15 @@ class UserApi
      *
      * Create a new user
      *
-     * @param  \Kleister\Model\User $params The user data to create (required)
+     * @param  \Kleister\Model\User $user The user data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\User|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createUserWithHttpInfo($params)
+    public function createUserWithHttpInfo($user)
     {
-        $request = $this->createUserRequest($params);
+        $request = $this->createUserRequest($user);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1405,14 +1405,14 @@ class UserApi
      *
      * Create a new user
      *
-     * @param  \Kleister\Model\User $params The user data to create (required)
+     * @param  \Kleister\Model\User $user The user data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createUserAsync($params)
+    public function createUserAsync($user)
     {
-        return $this->createUserAsyncWithHttpInfo($params)
+        return $this->createUserAsyncWithHttpInfo($user)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1425,15 +1425,15 @@ class UserApi
      *
      * Create a new user
      *
-     * @param  \Kleister\Model\User $params The user data to create (required)
+     * @param  \Kleister\Model\User $user The user data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createUserAsyncWithHttpInfo($params)
+    public function createUserAsyncWithHttpInfo($user)
     {
         $returnType = '\Kleister\Model\User';
-        $request = $this->createUserRequest($params);
+        $request = $this->createUserRequest($user);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1472,17 +1472,17 @@ class UserApi
     /**
      * Create request for operation 'createUser'
      *
-     * @param  \Kleister\Model\User $params The user data to create (required)
+     * @param  \Kleister\Model\User $user The user data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function createUserRequest($params)
+    protected function createUserRequest($user)
     {
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'user' is set
+        if ($user === null || (is_array($user) && count($user) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling createUser'
+                'Missing the required parameter $user when calling createUser'
             );
         }
 
@@ -1497,8 +1497,8 @@ class UserApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($user)) {
+            $_tempBody = $user;
         }
 
         if ($multipart) {
@@ -1900,15 +1900,15 @@ class UserApi
      * Remove a mod from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to delete (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deleteUserFromMod($userId, $params)
+    public function deleteUserFromMod($userId, $userMod)
     {
-        list($response) = $this->deleteUserFromModWithHttpInfo($userId, $params);
+        list($response) = $this->deleteUserFromModWithHttpInfo($userId, $userMod);
         return $response;
     }
 
@@ -1918,15 +1918,15 @@ class UserApi
      * Remove a mod from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to delete (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteUserFromModWithHttpInfo($userId, $params)
+    public function deleteUserFromModWithHttpInfo($userId, $userMod)
     {
-        $request = $this->deleteUserFromModRequest($userId, $params);
+        $request = $this->deleteUserFromModRequest($userId, $userMod);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2087,14 +2087,14 @@ class UserApi
      * Remove a mod from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to delete (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromModAsync($userId, $params)
+    public function deleteUserFromModAsync($userId, $userMod)
     {
-        return $this->deleteUserFromModAsyncWithHttpInfo($userId, $params)
+        return $this->deleteUserFromModAsyncWithHttpInfo($userId, $userMod)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2108,15 +2108,15 @@ class UserApi
      * Remove a mod from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to delete (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromModAsyncWithHttpInfo($userId, $params)
+    public function deleteUserFromModAsyncWithHttpInfo($userId, $userMod)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deleteUserFromModRequest($userId, $params);
+        $request = $this->deleteUserFromModRequest($userId, $userMod);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2156,12 +2156,12 @@ class UserApi
      * Create request for operation 'deleteUserFromMod'
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to delete (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteUserFromModRequest($userId, $params)
+    protected function deleteUserFromModRequest($userId, $userMod)
     {
         // verify the required parameter 'userId' is set
         if ($userId === null || (is_array($userId) && count($userId) === 0)) {
@@ -2169,10 +2169,10 @@ class UserApi
                 'Missing the required parameter $userId when calling deleteUserFromMod'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'userMod' is set
+        if ($userMod === null || (is_array($userMod) && count($userMod) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteUserFromMod'
+                'Missing the required parameter $userMod when calling deleteUserFromMod'
             );
         }
 
@@ -2195,8 +2195,8 @@ class UserApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($userMod)) {
+            $_tempBody = $userMod;
         }
 
         if ($multipart) {
@@ -2266,15 +2266,15 @@ class UserApi
      * Remove a pack from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to delete (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deleteUserFromPack($userId, $params)
+    public function deleteUserFromPack($userId, $userPack)
     {
-        list($response) = $this->deleteUserFromPackWithHttpInfo($userId, $params);
+        list($response) = $this->deleteUserFromPackWithHttpInfo($userId, $userPack);
         return $response;
     }
 
@@ -2284,15 +2284,15 @@ class UserApi
      * Remove a pack from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to delete (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteUserFromPackWithHttpInfo($userId, $params)
+    public function deleteUserFromPackWithHttpInfo($userId, $userPack)
     {
-        $request = $this->deleteUserFromPackRequest($userId, $params);
+        $request = $this->deleteUserFromPackRequest($userId, $userPack);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2453,14 +2453,14 @@ class UserApi
      * Remove a pack from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to delete (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromPackAsync($userId, $params)
+    public function deleteUserFromPackAsync($userId, $userPack)
     {
-        return $this->deleteUserFromPackAsyncWithHttpInfo($userId, $params)
+        return $this->deleteUserFromPackAsyncWithHttpInfo($userId, $userPack)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2474,15 +2474,15 @@ class UserApi
      * Remove a pack from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to delete (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromPackAsyncWithHttpInfo($userId, $params)
+    public function deleteUserFromPackAsyncWithHttpInfo($userId, $userPack)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deleteUserFromPackRequest($userId, $params);
+        $request = $this->deleteUserFromPackRequest($userId, $userPack);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2522,12 +2522,12 @@ class UserApi
      * Create request for operation 'deleteUserFromPack'
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to delete (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteUserFromPackRequest($userId, $params)
+    protected function deleteUserFromPackRequest($userId, $userPack)
     {
         // verify the required parameter 'userId' is set
         if ($userId === null || (is_array($userId) && count($userId) === 0)) {
@@ -2535,10 +2535,10 @@ class UserApi
                 'Missing the required parameter $userId when calling deleteUserFromPack'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'userPack' is set
+        if ($userPack === null || (is_array($userPack) && count($userPack) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteUserFromPack'
+                'Missing the required parameter $userPack when calling deleteUserFromPack'
             );
         }
 
@@ -2561,8 +2561,8 @@ class UserApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($userPack)) {
+            $_tempBody = $userPack;
         }
 
         if ($multipart) {
@@ -2632,15 +2632,15 @@ class UserApi
      * Remove a team from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to delete (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deleteUserFromTeam($userId, $params)
+    public function deleteUserFromTeam($userId, $userTeam)
     {
-        list($response) = $this->deleteUserFromTeamWithHttpInfo($userId, $params);
+        list($response) = $this->deleteUserFromTeamWithHttpInfo($userId, $userTeam);
         return $response;
     }
 
@@ -2650,15 +2650,15 @@ class UserApi
      * Remove a team from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to delete (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteUserFromTeamWithHttpInfo($userId, $params)
+    public function deleteUserFromTeamWithHttpInfo($userId, $userTeam)
     {
-        $request = $this->deleteUserFromTeamRequest($userId, $params);
+        $request = $this->deleteUserFromTeamRequest($userId, $userTeam);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2819,14 +2819,14 @@ class UserApi
      * Remove a team from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to delete (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromTeamAsync($userId, $params)
+    public function deleteUserFromTeamAsync($userId, $userTeam)
     {
-        return $this->deleteUserFromTeamAsyncWithHttpInfo($userId, $params)
+        return $this->deleteUserFromTeamAsyncWithHttpInfo($userId, $userTeam)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2840,15 +2840,15 @@ class UserApi
      * Remove a team from user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to delete (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromTeamAsyncWithHttpInfo($userId, $params)
+    public function deleteUserFromTeamAsyncWithHttpInfo($userId, $userTeam)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deleteUserFromTeamRequest($userId, $params);
+        $request = $this->deleteUserFromTeamRequest($userId, $userTeam);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2888,12 +2888,12 @@ class UserApi
      * Create request for operation 'deleteUserFromTeam'
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to delete (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteUserFromTeamRequest($userId, $params)
+    protected function deleteUserFromTeamRequest($userId, $userTeam)
     {
         // verify the required parameter 'userId' is set
         if ($userId === null || (is_array($userId) && count($userId) === 0)) {
@@ -2901,10 +2901,10 @@ class UserApi
                 'Missing the required parameter $userId when calling deleteUserFromTeam'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'userTeam' is set
+        if ($userTeam === null || (is_array($userTeam) && count($userTeam) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteUserFromTeam'
+                'Missing the required parameter $userTeam when calling deleteUserFromTeam'
             );
         }
 
@@ -2927,8 +2927,8 @@ class UserApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($userTeam)) {
+            $_tempBody = $userTeam;
         }
 
         if ($multipart) {
@@ -4227,15 +4227,15 @@ class UserApi
      * Update mod perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to update (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function permitUserMod($userId, $params)
+    public function permitUserMod($userId, $userMod)
     {
-        list($response) = $this->permitUserModWithHttpInfo($userId, $params);
+        list($response) = $this->permitUserModWithHttpInfo($userId, $userMod);
         return $response;
     }
 
@@ -4245,15 +4245,15 @@ class UserApi
      * Update mod perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to update (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitUserModWithHttpInfo($userId, $params)
+    public function permitUserModWithHttpInfo($userId, $userMod)
     {
-        $request = $this->permitUserModRequest($userId, $params);
+        $request = $this->permitUserModRequest($userId, $userMod);
 
         try {
             $options = $this->createHttpClientOption();
@@ -4414,14 +4414,14 @@ class UserApi
      * Update mod perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to update (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitUserModAsync($userId, $params)
+    public function permitUserModAsync($userId, $userMod)
     {
-        return $this->permitUserModAsyncWithHttpInfo($userId, $params)
+        return $this->permitUserModAsyncWithHttpInfo($userId, $userMod)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -4435,15 +4435,15 @@ class UserApi
      * Update mod perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to update (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitUserModAsyncWithHttpInfo($userId, $params)
+    public function permitUserModAsyncWithHttpInfo($userId, $userMod)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->permitUserModRequest($userId, $params);
+        $request = $this->permitUserModRequest($userId, $userMod);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -4483,12 +4483,12 @@ class UserApi
      * Create request for operation 'permitUserMod'
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserModParams $params The user mod data to update (required)
+     * @param  \Kleister\Model\UserModParams $userMod The user mod data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function permitUserModRequest($userId, $params)
+    protected function permitUserModRequest($userId, $userMod)
     {
         // verify the required parameter 'userId' is set
         if ($userId === null || (is_array($userId) && count($userId) === 0)) {
@@ -4496,10 +4496,10 @@ class UserApi
                 'Missing the required parameter $userId when calling permitUserMod'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'userMod' is set
+        if ($userMod === null || (is_array($userMod) && count($userMod) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling permitUserMod'
+                'Missing the required parameter $userMod when calling permitUserMod'
             );
         }
 
@@ -4522,8 +4522,8 @@ class UserApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($userMod)) {
+            $_tempBody = $userMod;
         }
 
         if ($multipart) {
@@ -4593,15 +4593,15 @@ class UserApi
      * Update pack perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to update (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function permitUserPack($userId, $params)
+    public function permitUserPack($userId, $userPack)
     {
-        list($response) = $this->permitUserPackWithHttpInfo($userId, $params);
+        list($response) = $this->permitUserPackWithHttpInfo($userId, $userPack);
         return $response;
     }
 
@@ -4611,15 +4611,15 @@ class UserApi
      * Update pack perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to update (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitUserPackWithHttpInfo($userId, $params)
+    public function permitUserPackWithHttpInfo($userId, $userPack)
     {
-        $request = $this->permitUserPackRequest($userId, $params);
+        $request = $this->permitUserPackRequest($userId, $userPack);
 
         try {
             $options = $this->createHttpClientOption();
@@ -4780,14 +4780,14 @@ class UserApi
      * Update pack perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to update (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitUserPackAsync($userId, $params)
+    public function permitUserPackAsync($userId, $userPack)
     {
-        return $this->permitUserPackAsyncWithHttpInfo($userId, $params)
+        return $this->permitUserPackAsyncWithHttpInfo($userId, $userPack)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -4801,15 +4801,15 @@ class UserApi
      * Update pack perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to update (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitUserPackAsyncWithHttpInfo($userId, $params)
+    public function permitUserPackAsyncWithHttpInfo($userId, $userPack)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->permitUserPackRequest($userId, $params);
+        $request = $this->permitUserPackRequest($userId, $userPack);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -4849,12 +4849,12 @@ class UserApi
      * Create request for operation 'permitUserPack'
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserPackParams $params The user pack data to update (required)
+     * @param  \Kleister\Model\UserPackParams $userPack The user pack data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function permitUserPackRequest($userId, $params)
+    protected function permitUserPackRequest($userId, $userPack)
     {
         // verify the required parameter 'userId' is set
         if ($userId === null || (is_array($userId) && count($userId) === 0)) {
@@ -4862,10 +4862,10 @@ class UserApi
                 'Missing the required parameter $userId when calling permitUserPack'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'userPack' is set
+        if ($userPack === null || (is_array($userPack) && count($userPack) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling permitUserPack'
+                'Missing the required parameter $userPack when calling permitUserPack'
             );
         }
 
@@ -4888,8 +4888,8 @@ class UserApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($userPack)) {
+            $_tempBody = $userPack;
         }
 
         if ($multipart) {
@@ -4959,15 +4959,15 @@ class UserApi
      * Update team perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to update (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function permitUserTeam($userId, $params)
+    public function permitUserTeam($userId, $userTeam)
     {
-        list($response) = $this->permitUserTeamWithHttpInfo($userId, $params);
+        list($response) = $this->permitUserTeamWithHttpInfo($userId, $userTeam);
         return $response;
     }
 
@@ -4977,15 +4977,15 @@ class UserApi
      * Update team perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to update (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitUserTeamWithHttpInfo($userId, $params)
+    public function permitUserTeamWithHttpInfo($userId, $userTeam)
     {
-        $request = $this->permitUserTeamRequest($userId, $params);
+        $request = $this->permitUserTeamRequest($userId, $userTeam);
 
         try {
             $options = $this->createHttpClientOption();
@@ -5146,14 +5146,14 @@ class UserApi
      * Update team perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to update (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitUserTeamAsync($userId, $params)
+    public function permitUserTeamAsync($userId, $userTeam)
     {
-        return $this->permitUserTeamAsyncWithHttpInfo($userId, $params)
+        return $this->permitUserTeamAsyncWithHttpInfo($userId, $userTeam)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -5167,15 +5167,15 @@ class UserApi
      * Update team perms for user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to update (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitUserTeamAsyncWithHttpInfo($userId, $params)
+    public function permitUserTeamAsyncWithHttpInfo($userId, $userTeam)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->permitUserTeamRequest($userId, $params);
+        $request = $this->permitUserTeamRequest($userId, $userTeam);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -5215,12 +5215,12 @@ class UserApi
      * Create request for operation 'permitUserTeam'
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $params The user team data to update (required)
+     * @param  \Kleister\Model\UserTeamParams $userTeam The user team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function permitUserTeamRequest($userId, $params)
+    protected function permitUserTeamRequest($userId, $userTeam)
     {
         // verify the required parameter 'userId' is set
         if ($userId === null || (is_array($userId) && count($userId) === 0)) {
@@ -5228,10 +5228,10 @@ class UserApi
                 'Missing the required parameter $userId when calling permitUserTeam'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'userTeam' is set
+        if ($userTeam === null || (is_array($userTeam) && count($userTeam) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling permitUserTeam'
+                'Missing the required parameter $userTeam when calling permitUserTeam'
             );
         }
 
@@ -5254,8 +5254,8 @@ class UserApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($userTeam)) {
+            $_tempBody = $userTeam;
         }
 
         if ($multipart) {
@@ -5637,15 +5637,15 @@ class UserApi
      * Update a specific user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\User $params The user data to update (required)
+     * @param  \Kleister\Model\User $user The user data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\User|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function updateUser($userId, $params)
+    public function updateUser($userId, $user)
     {
-        list($response) = $this->updateUserWithHttpInfo($userId, $params);
+        list($response) = $this->updateUserWithHttpInfo($userId, $user);
         return $response;
     }
 
@@ -5655,15 +5655,15 @@ class UserApi
      * Update a specific user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\User $params The user data to update (required)
+     * @param  \Kleister\Model\User $user The user data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\User|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updateUserWithHttpInfo($userId, $params)
+    public function updateUserWithHttpInfo($userId, $user)
     {
-        $request = $this->updateUserRequest($userId, $params);
+        $request = $this->updateUserRequest($userId, $user);
 
         try {
             $options = $this->createHttpClientOption();
@@ -5824,14 +5824,14 @@ class UserApi
      * Update a specific user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\User $params The user data to update (required)
+     * @param  \Kleister\Model\User $user The user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateUserAsync($userId, $params)
+    public function updateUserAsync($userId, $user)
     {
-        return $this->updateUserAsyncWithHttpInfo($userId, $params)
+        return $this->updateUserAsyncWithHttpInfo($userId, $user)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -5845,15 +5845,15 @@ class UserApi
      * Update a specific user
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\User $params The user data to update (required)
+     * @param  \Kleister\Model\User $user The user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateUserAsyncWithHttpInfo($userId, $params)
+    public function updateUserAsyncWithHttpInfo($userId, $user)
     {
         $returnType = '\Kleister\Model\User';
-        $request = $this->updateUserRequest($userId, $params);
+        $request = $this->updateUserRequest($userId, $user);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -5893,12 +5893,12 @@ class UserApi
      * Create request for operation 'updateUser'
      *
      * @param  string $userId A user UUID or slug (required)
-     * @param  \Kleister\Model\User $params The user data to update (required)
+     * @param  \Kleister\Model\User $user The user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function updateUserRequest($userId, $params)
+    protected function updateUserRequest($userId, $user)
     {
         // verify the required parameter 'userId' is set
         if ($userId === null || (is_array($userId) && count($userId) === 0)) {
@@ -5906,10 +5906,10 @@ class UserApi
                 'Missing the required parameter $userId when calling updateUser'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'user' is set
+        if ($user === null || (is_array($user) && count($user) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling updateUser'
+                'Missing the required parameter $user when calling updateUser'
             );
         }
 
@@ -5932,8 +5932,8 @@ class UserApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($user)) {
+            $_tempBody = $user;
         }
 
         if ($multipart) {

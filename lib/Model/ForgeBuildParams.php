@@ -59,7 +59,6 @@ class ForgeBuildParams implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $openAPITypes = [
-        'forge' => 'string',
         'pack' => 'string',
         'build' => 'string'
     ];
@@ -70,7 +69,6 @@ class ForgeBuildParams implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $openAPIFormats = [
-        'forge' => null,
         'pack' => null,
         'build' => null
     ];
@@ -102,7 +100,6 @@ class ForgeBuildParams implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'forge' => 'forge',
         'pack' => 'pack',
         'build' => 'build'
     ];
@@ -113,7 +110,6 @@ class ForgeBuildParams implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'forge' => 'setForge',
         'pack' => 'setPack',
         'build' => 'setBuild'
     ];
@@ -124,7 +120,6 @@ class ForgeBuildParams implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'forge' => 'getForge',
         'pack' => 'getPack',
         'build' => 'getBuild'
     ];
@@ -189,7 +184,6 @@ class ForgeBuildParams implements ModelInterface, ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        $this->container['forge'] = isset($data['forge']) ? $data['forge'] : null;
         $this->container['pack'] = isset($data['pack']) ? $data['pack'] : null;
         $this->container['build'] = isset($data['build']) ? $data['build'] : null;
     }
@@ -203,9 +197,6 @@ class ForgeBuildParams implements ModelInterface, ArrayAccess
     {
         $invalidProperties = [];
 
-        if ($this->container['forge'] === null) {
-            $invalidProperties[] = "'forge' can't be null";
-        }
         if ($this->container['pack'] === null) {
             $invalidProperties[] = "'pack' can't be null";
         }
@@ -226,30 +217,6 @@ class ForgeBuildParams implements ModelInterface, ArrayAccess
         return count($this->listInvalidProperties()) === 0;
     }
 
-
-    /**
-     * Gets forge
-     *
-     * @return string
-     */
-    public function getForge()
-    {
-        return $this->container['forge'];
-    }
-
-    /**
-     * Sets forge
-     *
-     * @param string $forge forge
-     *
-     * @return $this
-     */
-    public function setForge($forge)
-    {
-        $this->container['forge'] = $forge;
-
-        return $this;
-    }
 
     /**
      * Gets pack

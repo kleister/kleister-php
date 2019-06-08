@@ -81,13 +81,6 @@ class MinecraftBuildParamsTest extends TestCase
     }
 
     /**
-     * Test attribute "minecraft"
-     */
-    public function testPropertyMinecraft()
-    {
-    }
-
-    /**
      * Test attribute "pack"
      */
     public function testPropertyPack()

@@ -81,13 +81,6 @@ class TeamModParamsTest extends TestCase
     }
 
     /**
-     * Test attribute "team"
-     */
-    public function testPropertyTeam()
-    {
-    }
-
-    /**
      * Test attribute "mod"
      */
     public function testPropertyMod()

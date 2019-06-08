@@ -81,13 +81,6 @@ class ModUserParamsTest extends TestCase
     }
 
     /**
-     * Test attribute "mod"
-     */
-    public function testPropertyMod()
-    {
-    }
-
-    /**
      * Test attribute "user"
      */
     public function testPropertyUser()

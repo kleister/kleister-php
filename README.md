@@ -70,10 +70,10 @@ $api = new Kleister\Api\AuthApi(
     new GuzzleHttp\Client()
 );
 
-$params = new \Kleister\Model\AuthLogin(); // \Kleister\Model\AuthLogin | The credentials to authenticate
+$authLogin = new \Kleister\Model\AuthLogin(); // \Kleister\Model\AuthLogin | The credentials to authenticate
 
 try {
-    $result = $api->loginUser($params);
+    $result = $api->loginUser($authLogin);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling AuthApi->loginUser: ', $e->getMessage(), PHP_EOL;

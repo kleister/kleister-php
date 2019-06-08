@@ -728,15 +728,15 @@ class ProfileApi
      *
      * Retrieve an unlimited auth token
      *
-     * @param  \Kleister\Model\Profile $params The profile data to update (required)
+     * @param  \Kleister\Model\Profile $profile The profile data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Profile|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function updateProfile($params)
+    public function updateProfile($profile)
     {
-        list($response) = $this->updateProfileWithHttpInfo($params);
+        list($response) = $this->updateProfileWithHttpInfo($profile);
         return $response;
     }
 
@@ -745,15 +745,15 @@ class ProfileApi
      *
      * Retrieve an unlimited auth token
      *
-     * @param  \Kleister\Model\Profile $params The profile data to update (required)
+     * @param  \Kleister\Model\Profile $profile The profile data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Profile|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updateProfileWithHttpInfo($params)
+    public function updateProfileWithHttpInfo($profile)
     {
-        $request = $this->updateProfileRequest($params);
+        $request = $this->updateProfileRequest($profile);
 
         try {
             $options = $this->createHttpClientOption();
@@ -913,14 +913,14 @@ class ProfileApi
      *
      * Retrieve an unlimited auth token
      *
-     * @param  \Kleister\Model\Profile $params The profile data to update (required)
+     * @param  \Kleister\Model\Profile $profile The profile data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateProfileAsync($params)
+    public function updateProfileAsync($profile)
     {
-        return $this->updateProfileAsyncWithHttpInfo($params)
+        return $this->updateProfileAsyncWithHttpInfo($profile)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -933,15 +933,15 @@ class ProfileApi
      *
      * Retrieve an unlimited auth token
      *
-     * @param  \Kleister\Model\Profile $params The profile data to update (required)
+     * @param  \Kleister\Model\Profile $profile The profile data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateProfileAsyncWithHttpInfo($params)
+    public function updateProfileAsyncWithHttpInfo($profile)
     {
         $returnType = '\Kleister\Model\Profile';
-        $request = $this->updateProfileRequest($params);
+        $request = $this->updateProfileRequest($profile);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -980,17 +980,17 @@ class ProfileApi
     /**
      * Create request for operation 'updateProfile'
      *
-     * @param  \Kleister\Model\Profile $params The profile data to update (required)
+     * @param  \Kleister\Model\Profile $profile The profile data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function updateProfileRequest($params)
+    protected function updateProfileRequest($profile)
     {
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'profile' is set
+        if ($profile === null || (is_array($profile) && count($profile) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling updateProfile'
+                'Missing the required parameter $profile when calling updateProfile'
             );
         }
 
@@ -1005,8 +1005,8 @@ class ProfileApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($profile)) {
+            $_tempBody = $profile;
         }
 
         if ($multipart) {

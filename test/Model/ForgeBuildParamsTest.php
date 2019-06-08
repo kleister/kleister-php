@@ -81,13 +81,6 @@ class ForgeBuildParamsTest extends TestCase
     }
 
     /**
-     * Test attribute "forge"
-     */
-    public function testPropertyForge()
-    {
-    }
-
-    /**
      * Test attribute "pack"
      */
     public function testPropertyPack()

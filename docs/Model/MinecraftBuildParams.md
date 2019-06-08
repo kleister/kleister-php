@@ -4,7 +4,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**minecraft** | **string** |  | 
 **pack** | **string** |  | 
 **build** | **string** |  | 
 

@@ -81,13 +81,6 @@ class UserPackParamsTest extends TestCase
     }
 
     /**
-     * Test attribute "user"
-     */
-    public function testPropertyUser()
-    {
-    }
-
-    /**
      * Test attribute "pack"
      */
     public function testPropertyPack()

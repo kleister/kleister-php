@@ -30,7 +30,7 @@ Method | HTTP request | Description
 
 ## appendModToTeam
 
-> \Kleister\Model\GeneralError appendModToTeam($modId, $params)
+> \Kleister\Model\GeneralError appendModToTeam($modId, $modTeam)
 
 Assign a team to mod
 
@@ -47,10 +47,10 @@ $apiInstance = new Kleister\Api\ModApi(
     new GuzzleHttp\Client()
 );
 $modId = 'modId_example'; // string | A mod UUID or slug
-$params = new \Kleister\Model\ModTeamParams(); // \Kleister\Model\ModTeamParams | The mod team data to assign
+$modTeam = new \Kleister\Model\ModTeamParams(); // \Kleister\Model\ModTeamParams | The mod team data to assign
 
 try {
-    $result = $apiInstance->appendModToTeam($modId, $params);
+    $result = $apiInstance->appendModToTeam($modId, $modTeam);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->appendModToTeam: ', $e->getMessage(), PHP_EOL;
@@ -64,7 +64,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modId** | **string**| A mod UUID or slug |
- **params** | [**\Kleister\Model\ModTeamParams**](../Model/ModTeamParams.md)| The mod team data to assign |
+ **modTeam** | [**\Kleister\Model\ModTeamParams**](../Model/ModTeamParams.md)| The mod team data to assign |
 
 ### Return type
 
@@ -86,7 +86,7 @@ No authorization required
 
 ## appendModToUser
 
-> \Kleister\Model\GeneralError appendModToUser($modId, $params)
+> \Kleister\Model\GeneralError appendModToUser($modId, $modUser)
 
 Assign a user to mod
 
@@ -103,10 +103,10 @@ $apiInstance = new Kleister\Api\ModApi(
     new GuzzleHttp\Client()
 );
 $modId = 'modId_example'; // string | A mod UUID or slug
-$params = new \Kleister\Model\ModUserParams(); // \Kleister\Model\ModUserParams | The mod user data to assign
+$modUser = new \Kleister\Model\ModUserParams(); // \Kleister\Model\ModUserParams | The mod user data to assign
 
 try {
-    $result = $apiInstance->appendModToUser($modId, $params);
+    $result = $apiInstance->appendModToUser($modId, $modUser);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->appendModToUser: ', $e->getMessage(), PHP_EOL;
@@ -120,7 +120,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modId** | **string**| A mod UUID or slug |
- **params** | [**\Kleister\Model\ModUserParams**](../Model/ModUserParams.md)| The mod user data to assign |
+ **modUser** | [**\Kleister\Model\ModUserParams**](../Model/ModUserParams.md)| The mod user data to assign |
 
 ### Return type
 
@@ -142,7 +142,7 @@ No authorization required
 
 ## appendVersionToBuild
 
-> \Kleister\Model\GeneralError appendVersionToBuild($modId, $versionId, $params)
+> \Kleister\Model\GeneralError appendVersionToBuild($modId, $versionId, $versionBuild)
 
 Assign a build to a version
 
@@ -160,10 +160,10 @@ $apiInstance = new Kleister\Api\ModApi(
 );
 $modId = 'modId_example'; // string | A mod UUID or slug
 $versionId = 'versionId_example'; // string | A version UUID or slug
-$params = new \Kleister\Model\VersionBuildParams(); // \Kleister\Model\VersionBuildParams | The build data to append to version
+$versionBuild = new \Kleister\Model\VersionBuildParams(); // \Kleister\Model\VersionBuildParams | The build data to append to version
 
 try {
-    $result = $apiInstance->appendVersionToBuild($modId, $versionId, $params);
+    $result = $apiInstance->appendVersionToBuild($modId, $versionId, $versionBuild);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->appendVersionToBuild: ', $e->getMessage(), PHP_EOL;
@@ -178,7 +178,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modId** | **string**| A mod UUID or slug |
  **versionId** | **string**| A version UUID or slug |
- **params** | [**\Kleister\Model\VersionBuildParams**](../Model/VersionBuildParams.md)| The build data to append to version |
+ **versionBuild** | [**\Kleister\Model\VersionBuildParams**](../Model/VersionBuildParams.md)| The build data to append to version |
 
 ### Return type
 
@@ -200,7 +200,7 @@ No authorization required
 
 ## createMod
 
-> \Kleister\Model\Mod createMod($params)
+> \Kleister\Model\Mod createMod($mod)
 
 Create a new mod
 
@@ -216,10 +216,10 @@ $apiInstance = new Kleister\Api\ModApi(
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
-$params = new \Kleister\Model\Mod(); // \Kleister\Model\Mod | The mod data to create
+$mod = new \Kleister\Model\Mod(); // \Kleister\Model\Mod | The mod data to create
 
 try {
-    $result = $apiInstance->createMod($params);
+    $result = $apiInstance->createMod($mod);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->createMod: ', $e->getMessage(), PHP_EOL;
@@ -232,7 +232,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **params** | [**\Kleister\Model\Mod**](../Model/Mod.md)| The mod data to create |
+ **mod** | [**\Kleister\Model\Mod**](../Model/Mod.md)| The mod data to create |
 
 ### Return type
 
@@ -254,7 +254,7 @@ No authorization required
 
 ## createVersion
 
-> \Kleister\Model\Version createVersion($modId, $params)
+> \Kleister\Model\Version createVersion($modId, $version)
 
 Create a new version for a mod
 
@@ -271,10 +271,10 @@ $apiInstance = new Kleister\Api\ModApi(
     new GuzzleHttp\Client()
 );
 $modId = 'modId_example'; // string | A mod UUID or slug
-$params = new \Kleister\Model\Version(); // \Kleister\Model\Version | The version data to create
+$version = new \Kleister\Model\Version(); // \Kleister\Model\Version | The version data to create
 
 try {
-    $result = $apiInstance->createVersion($modId, $params);
+    $result = $apiInstance->createVersion($modId, $version);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->createVersion: ', $e->getMessage(), PHP_EOL;
@@ -288,7 +288,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modId** | **string**| A mod UUID or slug |
- **params** | [**\Kleister\Model\Version**](../Model/Version.md)| The version data to create |
+ **version** | [**\Kleister\Model\Version**](../Model/Version.md)| The version data to create |
 
 ### Return type
 
@@ -364,7 +364,7 @@ No authorization required
 
 ## deleteModFromTeam
 
-> \Kleister\Model\GeneralError deleteModFromTeam($modId, $params)
+> \Kleister\Model\GeneralError deleteModFromTeam($modId, $modTeam)
 
 Remove a team from mod
 
@@ -381,10 +381,10 @@ $apiInstance = new Kleister\Api\ModApi(
     new GuzzleHttp\Client()
 );
 $modId = 'modId_example'; // string | A mod UUID or slug
-$params = new \Kleister\Model\ModTeamParams(); // \Kleister\Model\ModTeamParams | The mod team data to delete
+$modTeam = new \Kleister\Model\ModTeamParams(); // \Kleister\Model\ModTeamParams | The mod team data to delete
 
 try {
-    $result = $apiInstance->deleteModFromTeam($modId, $params);
+    $result = $apiInstance->deleteModFromTeam($modId, $modTeam);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->deleteModFromTeam: ', $e->getMessage(), PHP_EOL;
@@ -398,7 +398,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modId** | **string**| A mod UUID or slug |
- **params** | [**\Kleister\Model\ModTeamParams**](../Model/ModTeamParams.md)| The mod team data to delete |
+ **modTeam** | [**\Kleister\Model\ModTeamParams**](../Model/ModTeamParams.md)| The mod team data to delete |
 
 ### Return type
 
@@ -420,7 +420,7 @@ No authorization required
 
 ## deleteModFromUser
 
-> \Kleister\Model\GeneralError deleteModFromUser($modId, $params)
+> \Kleister\Model\GeneralError deleteModFromUser($modId, $modUser)
 
 Remove a user from mod
 
@@ -437,10 +437,10 @@ $apiInstance = new Kleister\Api\ModApi(
     new GuzzleHttp\Client()
 );
 $modId = 'modId_example'; // string | A mod UUID or slug
-$params = new \Kleister\Model\ModUserParams(); // \Kleister\Model\ModUserParams | The mod user data to delete
+$modUser = new \Kleister\Model\ModUserParams(); // \Kleister\Model\ModUserParams | The mod user data to delete
 
 try {
-    $result = $apiInstance->deleteModFromUser($modId, $params);
+    $result = $apiInstance->deleteModFromUser($modId, $modUser);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->deleteModFromUser: ', $e->getMessage(), PHP_EOL;
@@ -454,7 +454,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modId** | **string**| A mod UUID or slug |
- **params** | [**\Kleister\Model\ModUserParams**](../Model/ModUserParams.md)| The mod user data to delete |
+ **modUser** | [**\Kleister\Model\ModUserParams**](../Model/ModUserParams.md)| The mod user data to delete |
 
 ### Return type
 
@@ -532,7 +532,7 @@ No authorization required
 
 ## deleteVersionFromBuild
 
-> \Kleister\Model\GeneralError deleteVersionFromBuild($modId, $versionId, $params)
+> \Kleister\Model\GeneralError deleteVersionFromBuild($modId, $versionId, $versionBuild)
 
 Unlink a build from a version
 
@@ -550,10 +550,10 @@ $apiInstance = new Kleister\Api\ModApi(
 );
 $modId = 'modId_example'; // string | A mod UUID or slug
 $versionId = 'versionId_example'; // string | A version UUID or slug
-$params = new \Kleister\Model\VersionBuildParams(); // \Kleister\Model\VersionBuildParams | The build data to unlink from version
+$versionBuild = new \Kleister\Model\VersionBuildParams(); // \Kleister\Model\VersionBuildParams | The build data to unlink from version
 
 try {
-    $result = $apiInstance->deleteVersionFromBuild($modId, $versionId, $params);
+    $result = $apiInstance->deleteVersionFromBuild($modId, $versionId, $versionBuild);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->deleteVersionFromBuild: ', $e->getMessage(), PHP_EOL;
@@ -568,7 +568,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modId** | **string**| A mod UUID or slug |
  **versionId** | **string**| A version UUID or slug |
- **params** | [**\Kleister\Model\VersionBuildParams**](../Model/VersionBuildParams.md)| The build data to unlink from version |
+ **versionBuild** | [**\Kleister\Model\VersionBuildParams**](../Model/VersionBuildParams.md)| The build data to unlink from version |
 
 ### Return type
 
@@ -858,7 +858,7 @@ No authorization required
 
 ## permitModTeam
 
-> \Kleister\Model\GeneralError permitModTeam($modId, $params)
+> \Kleister\Model\GeneralError permitModTeam($modId, $modTeam)
 
 Update team perms for mod
 
@@ -875,10 +875,10 @@ $apiInstance = new Kleister\Api\ModApi(
     new GuzzleHttp\Client()
 );
 $modId = 'modId_example'; // string | A mod UUID or slug
-$params = new \Kleister\Model\ModTeamParams(); // \Kleister\Model\ModTeamParams | The mod team data to update
+$modTeam = new \Kleister\Model\ModTeamParams(); // \Kleister\Model\ModTeamParams | The mod team data to update
 
 try {
-    $result = $apiInstance->permitModTeam($modId, $params);
+    $result = $apiInstance->permitModTeam($modId, $modTeam);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->permitModTeam: ', $e->getMessage(), PHP_EOL;
@@ -892,7 +892,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modId** | **string**| A mod UUID or slug |
- **params** | [**\Kleister\Model\ModTeamParams**](../Model/ModTeamParams.md)| The mod team data to update |
+ **modTeam** | [**\Kleister\Model\ModTeamParams**](../Model/ModTeamParams.md)| The mod team data to update |
 
 ### Return type
 
@@ -914,7 +914,7 @@ No authorization required
 
 ## permitModUser
 
-> \Kleister\Model\GeneralError permitModUser($modId, $params)
+> \Kleister\Model\GeneralError permitModUser($modId, $modUser)
 
 Update user perms for mod
 
@@ -931,10 +931,10 @@ $apiInstance = new Kleister\Api\ModApi(
     new GuzzleHttp\Client()
 );
 $modId = 'modId_example'; // string | A mod UUID or slug
-$params = new \Kleister\Model\ModUserParams(); // \Kleister\Model\ModUserParams | The mod user data to update
+$modUser = new \Kleister\Model\ModUserParams(); // \Kleister\Model\ModUserParams | The mod user data to update
 
 try {
-    $result = $apiInstance->permitModUser($modId, $params);
+    $result = $apiInstance->permitModUser($modId, $modUser);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->permitModUser: ', $e->getMessage(), PHP_EOL;
@@ -948,7 +948,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modId** | **string**| A mod UUID or slug |
- **params** | [**\Kleister\Model\ModUserParams**](../Model/ModUserParams.md)| The mod user data to update |
+ **modUser** | [**\Kleister\Model\ModUserParams**](../Model/ModUserParams.md)| The mod user data to update |
 
 ### Return type
 
@@ -1080,7 +1080,7 @@ No authorization required
 
 ## updateMod
 
-> \Kleister\Model\Mod updateMod($modId, $params)
+> \Kleister\Model\Mod updateMod($modId, $mod)
 
 Update a specific mod
 
@@ -1097,10 +1097,10 @@ $apiInstance = new Kleister\Api\ModApi(
     new GuzzleHttp\Client()
 );
 $modId = 'modId_example'; // string | A mod UUID or slug
-$params = new \Kleister\Model\Mod(); // \Kleister\Model\Mod | The mod data to update
+$mod = new \Kleister\Model\Mod(); // \Kleister\Model\Mod | The mod data to update
 
 try {
-    $result = $apiInstance->updateMod($modId, $params);
+    $result = $apiInstance->updateMod($modId, $mod);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->updateMod: ', $e->getMessage(), PHP_EOL;
@@ -1114,7 +1114,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modId** | **string**| A mod UUID or slug |
- **params** | [**\Kleister\Model\Mod**](../Model/Mod.md)| The mod data to update |
+ **mod** | [**\Kleister\Model\Mod**](../Model/Mod.md)| The mod data to update |
 
 ### Return type
 
@@ -1136,7 +1136,7 @@ No authorization required
 
 ## updateVersion
 
-> \Kleister\Model\Version updateVersion($modId, $versionId, $params)
+> \Kleister\Model\Version updateVersion($modId, $versionId, $version)
 
 Update a specific version for a mod
 
@@ -1154,10 +1154,10 @@ $apiInstance = new Kleister\Api\ModApi(
 );
 $modId = 'modId_example'; // string | A mod UUID or slug
 $versionId = 'versionId_example'; // string | A version UUID or slug
-$params = new \Kleister\Model\Version(); // \Kleister\Model\Version | The version data to update
+$version = new \Kleister\Model\Version(); // \Kleister\Model\Version | The version data to update
 
 try {
-    $result = $apiInstance->updateVersion($modId, $versionId, $params);
+    $result = $apiInstance->updateVersion($modId, $versionId, $version);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->updateVersion: ', $e->getMessage(), PHP_EOL;
@@ -1172,7 +1172,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **modId** | **string**| A mod UUID or slug |
  **versionId** | **string**| A version UUID or slug |
- **params** | [**\Kleister\Model\Version**](../Model/Version.md)| The version data to update |
+ **version** | [**\Kleister\Model\Version**](../Model/Version.md)| The version data to update |
 
 ### Return type
 

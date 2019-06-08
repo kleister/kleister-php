@@ -30,7 +30,7 @@ Method | HTTP request | Description
 
 ## appendBuildToVersion
 
-> \Kleister\Model\GeneralError appendBuildToVersion($packId, $buildId, $params)
+> \Kleister\Model\GeneralError appendBuildToVersion($packId, $buildId, $buildVersion)
 
 Assign a version to a build
 
@@ -48,10 +48,10 @@ $apiInstance = new Kleister\Api\PackApi(
 );
 $packId = 'packId_example'; // string | A pack UUID or slug
 $buildId = 'buildId_example'; // string | A build UUID or slug
-$params = new \Kleister\Model\BuildVersionParams(); // \Kleister\Model\BuildVersionParams | The version data to append to build
+$buildVersion = new \Kleister\Model\BuildVersionParams(); // \Kleister\Model\BuildVersionParams | The version data to append to build
 
 try {
-    $result = $apiInstance->appendBuildToVersion($packId, $buildId, $params);
+    $result = $apiInstance->appendBuildToVersion($packId, $buildId, $buildVersion);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->appendBuildToVersion: ', $e->getMessage(), PHP_EOL;
@@ -66,7 +66,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packId** | **string**| A pack UUID or slug |
  **buildId** | **string**| A build UUID or slug |
- **params** | [**\Kleister\Model\BuildVersionParams**](../Model/BuildVersionParams.md)| The version data to append to build |
+ **buildVersion** | [**\Kleister\Model\BuildVersionParams**](../Model/BuildVersionParams.md)| The version data to append to build |
 
 ### Return type
 
@@ -88,7 +88,7 @@ No authorization required
 
 ## appendPackToTeam
 
-> \Kleister\Model\GeneralError appendPackToTeam($packId, $params)
+> \Kleister\Model\GeneralError appendPackToTeam($packId, $packTeam)
 
 Assign a team to pack
 
@@ -105,10 +105,10 @@ $apiInstance = new Kleister\Api\PackApi(
     new GuzzleHttp\Client()
 );
 $packId = 'packId_example'; // string | A pack UUID or slug
-$params = new \Kleister\Model\PackTeamParams(); // \Kleister\Model\PackTeamParams | The pack team data to assign
+$packTeam = new \Kleister\Model\PackTeamParams(); // \Kleister\Model\PackTeamParams | The pack team data to assign
 
 try {
-    $result = $apiInstance->appendPackToTeam($packId, $params);
+    $result = $apiInstance->appendPackToTeam($packId, $packTeam);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->appendPackToTeam: ', $e->getMessage(), PHP_EOL;
@@ -122,7 +122,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packId** | **string**| A pack UUID or slug |
- **params** | [**\Kleister\Model\PackTeamParams**](../Model/PackTeamParams.md)| The pack team data to assign |
+ **packTeam** | [**\Kleister\Model\PackTeamParams**](../Model/PackTeamParams.md)| The pack team data to assign |
 
 ### Return type
 
@@ -144,7 +144,7 @@ No authorization required
 
 ## appendPackToUser
 
-> \Kleister\Model\GeneralError appendPackToUser($packId, $params)
+> \Kleister\Model\GeneralError appendPackToUser($packId, $packUser)
 
 Assign a user to pack
 
@@ -161,10 +161,10 @@ $apiInstance = new Kleister\Api\PackApi(
     new GuzzleHttp\Client()
 );
 $packId = 'packId_example'; // string | A pack UUID or slug
-$params = new \Kleister\Model\PackUserParams(); // \Kleister\Model\PackUserParams | The pack user data to assign
+$packUser = new \Kleister\Model\PackUserParams(); // \Kleister\Model\PackUserParams | The pack user data to assign
 
 try {
-    $result = $apiInstance->appendPackToUser($packId, $params);
+    $result = $apiInstance->appendPackToUser($packId, $packUser);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->appendPackToUser: ', $e->getMessage(), PHP_EOL;
@@ -178,7 +178,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packId** | **string**| A pack UUID or slug |
- **params** | [**\Kleister\Model\PackUserParams**](../Model/PackUserParams.md)| The pack user data to assign |
+ **packUser** | [**\Kleister\Model\PackUserParams**](../Model/PackUserParams.md)| The pack user data to assign |
 
 ### Return type
 
@@ -200,7 +200,7 @@ No authorization required
 
 ## createBuild
 
-> \Kleister\Model\Build createBuild($packId, $params)
+> \Kleister\Model\Build createBuild($packId, $build)
 
 Create a new build for a pack
 
@@ -217,10 +217,10 @@ $apiInstance = new Kleister\Api\PackApi(
     new GuzzleHttp\Client()
 );
 $packId = 'packId_example'; // string | A pack UUID or slug
-$params = new \Kleister\Model\Build(); // \Kleister\Model\Build | The build data to create
+$build = new \Kleister\Model\Build(); // \Kleister\Model\Build | The build data to create
 
 try {
-    $result = $apiInstance->createBuild($packId, $params);
+    $result = $apiInstance->createBuild($packId, $build);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->createBuild: ', $e->getMessage(), PHP_EOL;
@@ -234,7 +234,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packId** | **string**| A pack UUID or slug |
- **params** | [**\Kleister\Model\Build**](../Model/Build.md)| The build data to create |
+ **build** | [**\Kleister\Model\Build**](../Model/Build.md)| The build data to create |
 
 ### Return type
 
@@ -256,7 +256,7 @@ No authorization required
 
 ## createPack
 
-> \Kleister\Model\Pack createPack($params)
+> \Kleister\Model\Pack createPack($pack)
 
 Create a new pack
 
@@ -272,10 +272,10 @@ $apiInstance = new Kleister\Api\PackApi(
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
-$params = new \Kleister\Model\Pack(); // \Kleister\Model\Pack | The pack data to create
+$pack = new \Kleister\Model\Pack(); // \Kleister\Model\Pack | The pack data to create
 
 try {
-    $result = $apiInstance->createPack($params);
+    $result = $apiInstance->createPack($pack);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->createPack: ', $e->getMessage(), PHP_EOL;
@@ -288,7 +288,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **params** | [**\Kleister\Model\Pack**](../Model/Pack.md)| The pack data to create |
+ **pack** | [**\Kleister\Model\Pack**](../Model/Pack.md)| The pack data to create |
 
 ### Return type
 
@@ -366,7 +366,7 @@ No authorization required
 
 ## deleteBuildFromVersion
 
-> \Kleister\Model\GeneralError deleteBuildFromVersion($packId, $buildId, $params)
+> \Kleister\Model\GeneralError deleteBuildFromVersion($packId, $buildId, $buildVersion)
 
 Unlink a version from a build
 
@@ -384,10 +384,10 @@ $apiInstance = new Kleister\Api\PackApi(
 );
 $packId = 'packId_example'; // string | A pack UUID or slug
 $buildId = 'buildId_example'; // string | A build UUID or slug
-$params = new \Kleister\Model\BuildVersionParams(); // \Kleister\Model\BuildVersionParams | The version data to unlink from build
+$buildVersion = new \Kleister\Model\BuildVersionParams(); // \Kleister\Model\BuildVersionParams | The version data to unlink from build
 
 try {
-    $result = $apiInstance->deleteBuildFromVersion($packId, $buildId, $params);
+    $result = $apiInstance->deleteBuildFromVersion($packId, $buildId, $buildVersion);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->deleteBuildFromVersion: ', $e->getMessage(), PHP_EOL;
@@ -402,7 +402,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packId** | **string**| A pack UUID or slug |
  **buildId** | **string**| A build UUID or slug |
- **params** | [**\Kleister\Model\BuildVersionParams**](../Model/BuildVersionParams.md)| The version data to unlink from build |
+ **buildVersion** | [**\Kleister\Model\BuildVersionParams**](../Model/BuildVersionParams.md)| The version data to unlink from build |
 
 ### Return type
 
@@ -478,7 +478,7 @@ No authorization required
 
 ## deletePackFromTeam
 
-> \Kleister\Model\GeneralError deletePackFromTeam($packId, $params)
+> \Kleister\Model\GeneralError deletePackFromTeam($packId, $packTeam)
 
 Remove a team from pack
 
@@ -495,10 +495,10 @@ $apiInstance = new Kleister\Api\PackApi(
     new GuzzleHttp\Client()
 );
 $packId = 'packId_example'; // string | A pack UUID or slug
-$params = new \Kleister\Model\PackTeamParams(); // \Kleister\Model\PackTeamParams | The pack team data to delete
+$packTeam = new \Kleister\Model\PackTeamParams(); // \Kleister\Model\PackTeamParams | The pack team data to delete
 
 try {
-    $result = $apiInstance->deletePackFromTeam($packId, $params);
+    $result = $apiInstance->deletePackFromTeam($packId, $packTeam);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->deletePackFromTeam: ', $e->getMessage(), PHP_EOL;
@@ -512,7 +512,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packId** | **string**| A pack UUID or slug |
- **params** | [**\Kleister\Model\PackTeamParams**](../Model/PackTeamParams.md)| The pack team data to delete |
+ **packTeam** | [**\Kleister\Model\PackTeamParams**](../Model/PackTeamParams.md)| The pack team data to delete |
 
 ### Return type
 
@@ -534,7 +534,7 @@ No authorization required
 
 ## deletePackFromUser
 
-> \Kleister\Model\GeneralError deletePackFromUser($packId, $params)
+> \Kleister\Model\GeneralError deletePackFromUser($packId, $packUser)
 
 Remove a user from pack
 
@@ -551,10 +551,10 @@ $apiInstance = new Kleister\Api\PackApi(
     new GuzzleHttp\Client()
 );
 $packId = 'packId_example'; // string | A pack UUID or slug
-$params = new \Kleister\Model\PackUserParams(); // \Kleister\Model\PackUserParams | The pack user data to delete
+$packUser = new \Kleister\Model\PackUserParams(); // \Kleister\Model\PackUserParams | The pack user data to delete
 
 try {
-    $result = $apiInstance->deletePackFromUser($packId, $params);
+    $result = $apiInstance->deletePackFromUser($packId, $packUser);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->deletePackFromUser: ', $e->getMessage(), PHP_EOL;
@@ -568,7 +568,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packId** | **string**| A pack UUID or slug |
- **params** | [**\Kleister\Model\PackUserParams**](../Model/PackUserParams.md)| The pack user data to delete |
+ **packUser** | [**\Kleister\Model\PackUserParams**](../Model/PackUserParams.md)| The pack user data to delete |
 
 ### Return type
 
@@ -858,7 +858,7 @@ No authorization required
 
 ## permitPackTeam
 
-> \Kleister\Model\GeneralError permitPackTeam($packId, $params)
+> \Kleister\Model\GeneralError permitPackTeam($packId, $packTeam)
 
 Update team perms for pack
 
@@ -875,10 +875,10 @@ $apiInstance = new Kleister\Api\PackApi(
     new GuzzleHttp\Client()
 );
 $packId = 'packId_example'; // string | A pack UUID or slug
-$params = new \Kleister\Model\PackTeamParams(); // \Kleister\Model\PackTeamParams | The pack team data to update
+$packTeam = new \Kleister\Model\PackTeamParams(); // \Kleister\Model\PackTeamParams | The pack team data to update
 
 try {
-    $result = $apiInstance->permitPackTeam($packId, $params);
+    $result = $apiInstance->permitPackTeam($packId, $packTeam);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->permitPackTeam: ', $e->getMessage(), PHP_EOL;
@@ -892,7 +892,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packId** | **string**| A pack UUID or slug |
- **params** | [**\Kleister\Model\PackTeamParams**](../Model/PackTeamParams.md)| The pack team data to update |
+ **packTeam** | [**\Kleister\Model\PackTeamParams**](../Model/PackTeamParams.md)| The pack team data to update |
 
 ### Return type
 
@@ -914,7 +914,7 @@ No authorization required
 
 ## permitPackUser
 
-> \Kleister\Model\GeneralError permitPackUser($packId, $params)
+> \Kleister\Model\GeneralError permitPackUser($packId, $packUser)
 
 Update user perms for pack
 
@@ -931,10 +931,10 @@ $apiInstance = new Kleister\Api\PackApi(
     new GuzzleHttp\Client()
 );
 $packId = 'packId_example'; // string | A pack UUID or slug
-$params = new \Kleister\Model\PackUserParams(); // \Kleister\Model\PackUserParams | The pack user data to update
+$packUser = new \Kleister\Model\PackUserParams(); // \Kleister\Model\PackUserParams | The pack user data to update
 
 try {
-    $result = $apiInstance->permitPackUser($packId, $params);
+    $result = $apiInstance->permitPackUser($packId, $packUser);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->permitPackUser: ', $e->getMessage(), PHP_EOL;
@@ -948,7 +948,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packId** | **string**| A pack UUID or slug |
- **params** | [**\Kleister\Model\PackUserParams**](../Model/PackUserParams.md)| The pack user data to update |
+ **packUser** | [**\Kleister\Model\PackUserParams**](../Model/PackUserParams.md)| The pack user data to update |
 
 ### Return type
 
@@ -1080,7 +1080,7 @@ No authorization required
 
 ## updateBuild
 
-> \Kleister\Model\Build updateBuild($packId, $buildId, $params)
+> \Kleister\Model\Build updateBuild($packId, $buildId, $build)
 
 Update a specific build for a pack
 
@@ -1098,10 +1098,10 @@ $apiInstance = new Kleister\Api\PackApi(
 );
 $packId = 'packId_example'; // string | A pack UUID or slug
 $buildId = 'buildId_example'; // string | A build UUID or slug
-$params = new \Kleister\Model\Build(); // \Kleister\Model\Build | The build data to update
+$build = new \Kleister\Model\Build(); // \Kleister\Model\Build | The build data to update
 
 try {
-    $result = $apiInstance->updateBuild($packId, $buildId, $params);
+    $result = $apiInstance->updateBuild($packId, $buildId, $build);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->updateBuild: ', $e->getMessage(), PHP_EOL;
@@ -1116,7 +1116,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packId** | **string**| A pack UUID or slug |
  **buildId** | **string**| A build UUID or slug |
- **params** | [**\Kleister\Model\Build**](../Model/Build.md)| The build data to update |
+ **build** | [**\Kleister\Model\Build**](../Model/Build.md)| The build data to update |
 
 ### Return type
 
@@ -1138,7 +1138,7 @@ No authorization required
 
 ## updatePack
 
-> \Kleister\Model\Pack updatePack($packId, $params)
+> \Kleister\Model\Pack updatePack($packId, $pack)
 
 Update a specific pack
 
@@ -1155,10 +1155,10 @@ $apiInstance = new Kleister\Api\PackApi(
     new GuzzleHttp\Client()
 );
 $packId = 'packId_example'; // string | A pack UUID or slug
-$params = new \Kleister\Model\Pack(); // \Kleister\Model\Pack | The pack data to update
+$pack = new \Kleister\Model\Pack(); // \Kleister\Model\Pack | The pack data to update
 
 try {
-    $result = $apiInstance->updatePack($packId, $params);
+    $result = $apiInstance->updatePack($packId, $pack);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->updatePack: ', $e->getMessage(), PHP_EOL;
@@ -1172,7 +1172,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **packId** | **string**| A pack UUID or slug |
- **params** | [**\Kleister\Model\Pack**](../Model/Pack.md)| The pack data to update |
+ **pack** | [**\Kleister\Model\Pack**](../Model/Pack.md)| The pack data to update |
 
 ### Return type
 

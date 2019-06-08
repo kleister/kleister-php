@@ -123,15 +123,15 @@ class MinecraftApi
      * Assign a build to a Minecraft version
      *
      * @param  string $minecraftId A minecraft UUID or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $params The build data to append (required)
+     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuild The build data to append (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function appendMinecraftToBuild($minecraftId, $params)
+    public function appendMinecraftToBuild($minecraftId, $minecraftBuild)
     {
-        list($response) = $this->appendMinecraftToBuildWithHttpInfo($minecraftId, $params);
+        list($response) = $this->appendMinecraftToBuildWithHttpInfo($minecraftId, $minecraftBuild);
         return $response;
     }
 
@@ -141,15 +141,15 @@ class MinecraftApi
      * Assign a build to a Minecraft version
      *
      * @param  string $minecraftId A minecraft UUID or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $params The build data to append (required)
+     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuild The build data to append (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendMinecraftToBuildWithHttpInfo($minecraftId, $params)
+    public function appendMinecraftToBuildWithHttpInfo($minecraftId, $minecraftBuild)
     {
-        $request = $this->appendMinecraftToBuildRequest($minecraftId, $params);
+        $request = $this->appendMinecraftToBuildRequest($minecraftId, $minecraftBuild);
 
         try {
             $options = $this->createHttpClientOption();
@@ -310,14 +310,14 @@ class MinecraftApi
      * Assign a build to a Minecraft version
      *
      * @param  string $minecraftId A minecraft UUID or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $params The build data to append (required)
+     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuild The build data to append (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendMinecraftToBuildAsync($minecraftId, $params)
+    public function appendMinecraftToBuildAsync($minecraftId, $minecraftBuild)
     {
-        return $this->appendMinecraftToBuildAsyncWithHttpInfo($minecraftId, $params)
+        return $this->appendMinecraftToBuildAsyncWithHttpInfo($minecraftId, $minecraftBuild)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -331,15 +331,15 @@ class MinecraftApi
      * Assign a build to a Minecraft version
      *
      * @param  string $minecraftId A minecraft UUID or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $params The build data to append (required)
+     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuild The build data to append (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendMinecraftToBuildAsyncWithHttpInfo($minecraftId, $params)
+    public function appendMinecraftToBuildAsyncWithHttpInfo($minecraftId, $minecraftBuild)
     {
         $returnType = '\Kleister\Model\Build[]';
-        $request = $this->appendMinecraftToBuildRequest($minecraftId, $params);
+        $request = $this->appendMinecraftToBuildRequest($minecraftId, $minecraftBuild);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -379,12 +379,12 @@ class MinecraftApi
      * Create request for operation 'appendMinecraftToBuild'
      *
      * @param  string $minecraftId A minecraft UUID or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $params The build data to append (required)
+     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuild The build data to append (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendMinecraftToBuildRequest($minecraftId, $params)
+    protected function appendMinecraftToBuildRequest($minecraftId, $minecraftBuild)
     {
         // verify the required parameter 'minecraftId' is set
         if ($minecraftId === null || (is_array($minecraftId) && count($minecraftId) === 0)) {
@@ -392,10 +392,10 @@ class MinecraftApi
                 'Missing the required parameter $minecraftId when calling appendMinecraftToBuild'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'minecraftBuild' is set
+        if ($minecraftBuild === null || (is_array($minecraftBuild) && count($minecraftBuild) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendMinecraftToBuild'
+                'Missing the required parameter $minecraftBuild when calling appendMinecraftToBuild'
             );
         }
 
@@ -418,8 +418,8 @@ class MinecraftApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($minecraftBuild)) {
+            $_tempBody = $minecraftBuild;
         }
 
         if ($multipart) {
@@ -489,15 +489,15 @@ class MinecraftApi
      * Unlink a build from a Minecraft version
      *
      * @param  string $minecraftId A minecraft UUID or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $params The build data to unlink (required)
+     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuild The build data to unlink (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function deleteMinecraftFromBuild($minecraftId, $params)
+    public function deleteMinecraftFromBuild($minecraftId, $minecraftBuild)
     {
-        list($response) = $this->deleteMinecraftFromBuildWithHttpInfo($minecraftId, $params);
+        list($response) = $this->deleteMinecraftFromBuildWithHttpInfo($minecraftId, $minecraftBuild);
         return $response;
     }
 
@@ -507,15 +507,15 @@ class MinecraftApi
      * Unlink a build from a Minecraft version
      *
      * @param  string $minecraftId A minecraft UUID or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $params The build data to unlink (required)
+     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuild The build data to unlink (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteMinecraftFromBuildWithHttpInfo($minecraftId, $params)
+    public function deleteMinecraftFromBuildWithHttpInfo($minecraftId, $minecraftBuild)
     {
-        $request = $this->deleteMinecraftFromBuildRequest($minecraftId, $params);
+        $request = $this->deleteMinecraftFromBuildRequest($minecraftId, $minecraftBuild);
 
         try {
             $options = $this->createHttpClientOption();
@@ -676,14 +676,14 @@ class MinecraftApi
      * Unlink a build from a Minecraft version
      *
      * @param  string $minecraftId A minecraft UUID or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $params The build data to unlink (required)
+     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuild The build data to unlink (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteMinecraftFromBuildAsync($minecraftId, $params)
+    public function deleteMinecraftFromBuildAsync($minecraftId, $minecraftBuild)
     {
-        return $this->deleteMinecraftFromBuildAsyncWithHttpInfo($minecraftId, $params)
+        return $this->deleteMinecraftFromBuildAsyncWithHttpInfo($minecraftId, $minecraftBuild)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -697,15 +697,15 @@ class MinecraftApi
      * Unlink a build from a Minecraft version
      *
      * @param  string $minecraftId A minecraft UUID or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $params The build data to unlink (required)
+     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuild The build data to unlink (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteMinecraftFromBuildAsyncWithHttpInfo($minecraftId, $params)
+    public function deleteMinecraftFromBuildAsyncWithHttpInfo($minecraftId, $minecraftBuild)
     {
         $returnType = '\Kleister\Model\Build[]';
-        $request = $this->deleteMinecraftFromBuildRequest($minecraftId, $params);
+        $request = $this->deleteMinecraftFromBuildRequest($minecraftId, $minecraftBuild);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -745,12 +745,12 @@ class MinecraftApi
      * Create request for operation 'deleteMinecraftFromBuild'
      *
      * @param  string $minecraftId A minecraft UUID or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $params The build data to unlink (required)
+     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuild The build data to unlink (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteMinecraftFromBuildRequest($minecraftId, $params)
+    protected function deleteMinecraftFromBuildRequest($minecraftId, $minecraftBuild)
     {
         // verify the required parameter 'minecraftId' is set
         if ($minecraftId === null || (is_array($minecraftId) && count($minecraftId) === 0)) {
@@ -758,10 +758,10 @@ class MinecraftApi
                 'Missing the required parameter $minecraftId when calling deleteMinecraftFromBuild'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'minecraftBuild' is set
+        if ($minecraftBuild === null || (is_array($minecraftBuild) && count($minecraftBuild) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteMinecraftFromBuild'
+                'Missing the required parameter $minecraftBuild when calling deleteMinecraftFromBuild'
             );
         }
 
@@ -784,8 +784,8 @@ class MinecraftApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($minecraftBuild)) {
+            $_tempBody = $minecraftBuild;
         }
 
         if ($multipart) {

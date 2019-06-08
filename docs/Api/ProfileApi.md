@@ -112,7 +112,7 @@ No authorization required
 
 ## updateProfile
 
-> \Kleister\Model\Profile updateProfile($params)
+> \Kleister\Model\Profile updateProfile($profile)
 
 Retrieve an unlimited auth token
 
@@ -128,10 +128,10 @@ $apiInstance = new Kleister\Api\ProfileApi(
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
-$params = new \Kleister\Model\Profile(); // \Kleister\Model\Profile | The profile data to update
+$profile = new \Kleister\Model\Profile(); // \Kleister\Model\Profile | The profile data to update
 
 try {
-    $result = $apiInstance->updateProfile($params);
+    $result = $apiInstance->updateProfile($profile);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ProfileApi->updateProfile: ', $e->getMessage(), PHP_EOL;
@@ -144,7 +144,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **params** | [**\Kleister\Model\Profile**](../Model/Profile.md)| The profile data to update |
+ **profile** | [**\Kleister\Model\Profile**](../Model/Profile.md)| The profile data to update |
 
 ### Return type
 

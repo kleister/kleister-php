@@ -59,7 +59,6 @@ class MinecraftBuildParams implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $openAPITypes = [
-        'minecraft' => 'string',
         'pack' => 'string',
         'build' => 'string'
     ];
@@ -70,7 +69,6 @@ class MinecraftBuildParams implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $openAPIFormats = [
-        'minecraft' => null,
         'pack' => null,
         'build' => null
     ];
@@ -102,7 +100,6 @@ class MinecraftBuildParams implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'minecraft' => 'minecraft',
         'pack' => 'pack',
         'build' => 'build'
     ];
@@ -113,7 +110,6 @@ class MinecraftBuildParams implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'minecraft' => 'setMinecraft',
         'pack' => 'setPack',
         'build' => 'setBuild'
     ];
@@ -124,7 +120,6 @@ class MinecraftBuildParams implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'minecraft' => 'getMinecraft',
         'pack' => 'getPack',
         'build' => 'getBuild'
     ];
@@ -189,7 +184,6 @@ class MinecraftBuildParams implements ModelInterface, ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        $this->container['minecraft'] = isset($data['minecraft']) ? $data['minecraft'] : null;
         $this->container['pack'] = isset($data['pack']) ? $data['pack'] : null;
         $this->container['build'] = isset($data['build']) ? $data['build'] : null;
     }
@@ -203,9 +197,6 @@ class MinecraftBuildParams implements ModelInterface, ArrayAccess
     {
         $invalidProperties = [];
 
-        if ($this->container['minecraft'] === null) {
-            $invalidProperties[] = "'minecraft' can't be null";
-        }
         if ($this->container['pack'] === null) {
             $invalidProperties[] = "'pack' can't be null";
         }
@@ -226,30 +217,6 @@ class MinecraftBuildParams implements ModelInterface, ArrayAccess
         return count($this->listInvalidProperties()) === 0;
     }
 
-
-    /**
-     * Gets minecraft
-     *
-     * @return string
-     */
-    public function getMinecraft()
-    {
-        return $this->container['minecraft'];
-    }
-
-    /**
-     * Sets minecraft
-     *
-     * @param string $minecraft minecraft
-     *
-     * @return $this
-     */
-    public function setMinecraft($minecraft)
-    {
-        $this->container['minecraft'] = $minecraft;
-
-        return $this;
-    }
 
     /**
      * Gets pack

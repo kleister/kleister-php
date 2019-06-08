@@ -26,7 +26,7 @@ Method | HTTP request | Description
 
 ## appendTeamToMod
 
-> \Kleister\Model\GeneralError appendTeamToMod($teamId, $params)
+> \Kleister\Model\GeneralError appendTeamToMod($teamId, $teamMod)
 
 Assign a mod to team
 
@@ -43,10 +43,10 @@ $apiInstance = new Kleister\Api\TeamApi(
     new GuzzleHttp\Client()
 );
 $teamId = 'teamId_example'; // string | A team UUID or slug
-$params = new \Kleister\Model\TeamModParams(); // \Kleister\Model\TeamModParams | The team mod data to assign
+$teamMod = new \Kleister\Model\TeamModParams(); // \Kleister\Model\TeamModParams | The team mod data to assign
 
 try {
-    $result = $apiInstance->appendTeamToMod($teamId, $params);
+    $result = $apiInstance->appendTeamToMod($teamId, $teamMod);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->appendTeamToMod: ', $e->getMessage(), PHP_EOL;
@@ -60,7 +60,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **teamId** | **string**| A team UUID or slug |
- **params** | [**\Kleister\Model\TeamModParams**](../Model/TeamModParams.md)| The team mod data to assign |
+ **teamMod** | [**\Kleister\Model\TeamModParams**](../Model/TeamModParams.md)| The team mod data to assign |
 
 ### Return type
 
@@ -82,7 +82,7 @@ No authorization required
 
 ## appendTeamToPack
 
-> \Kleister\Model\GeneralError appendTeamToPack($teamId, $params)
+> \Kleister\Model\GeneralError appendTeamToPack($teamId, $teamPack)
 
 Assign a pack to team
 
@@ -99,10 +99,10 @@ $apiInstance = new Kleister\Api\TeamApi(
     new GuzzleHttp\Client()
 );
 $teamId = 'teamId_example'; // string | A team UUID or slug
-$params = new \Kleister\Model\TeamPackParams(); // \Kleister\Model\TeamPackParams | The team pack data to assign
+$teamPack = new \Kleister\Model\TeamPackParams(); // \Kleister\Model\TeamPackParams | The team pack data to assign
 
 try {
-    $result = $apiInstance->appendTeamToPack($teamId, $params);
+    $result = $apiInstance->appendTeamToPack($teamId, $teamPack);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->appendTeamToPack: ', $e->getMessage(), PHP_EOL;
@@ -116,7 +116,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **teamId** | **string**| A team UUID or slug |
- **params** | [**\Kleister\Model\TeamPackParams**](../Model/TeamPackParams.md)| The team pack data to assign |
+ **teamPack** | [**\Kleister\Model\TeamPackParams**](../Model/TeamPackParams.md)| The team pack data to assign |
 
 ### Return type
 
@@ -138,7 +138,7 @@ No authorization required
 
 ## appendTeamToUser
 
-> \Kleister\Model\GeneralError appendTeamToUser($teamId, $params)
+> \Kleister\Model\GeneralError appendTeamToUser($teamId, $teamUser)
 
 Assign a user to team
 
@@ -155,10 +155,10 @@ $apiInstance = new Kleister\Api\TeamApi(
     new GuzzleHttp\Client()
 );
 $teamId = 'teamId_example'; // string | A team UUID or slug
-$params = new \Kleister\Model\TeamUserParams(); // \Kleister\Model\TeamUserParams | The team user data to assign
+$teamUser = new \Kleister\Model\TeamUserParams(); // \Kleister\Model\TeamUserParams | The team user data to assign
 
 try {
-    $result = $apiInstance->appendTeamToUser($teamId, $params);
+    $result = $apiInstance->appendTeamToUser($teamId, $teamUser);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->appendTeamToUser: ', $e->getMessage(), PHP_EOL;
@@ -172,7 +172,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **teamId** | **string**| A team UUID or slug |
- **params** | [**\Kleister\Model\TeamUserParams**](../Model/TeamUserParams.md)| The team user data to assign |
+ **teamUser** | [**\Kleister\Model\TeamUserParams**](../Model/TeamUserParams.md)| The team user data to assign |
 
 ### Return type
 
@@ -194,7 +194,7 @@ No authorization required
 
 ## createTeam
 
-> \Kleister\Model\Team createTeam($params)
+> \Kleister\Model\Team createTeam($team)
 
 Create a new team
 
@@ -210,10 +210,10 @@ $apiInstance = new Kleister\Api\TeamApi(
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
-$params = new \Kleister\Model\Team(); // \Kleister\Model\Team | The team data to create
+$team = new \Kleister\Model\Team(); // \Kleister\Model\Team | The team data to create
 
 try {
-    $result = $apiInstance->createTeam($params);
+    $result = $apiInstance->createTeam($team);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->createTeam: ', $e->getMessage(), PHP_EOL;
@@ -226,7 +226,7 @@ try {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **params** | [**\Kleister\Model\Team**](../Model/Team.md)| The team data to create |
+ **team** | [**\Kleister\Model\Team**](../Model/Team.md)| The team data to create |
 
 ### Return type
 
@@ -302,7 +302,7 @@ No authorization required
 
 ## deleteTeamFromMod
 
-> \Kleister\Model\GeneralError deleteTeamFromMod($teamId, $params)
+> \Kleister\Model\GeneralError deleteTeamFromMod($teamId, $teamMod)
 
 Remove a mod from team
 
@@ -319,10 +319,10 @@ $apiInstance = new Kleister\Api\TeamApi(
     new GuzzleHttp\Client()
 );
 $teamId = 'teamId_example'; // string | A team UUID or slug
-$params = new \Kleister\Model\TeamModParams(); // \Kleister\Model\TeamModParams | The team mod data to delete
+$teamMod = new \Kleister\Model\TeamModParams(); // \Kleister\Model\TeamModParams | The team mod data to delete
 
 try {
-    $result = $apiInstance->deleteTeamFromMod($teamId, $params);
+    $result = $apiInstance->deleteTeamFromMod($teamId, $teamMod);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->deleteTeamFromMod: ', $e->getMessage(), PHP_EOL;
@@ -336,7 +336,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **teamId** | **string**| A team UUID or slug |
- **params** | [**\Kleister\Model\TeamModParams**](../Model/TeamModParams.md)| The team mod data to delete |
+ **teamMod** | [**\Kleister\Model\TeamModParams**](../Model/TeamModParams.md)| The team mod data to delete |
 
 ### Return type
 
@@ -358,7 +358,7 @@ No authorization required
 
 ## deleteTeamFromPack
 
-> \Kleister\Model\GeneralError deleteTeamFromPack($teamId, $params)
+> \Kleister\Model\GeneralError deleteTeamFromPack($teamId, $teamPack)
 
 Remove a pack from team
 
@@ -375,10 +375,10 @@ $apiInstance = new Kleister\Api\TeamApi(
     new GuzzleHttp\Client()
 );
 $teamId = 'teamId_example'; // string | A team UUID or slug
-$params = new \Kleister\Model\TeamPackParams(); // \Kleister\Model\TeamPackParams | The team pack data to delete
+$teamPack = new \Kleister\Model\TeamPackParams(); // \Kleister\Model\TeamPackParams | The team pack data to delete
 
 try {
-    $result = $apiInstance->deleteTeamFromPack($teamId, $params);
+    $result = $apiInstance->deleteTeamFromPack($teamId, $teamPack);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->deleteTeamFromPack: ', $e->getMessage(), PHP_EOL;
@@ -392,7 +392,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **teamId** | **string**| A team UUID or slug |
- **params** | [**\Kleister\Model\TeamPackParams**](../Model/TeamPackParams.md)| The team pack data to delete |
+ **teamPack** | [**\Kleister\Model\TeamPackParams**](../Model/TeamPackParams.md)| The team pack data to delete |
 
 ### Return type
 
@@ -414,7 +414,7 @@ No authorization required
 
 ## deleteTeamFromUser
 
-> \Kleister\Model\GeneralError deleteTeamFromUser($teamId, $params)
+> \Kleister\Model\GeneralError deleteTeamFromUser($teamId, $teamUser)
 
 Remove a user from team
 
@@ -431,10 +431,10 @@ $apiInstance = new Kleister\Api\TeamApi(
     new GuzzleHttp\Client()
 );
 $teamId = 'teamId_example'; // string | A team UUID or slug
-$params = new \Kleister\Model\TeamUserParams(); // \Kleister\Model\TeamUserParams | The team user data to delete
+$teamUser = new \Kleister\Model\TeamUserParams(); // \Kleister\Model\TeamUserParams | The team user data to delete
 
 try {
-    $result = $apiInstance->deleteTeamFromUser($teamId, $params);
+    $result = $apiInstance->deleteTeamFromUser($teamId, $teamUser);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->deleteTeamFromUser: ', $e->getMessage(), PHP_EOL;
@@ -448,7 +448,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **teamId** | **string**| A team UUID or slug |
- **params** | [**\Kleister\Model\TeamUserParams**](../Model/TeamUserParams.md)| The team user data to delete |
+ **teamUser** | [**\Kleister\Model\TeamUserParams**](../Model/TeamUserParams.md)| The team user data to delete |
 
 ### Return type
 
@@ -682,7 +682,7 @@ No authorization required
 
 ## permitTeamMod
 
-> \Kleister\Model\GeneralError permitTeamMod($teamId, $params)
+> \Kleister\Model\GeneralError permitTeamMod($teamId, $teamMod)
 
 Update mod perms for team
 
@@ -699,10 +699,10 @@ $apiInstance = new Kleister\Api\TeamApi(
     new GuzzleHttp\Client()
 );
 $teamId = 'teamId_example'; // string | A team UUID or slug
-$params = new \Kleister\Model\TeamModParams(); // \Kleister\Model\TeamModParams | The team mod data to update
+$teamMod = new \Kleister\Model\TeamModParams(); // \Kleister\Model\TeamModParams | The team mod data to update
 
 try {
-    $result = $apiInstance->permitTeamMod($teamId, $params);
+    $result = $apiInstance->permitTeamMod($teamId, $teamMod);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->permitTeamMod: ', $e->getMessage(), PHP_EOL;
@@ -716,7 +716,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **teamId** | **string**| A team UUID or slug |
- **params** | [**\Kleister\Model\TeamModParams**](../Model/TeamModParams.md)| The team mod data to update |
+ **teamMod** | [**\Kleister\Model\TeamModParams**](../Model/TeamModParams.md)| The team mod data to update |
 
 ### Return type
 
@@ -738,7 +738,7 @@ No authorization required
 
 ## permitTeamPack
 
-> \Kleister\Model\GeneralError permitTeamPack($teamId, $params)
+> \Kleister\Model\GeneralError permitTeamPack($teamId, $teamPack)
 
 Update pack perms for team
 
@@ -755,10 +755,10 @@ $apiInstance = new Kleister\Api\TeamApi(
     new GuzzleHttp\Client()
 );
 $teamId = 'teamId_example'; // string | A team UUID or slug
-$params = new \Kleister\Model\TeamPackParams(); // \Kleister\Model\TeamPackParams | The team pack data to update
+$teamPack = new \Kleister\Model\TeamPackParams(); // \Kleister\Model\TeamPackParams | The team pack data to update
 
 try {
-    $result = $apiInstance->permitTeamPack($teamId, $params);
+    $result = $apiInstance->permitTeamPack($teamId, $teamPack);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->permitTeamPack: ', $e->getMessage(), PHP_EOL;
@@ -772,7 +772,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **teamId** | **string**| A team UUID or slug |
- **params** | [**\Kleister\Model\TeamPackParams**](../Model/TeamPackParams.md)| The team pack data to update |
+ **teamPack** | [**\Kleister\Model\TeamPackParams**](../Model/TeamPackParams.md)| The team pack data to update |
 
 ### Return type
 
@@ -794,7 +794,7 @@ No authorization required
 
 ## permitTeamUser
 
-> \Kleister\Model\GeneralError permitTeamUser($teamId, $params)
+> \Kleister\Model\GeneralError permitTeamUser($teamId, $teamUser)
 
 Update user perms for team
 
@@ -811,10 +811,10 @@ $apiInstance = new Kleister\Api\TeamApi(
     new GuzzleHttp\Client()
 );
 $teamId = 'teamId_example'; // string | A team UUID or slug
-$params = new \Kleister\Model\TeamUserParams(); // \Kleister\Model\TeamUserParams | The team user data to update
+$teamUser = new \Kleister\Model\TeamUserParams(); // \Kleister\Model\TeamUserParams | The team user data to update
 
 try {
-    $result = $apiInstance->permitTeamUser($teamId, $params);
+    $result = $apiInstance->permitTeamUser($teamId, $teamUser);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->permitTeamUser: ', $e->getMessage(), PHP_EOL;
@@ -828,7 +828,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **teamId** | **string**| A team UUID or slug |
- **params** | [**\Kleister\Model\TeamUserParams**](../Model/TeamUserParams.md)| The team user data to update |
+ **teamUser** | [**\Kleister\Model\TeamUserParams**](../Model/TeamUserParams.md)| The team user data to update |
 
 ### Return type
 
@@ -904,7 +904,7 @@ No authorization required
 
 ## updateTeam
 
-> \Kleister\Model\Team updateTeam($teamId, $params)
+> \Kleister\Model\Team updateTeam($teamId, $team)
 
 Update a specific team
 
@@ -921,10 +921,10 @@ $apiInstance = new Kleister\Api\TeamApi(
     new GuzzleHttp\Client()
 );
 $teamId = 'teamId_example'; // string | A team UUID or slug
-$params = new \Kleister\Model\Team(); // \Kleister\Model\Team | The team data to update
+$team = new \Kleister\Model\Team(); // \Kleister\Model\Team | The team data to update
 
 try {
-    $result = $apiInstance->updateTeam($teamId, $params);
+    $result = $apiInstance->updateTeam($teamId, $team);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->updateTeam: ', $e->getMessage(), PHP_EOL;
@@ -938,7 +938,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **teamId** | **string**| A team UUID or slug |
- **params** | [**\Kleister\Model\Team**](../Model/Team.md)| The team data to update |
+ **team** | [**\Kleister\Model\Team**](../Model/Team.md)| The team data to update |
 
 ### Return type
 

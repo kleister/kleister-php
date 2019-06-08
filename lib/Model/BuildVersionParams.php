@@ -59,8 +59,6 @@ class BuildVersionParams implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $openAPITypes = [
-        'pack' => 'string',
-        'build' => 'string',
         'mod' => 'string',
         'version' => 'string'
     ];
@@ -71,8 +69,6 @@ class BuildVersionParams implements ModelInterface, ArrayAccess
       * @var string[]
       */
     protected static $openAPIFormats = [
-        'pack' => null,
-        'build' => null,
         'mod' => null,
         'version' => null
     ];
@@ -104,8 +100,6 @@ class BuildVersionParams implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $attributeMap = [
-        'pack' => 'pack',
-        'build' => 'build',
         'mod' => 'mod',
         'version' => 'version'
     ];
@@ -116,8 +110,6 @@ class BuildVersionParams implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $setters = [
-        'pack' => 'setPack',
-        'build' => 'setBuild',
         'mod' => 'setMod',
         'version' => 'setVersion'
     ];
@@ -128,8 +120,6 @@ class BuildVersionParams implements ModelInterface, ArrayAccess
      * @var string[]
      */
     protected static $getters = [
-        'pack' => 'getPack',
-        'build' => 'getBuild',
         'mod' => 'getMod',
         'version' => 'getVersion'
     ];
@@ -194,8 +184,6 @@ class BuildVersionParams implements ModelInterface, ArrayAccess
      */
     public function __construct(array $data = null)
     {
-        $this->container['pack'] = isset($data['pack']) ? $data['pack'] : null;
-        $this->container['build'] = isset($data['build']) ? $data['build'] : null;
         $this->container['mod'] = isset($data['mod']) ? $data['mod'] : null;
         $this->container['version'] = isset($data['version']) ? $data['version'] : null;
     }
@@ -209,12 +197,6 @@ class BuildVersionParams implements ModelInterface, ArrayAccess
     {
         $invalidProperties = [];
 
-        if ($this->container['pack'] === null) {
-            $invalidProperties[] = "'pack' can't be null";
-        }
-        if ($this->container['build'] === null) {
-            $invalidProperties[] = "'build' can't be null";
-        }
         if ($this->container['mod'] === null) {
             $invalidProperties[] = "'mod' can't be null";
         }
@@ -235,54 +217,6 @@ class BuildVersionParams implements ModelInterface, ArrayAccess
         return count($this->listInvalidProperties()) === 0;
     }
 
-
-    /**
-     * Gets pack
-     *
-     * @return string
-     */
-    public function getPack()
-    {
-        return $this->container['pack'];
-    }
-
-    /**
-     * Sets pack
-     *
-     * @param string $pack pack
-     *
-     * @return $this
-     */
-    public function setPack($pack)
-    {
-        $this->container['pack'] = $pack;
-
-        return $this;
-    }
-
-    /**
-     * Gets build
-     *
-     * @return string
-     */
-    public function getBuild()
-    {
-        return $this->container['build'];
-    }
-
-    /**
-     * Sets build
-     *
-     * @param string $build build
-     *
-     * @return $this
-     */
-    public function setBuild($build)
-    {
-        $this->container['build'] = $build;
-
-        return $this;
-    }
 
     /**
      * Gets mod

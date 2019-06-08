@@ -81,20 +81,6 @@ class BuildVersionParamsTest extends TestCase
     }
 
     /**
-     * Test attribute "pack"
-     */
-    public function testPropertyPack()
-    {
-    }
-
-    /**
-     * Test attribute "build"
-     */
-    public function testPropertyBuild()
-    {
-    }
-
-    /**
      * Test attribute "mod"
      */
     public function testPropertyMod()

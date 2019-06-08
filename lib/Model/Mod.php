@@ -205,8 +205,25 @@ class Mod implements ModelInterface, ArrayAccess
         return self::$openAPIModelName;
     }
 
+    const SIDE_BOTH = 'both';
+    const SIDE_SERVER = 'server';
+    const SIDE_CLIENT = 'client';
     
 
+    
+    /**
+     * Gets allowable values of the enum
+     *
+     * @return string[]
+     */
+    public function getSideAllowableValues()
+    {
+        return [
+            self::SIDE_BOTH,
+            self::SIDE_SERVER,
+            self::SIDE_CLIENT,
+        ];
+    }
     
 
     /**
@@ -248,6 +265,14 @@ class Mod implements ModelInterface, ArrayAccess
         if ($this->container['name'] === null) {
             $invalidProperties[] = "'name' can't be null";
         }
+        $allowedValues = $this->getSideAllowableValues();
+        if (!is_null($this->container['side']) && !in_array($this->container['side'], $allowedValues, true)) {
+            $invalidProperties[] = sprintf(
+                "invalid value for 'side', must be one of '%s'",
+                implode("', '", $allowedValues)
+            );
+        }
+
         return $invalidProperties;
     }
 
@@ -354,6 +379,15 @@ class Mod implements ModelInterface, ArrayAccess
      */
     public function setSide($side)
     {
+        $allowedValues = $this->getSideAllowableValues();
+        if (!is_null($side) && !in_array($side, $allowedValues, true)) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    "Invalid value for 'side', must be one of '%s'",
+                    implode("', '", $allowedValues)
+                )
+            );
+        }
         $this->container['side'] = $side;
 
         return $this;

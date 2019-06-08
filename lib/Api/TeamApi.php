@@ -123,15 +123,15 @@ class TeamApi
      * Assign a mod to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to assign (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function appendTeamToMod($teamId, $params)
+    public function appendTeamToMod($teamId, $teamMod)
     {
-        list($response) = $this->appendTeamToModWithHttpInfo($teamId, $params);
+        list($response) = $this->appendTeamToModWithHttpInfo($teamId, $teamMod);
         return $response;
     }
 
@@ -141,15 +141,15 @@ class TeamApi
      * Assign a mod to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to assign (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendTeamToModWithHttpInfo($teamId, $params)
+    public function appendTeamToModWithHttpInfo($teamId, $teamMod)
     {
-        $request = $this->appendTeamToModRequest($teamId, $params);
+        $request = $this->appendTeamToModRequest($teamId, $teamMod);
 
         try {
             $options = $this->createHttpClientOption();
@@ -310,14 +310,14 @@ class TeamApi
      * Assign a mod to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to assign (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendTeamToModAsync($teamId, $params)
+    public function appendTeamToModAsync($teamId, $teamMod)
     {
-        return $this->appendTeamToModAsyncWithHttpInfo($teamId, $params)
+        return $this->appendTeamToModAsyncWithHttpInfo($teamId, $teamMod)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -331,15 +331,15 @@ class TeamApi
      * Assign a mod to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to assign (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendTeamToModAsyncWithHttpInfo($teamId, $params)
+    public function appendTeamToModAsyncWithHttpInfo($teamId, $teamMod)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendTeamToModRequest($teamId, $params);
+        $request = $this->appendTeamToModRequest($teamId, $teamMod);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -379,12 +379,12 @@ class TeamApi
      * Create request for operation 'appendTeamToMod'
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to assign (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendTeamToModRequest($teamId, $params)
+    protected function appendTeamToModRequest($teamId, $teamMod)
     {
         // verify the required parameter 'teamId' is set
         if ($teamId === null || (is_array($teamId) && count($teamId) === 0)) {
@@ -392,10 +392,10 @@ class TeamApi
                 'Missing the required parameter $teamId when calling appendTeamToMod'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'teamMod' is set
+        if ($teamMod === null || (is_array($teamMod) && count($teamMod) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendTeamToMod'
+                'Missing the required parameter $teamMod when calling appendTeamToMod'
             );
         }
 
@@ -418,8 +418,8 @@ class TeamApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($teamMod)) {
+            $_tempBody = $teamMod;
         }
 
         if ($multipart) {
@@ -489,15 +489,15 @@ class TeamApi
      * Assign a pack to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to assign (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function appendTeamToPack($teamId, $params)
+    public function appendTeamToPack($teamId, $teamPack)
     {
-        list($response) = $this->appendTeamToPackWithHttpInfo($teamId, $params);
+        list($response) = $this->appendTeamToPackWithHttpInfo($teamId, $teamPack);
         return $response;
     }
 
@@ -507,15 +507,15 @@ class TeamApi
      * Assign a pack to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to assign (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendTeamToPackWithHttpInfo($teamId, $params)
+    public function appendTeamToPackWithHttpInfo($teamId, $teamPack)
     {
-        $request = $this->appendTeamToPackRequest($teamId, $params);
+        $request = $this->appendTeamToPackRequest($teamId, $teamPack);
 
         try {
             $options = $this->createHttpClientOption();
@@ -676,14 +676,14 @@ class TeamApi
      * Assign a pack to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to assign (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendTeamToPackAsync($teamId, $params)
+    public function appendTeamToPackAsync($teamId, $teamPack)
     {
-        return $this->appendTeamToPackAsyncWithHttpInfo($teamId, $params)
+        return $this->appendTeamToPackAsyncWithHttpInfo($teamId, $teamPack)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -697,15 +697,15 @@ class TeamApi
      * Assign a pack to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to assign (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendTeamToPackAsyncWithHttpInfo($teamId, $params)
+    public function appendTeamToPackAsyncWithHttpInfo($teamId, $teamPack)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendTeamToPackRequest($teamId, $params);
+        $request = $this->appendTeamToPackRequest($teamId, $teamPack);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -745,12 +745,12 @@ class TeamApi
      * Create request for operation 'appendTeamToPack'
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to assign (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendTeamToPackRequest($teamId, $params)
+    protected function appendTeamToPackRequest($teamId, $teamPack)
     {
         // verify the required parameter 'teamId' is set
         if ($teamId === null || (is_array($teamId) && count($teamId) === 0)) {
@@ -758,10 +758,10 @@ class TeamApi
                 'Missing the required parameter $teamId when calling appendTeamToPack'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'teamPack' is set
+        if ($teamPack === null || (is_array($teamPack) && count($teamPack) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendTeamToPack'
+                'Missing the required parameter $teamPack when calling appendTeamToPack'
             );
         }
 
@@ -784,8 +784,8 @@ class TeamApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($teamPack)) {
+            $_tempBody = $teamPack;
         }
 
         if ($multipart) {
@@ -855,15 +855,15 @@ class TeamApi
      * Assign a user to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to assign (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function appendTeamToUser($teamId, $params)
+    public function appendTeamToUser($teamId, $teamUser)
     {
-        list($response) = $this->appendTeamToUserWithHttpInfo($teamId, $params);
+        list($response) = $this->appendTeamToUserWithHttpInfo($teamId, $teamUser);
         return $response;
     }
 
@@ -873,15 +873,15 @@ class TeamApi
      * Assign a user to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to assign (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendTeamToUserWithHttpInfo($teamId, $params)
+    public function appendTeamToUserWithHttpInfo($teamId, $teamUser)
     {
-        $request = $this->appendTeamToUserRequest($teamId, $params);
+        $request = $this->appendTeamToUserRequest($teamId, $teamUser);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1042,14 +1042,14 @@ class TeamApi
      * Assign a user to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to assign (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendTeamToUserAsync($teamId, $params)
+    public function appendTeamToUserAsync($teamId, $teamUser)
     {
-        return $this->appendTeamToUserAsyncWithHttpInfo($teamId, $params)
+        return $this->appendTeamToUserAsyncWithHttpInfo($teamId, $teamUser)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1063,15 +1063,15 @@ class TeamApi
      * Assign a user to team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to assign (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendTeamToUserAsyncWithHttpInfo($teamId, $params)
+    public function appendTeamToUserAsyncWithHttpInfo($teamId, $teamUser)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendTeamToUserRequest($teamId, $params);
+        $request = $this->appendTeamToUserRequest($teamId, $teamUser);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1111,12 +1111,12 @@ class TeamApi
      * Create request for operation 'appendTeamToUser'
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to assign (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendTeamToUserRequest($teamId, $params)
+    protected function appendTeamToUserRequest($teamId, $teamUser)
     {
         // verify the required parameter 'teamId' is set
         if ($teamId === null || (is_array($teamId) && count($teamId) === 0)) {
@@ -1124,10 +1124,10 @@ class TeamApi
                 'Missing the required parameter $teamId when calling appendTeamToUser'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'teamUser' is set
+        if ($teamUser === null || (is_array($teamUser) && count($teamUser) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendTeamToUser'
+                'Missing the required parameter $teamUser when calling appendTeamToUser'
             );
         }
 
@@ -1150,8 +1150,8 @@ class TeamApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($teamUser)) {
+            $_tempBody = $teamUser;
         }
 
         if ($multipart) {
@@ -1220,15 +1220,15 @@ class TeamApi
      *
      * Create a new team
      *
-     * @param  \Kleister\Model\Team $params The team data to create (required)
+     * @param  \Kleister\Model\Team $team The team data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Team|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function createTeam($params)
+    public function createTeam($team)
     {
-        list($response) = $this->createTeamWithHttpInfo($params);
+        list($response) = $this->createTeamWithHttpInfo($team);
         return $response;
     }
 
@@ -1237,15 +1237,15 @@ class TeamApi
      *
      * Create a new team
      *
-     * @param  \Kleister\Model\Team $params The team data to create (required)
+     * @param  \Kleister\Model\Team $team The team data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Team|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createTeamWithHttpInfo($params)
+    public function createTeamWithHttpInfo($team)
     {
-        $request = $this->createTeamRequest($params);
+        $request = $this->createTeamRequest($team);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1405,14 +1405,14 @@ class TeamApi
      *
      * Create a new team
      *
-     * @param  \Kleister\Model\Team $params The team data to create (required)
+     * @param  \Kleister\Model\Team $team The team data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createTeamAsync($params)
+    public function createTeamAsync($team)
     {
-        return $this->createTeamAsyncWithHttpInfo($params)
+        return $this->createTeamAsyncWithHttpInfo($team)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1425,15 +1425,15 @@ class TeamApi
      *
      * Create a new team
      *
-     * @param  \Kleister\Model\Team $params The team data to create (required)
+     * @param  \Kleister\Model\Team $team The team data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createTeamAsyncWithHttpInfo($params)
+    public function createTeamAsyncWithHttpInfo($team)
     {
         $returnType = '\Kleister\Model\Team';
-        $request = $this->createTeamRequest($params);
+        $request = $this->createTeamRequest($team);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1472,17 +1472,17 @@ class TeamApi
     /**
      * Create request for operation 'createTeam'
      *
-     * @param  \Kleister\Model\Team $params The team data to create (required)
+     * @param  \Kleister\Model\Team $team The team data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function createTeamRequest($params)
+    protected function createTeamRequest($team)
     {
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'team' is set
+        if ($team === null || (is_array($team) && count($team) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling createTeam'
+                'Missing the required parameter $team when calling createTeam'
             );
         }
 
@@ -1497,8 +1497,8 @@ class TeamApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($team)) {
+            $_tempBody = $team;
         }
 
         if ($multipart) {
@@ -1900,15 +1900,15 @@ class TeamApi
      * Remove a mod from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to delete (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deleteTeamFromMod($teamId, $params)
+    public function deleteTeamFromMod($teamId, $teamMod)
     {
-        list($response) = $this->deleteTeamFromModWithHttpInfo($teamId, $params);
+        list($response) = $this->deleteTeamFromModWithHttpInfo($teamId, $teamMod);
         return $response;
     }
 
@@ -1918,15 +1918,15 @@ class TeamApi
      * Remove a mod from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to delete (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteTeamFromModWithHttpInfo($teamId, $params)
+    public function deleteTeamFromModWithHttpInfo($teamId, $teamMod)
     {
-        $request = $this->deleteTeamFromModRequest($teamId, $params);
+        $request = $this->deleteTeamFromModRequest($teamId, $teamMod);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2087,14 +2087,14 @@ class TeamApi
      * Remove a mod from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to delete (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteTeamFromModAsync($teamId, $params)
+    public function deleteTeamFromModAsync($teamId, $teamMod)
     {
-        return $this->deleteTeamFromModAsyncWithHttpInfo($teamId, $params)
+        return $this->deleteTeamFromModAsyncWithHttpInfo($teamId, $teamMod)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2108,15 +2108,15 @@ class TeamApi
      * Remove a mod from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to delete (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteTeamFromModAsyncWithHttpInfo($teamId, $params)
+    public function deleteTeamFromModAsyncWithHttpInfo($teamId, $teamMod)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deleteTeamFromModRequest($teamId, $params);
+        $request = $this->deleteTeamFromModRequest($teamId, $teamMod);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2156,12 +2156,12 @@ class TeamApi
      * Create request for operation 'deleteTeamFromMod'
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to delete (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteTeamFromModRequest($teamId, $params)
+    protected function deleteTeamFromModRequest($teamId, $teamMod)
     {
         // verify the required parameter 'teamId' is set
         if ($teamId === null || (is_array($teamId) && count($teamId) === 0)) {
@@ -2169,10 +2169,10 @@ class TeamApi
                 'Missing the required parameter $teamId when calling deleteTeamFromMod'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'teamMod' is set
+        if ($teamMod === null || (is_array($teamMod) && count($teamMod) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteTeamFromMod'
+                'Missing the required parameter $teamMod when calling deleteTeamFromMod'
             );
         }
 
@@ -2195,8 +2195,8 @@ class TeamApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($teamMod)) {
+            $_tempBody = $teamMod;
         }
 
         if ($multipart) {
@@ -2266,15 +2266,15 @@ class TeamApi
      * Remove a pack from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to delete (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deleteTeamFromPack($teamId, $params)
+    public function deleteTeamFromPack($teamId, $teamPack)
     {
-        list($response) = $this->deleteTeamFromPackWithHttpInfo($teamId, $params);
+        list($response) = $this->deleteTeamFromPackWithHttpInfo($teamId, $teamPack);
         return $response;
     }
 
@@ -2284,15 +2284,15 @@ class TeamApi
      * Remove a pack from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to delete (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteTeamFromPackWithHttpInfo($teamId, $params)
+    public function deleteTeamFromPackWithHttpInfo($teamId, $teamPack)
     {
-        $request = $this->deleteTeamFromPackRequest($teamId, $params);
+        $request = $this->deleteTeamFromPackRequest($teamId, $teamPack);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2453,14 +2453,14 @@ class TeamApi
      * Remove a pack from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to delete (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteTeamFromPackAsync($teamId, $params)
+    public function deleteTeamFromPackAsync($teamId, $teamPack)
     {
-        return $this->deleteTeamFromPackAsyncWithHttpInfo($teamId, $params)
+        return $this->deleteTeamFromPackAsyncWithHttpInfo($teamId, $teamPack)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2474,15 +2474,15 @@ class TeamApi
      * Remove a pack from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to delete (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteTeamFromPackAsyncWithHttpInfo($teamId, $params)
+    public function deleteTeamFromPackAsyncWithHttpInfo($teamId, $teamPack)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deleteTeamFromPackRequest($teamId, $params);
+        $request = $this->deleteTeamFromPackRequest($teamId, $teamPack);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2522,12 +2522,12 @@ class TeamApi
      * Create request for operation 'deleteTeamFromPack'
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to delete (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteTeamFromPackRequest($teamId, $params)
+    protected function deleteTeamFromPackRequest($teamId, $teamPack)
     {
         // verify the required parameter 'teamId' is set
         if ($teamId === null || (is_array($teamId) && count($teamId) === 0)) {
@@ -2535,10 +2535,10 @@ class TeamApi
                 'Missing the required parameter $teamId when calling deleteTeamFromPack'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'teamPack' is set
+        if ($teamPack === null || (is_array($teamPack) && count($teamPack) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteTeamFromPack'
+                'Missing the required parameter $teamPack when calling deleteTeamFromPack'
             );
         }
 
@@ -2561,8 +2561,8 @@ class TeamApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($teamPack)) {
+            $_tempBody = $teamPack;
         }
 
         if ($multipart) {
@@ -2632,15 +2632,15 @@ class TeamApi
      * Remove a user from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to delete (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deleteTeamFromUser($teamId, $params)
+    public function deleteTeamFromUser($teamId, $teamUser)
     {
-        list($response) = $this->deleteTeamFromUserWithHttpInfo($teamId, $params);
+        list($response) = $this->deleteTeamFromUserWithHttpInfo($teamId, $teamUser);
         return $response;
     }
 
@@ -2650,15 +2650,15 @@ class TeamApi
      * Remove a user from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to delete (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteTeamFromUserWithHttpInfo($teamId, $params)
+    public function deleteTeamFromUserWithHttpInfo($teamId, $teamUser)
     {
-        $request = $this->deleteTeamFromUserRequest($teamId, $params);
+        $request = $this->deleteTeamFromUserRequest($teamId, $teamUser);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2819,14 +2819,14 @@ class TeamApi
      * Remove a user from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to delete (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteTeamFromUserAsync($teamId, $params)
+    public function deleteTeamFromUserAsync($teamId, $teamUser)
     {
-        return $this->deleteTeamFromUserAsyncWithHttpInfo($teamId, $params)
+        return $this->deleteTeamFromUserAsyncWithHttpInfo($teamId, $teamUser)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2840,15 +2840,15 @@ class TeamApi
      * Remove a user from team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to delete (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteTeamFromUserAsyncWithHttpInfo($teamId, $params)
+    public function deleteTeamFromUserAsyncWithHttpInfo($teamId, $teamUser)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deleteTeamFromUserRequest($teamId, $params);
+        $request = $this->deleteTeamFromUserRequest($teamId, $teamUser);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2888,12 +2888,12 @@ class TeamApi
      * Create request for operation 'deleteTeamFromUser'
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to delete (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteTeamFromUserRequest($teamId, $params)
+    protected function deleteTeamFromUserRequest($teamId, $teamUser)
     {
         // verify the required parameter 'teamId' is set
         if ($teamId === null || (is_array($teamId) && count($teamId) === 0)) {
@@ -2901,10 +2901,10 @@ class TeamApi
                 'Missing the required parameter $teamId when calling deleteTeamFromUser'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'teamUser' is set
+        if ($teamUser === null || (is_array($teamUser) && count($teamUser) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteTeamFromUser'
+                'Missing the required parameter $teamUser when calling deleteTeamFromUser'
             );
         }
 
@@ -2927,8 +2927,8 @@ class TeamApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($teamUser)) {
+            $_tempBody = $teamUser;
         }
 
         if ($multipart) {
@@ -4227,15 +4227,15 @@ class TeamApi
      * Update mod perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to update (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function permitTeamMod($teamId, $params)
+    public function permitTeamMod($teamId, $teamMod)
     {
-        list($response) = $this->permitTeamModWithHttpInfo($teamId, $params);
+        list($response) = $this->permitTeamModWithHttpInfo($teamId, $teamMod);
         return $response;
     }
 
@@ -4245,15 +4245,15 @@ class TeamApi
      * Update mod perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to update (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitTeamModWithHttpInfo($teamId, $params)
+    public function permitTeamModWithHttpInfo($teamId, $teamMod)
     {
-        $request = $this->permitTeamModRequest($teamId, $params);
+        $request = $this->permitTeamModRequest($teamId, $teamMod);
 
         try {
             $options = $this->createHttpClientOption();
@@ -4414,14 +4414,14 @@ class TeamApi
      * Update mod perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to update (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitTeamModAsync($teamId, $params)
+    public function permitTeamModAsync($teamId, $teamMod)
     {
-        return $this->permitTeamModAsyncWithHttpInfo($teamId, $params)
+        return $this->permitTeamModAsyncWithHttpInfo($teamId, $teamMod)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -4435,15 +4435,15 @@ class TeamApi
      * Update mod perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to update (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitTeamModAsyncWithHttpInfo($teamId, $params)
+    public function permitTeamModAsyncWithHttpInfo($teamId, $teamMod)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->permitTeamModRequest($teamId, $params);
+        $request = $this->permitTeamModRequest($teamId, $teamMod);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -4483,12 +4483,12 @@ class TeamApi
      * Create request for operation 'permitTeamMod'
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamModParams $params The team mod data to update (required)
+     * @param  \Kleister\Model\TeamModParams $teamMod The team mod data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function permitTeamModRequest($teamId, $params)
+    protected function permitTeamModRequest($teamId, $teamMod)
     {
         // verify the required parameter 'teamId' is set
         if ($teamId === null || (is_array($teamId) && count($teamId) === 0)) {
@@ -4496,10 +4496,10 @@ class TeamApi
                 'Missing the required parameter $teamId when calling permitTeamMod'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'teamMod' is set
+        if ($teamMod === null || (is_array($teamMod) && count($teamMod) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling permitTeamMod'
+                'Missing the required parameter $teamMod when calling permitTeamMod'
             );
         }
 
@@ -4522,8 +4522,8 @@ class TeamApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($teamMod)) {
+            $_tempBody = $teamMod;
         }
 
         if ($multipart) {
@@ -4593,15 +4593,15 @@ class TeamApi
      * Update pack perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to update (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function permitTeamPack($teamId, $params)
+    public function permitTeamPack($teamId, $teamPack)
     {
-        list($response) = $this->permitTeamPackWithHttpInfo($teamId, $params);
+        list($response) = $this->permitTeamPackWithHttpInfo($teamId, $teamPack);
         return $response;
     }
 
@@ -4611,15 +4611,15 @@ class TeamApi
      * Update pack perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to update (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitTeamPackWithHttpInfo($teamId, $params)
+    public function permitTeamPackWithHttpInfo($teamId, $teamPack)
     {
-        $request = $this->permitTeamPackRequest($teamId, $params);
+        $request = $this->permitTeamPackRequest($teamId, $teamPack);
 
         try {
             $options = $this->createHttpClientOption();
@@ -4780,14 +4780,14 @@ class TeamApi
      * Update pack perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to update (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitTeamPackAsync($teamId, $params)
+    public function permitTeamPackAsync($teamId, $teamPack)
     {
-        return $this->permitTeamPackAsyncWithHttpInfo($teamId, $params)
+        return $this->permitTeamPackAsyncWithHttpInfo($teamId, $teamPack)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -4801,15 +4801,15 @@ class TeamApi
      * Update pack perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to update (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitTeamPackAsyncWithHttpInfo($teamId, $params)
+    public function permitTeamPackAsyncWithHttpInfo($teamId, $teamPack)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->permitTeamPackRequest($teamId, $params);
+        $request = $this->permitTeamPackRequest($teamId, $teamPack);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -4849,12 +4849,12 @@ class TeamApi
      * Create request for operation 'permitTeamPack'
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamPackParams $params The team pack data to update (required)
+     * @param  \Kleister\Model\TeamPackParams $teamPack The team pack data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function permitTeamPackRequest($teamId, $params)
+    protected function permitTeamPackRequest($teamId, $teamPack)
     {
         // verify the required parameter 'teamId' is set
         if ($teamId === null || (is_array($teamId) && count($teamId) === 0)) {
@@ -4862,10 +4862,10 @@ class TeamApi
                 'Missing the required parameter $teamId when calling permitTeamPack'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'teamPack' is set
+        if ($teamPack === null || (is_array($teamPack) && count($teamPack) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling permitTeamPack'
+                'Missing the required parameter $teamPack when calling permitTeamPack'
             );
         }
 
@@ -4888,8 +4888,8 @@ class TeamApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($teamPack)) {
+            $_tempBody = $teamPack;
         }
 
         if ($multipart) {
@@ -4959,15 +4959,15 @@ class TeamApi
      * Update user perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to update (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function permitTeamUser($teamId, $params)
+    public function permitTeamUser($teamId, $teamUser)
     {
-        list($response) = $this->permitTeamUserWithHttpInfo($teamId, $params);
+        list($response) = $this->permitTeamUserWithHttpInfo($teamId, $teamUser);
         return $response;
     }
 
@@ -4977,15 +4977,15 @@ class TeamApi
      * Update user perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to update (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitTeamUserWithHttpInfo($teamId, $params)
+    public function permitTeamUserWithHttpInfo($teamId, $teamUser)
     {
-        $request = $this->permitTeamUserRequest($teamId, $params);
+        $request = $this->permitTeamUserRequest($teamId, $teamUser);
 
         try {
             $options = $this->createHttpClientOption();
@@ -5146,14 +5146,14 @@ class TeamApi
      * Update user perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to update (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitTeamUserAsync($teamId, $params)
+    public function permitTeamUserAsync($teamId, $teamUser)
     {
-        return $this->permitTeamUserAsyncWithHttpInfo($teamId, $params)
+        return $this->permitTeamUserAsyncWithHttpInfo($teamId, $teamUser)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -5167,15 +5167,15 @@ class TeamApi
      * Update user perms for team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to update (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitTeamUserAsyncWithHttpInfo($teamId, $params)
+    public function permitTeamUserAsyncWithHttpInfo($teamId, $teamUser)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->permitTeamUserRequest($teamId, $params);
+        $request = $this->permitTeamUserRequest($teamId, $teamUser);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -5215,12 +5215,12 @@ class TeamApi
      * Create request for operation 'permitTeamUser'
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\TeamUserParams $params The team user data to update (required)
+     * @param  \Kleister\Model\TeamUserParams $teamUser The team user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function permitTeamUserRequest($teamId, $params)
+    protected function permitTeamUserRequest($teamId, $teamUser)
     {
         // verify the required parameter 'teamId' is set
         if ($teamId === null || (is_array($teamId) && count($teamId) === 0)) {
@@ -5228,10 +5228,10 @@ class TeamApi
                 'Missing the required parameter $teamId when calling permitTeamUser'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'teamUser' is set
+        if ($teamUser === null || (is_array($teamUser) && count($teamUser) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling permitTeamUser'
+                'Missing the required parameter $teamUser when calling permitTeamUser'
             );
         }
 
@@ -5254,8 +5254,8 @@ class TeamApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($teamUser)) {
+            $_tempBody = $teamUser;
         }
 
         if ($multipart) {
@@ -5637,15 +5637,15 @@ class TeamApi
      * Update a specific team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\Team $params The team data to update (required)
+     * @param  \Kleister\Model\Team $team The team data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Team|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function updateTeam($teamId, $params)
+    public function updateTeam($teamId, $team)
     {
-        list($response) = $this->updateTeamWithHttpInfo($teamId, $params);
+        list($response) = $this->updateTeamWithHttpInfo($teamId, $team);
         return $response;
     }
 
@@ -5655,15 +5655,15 @@ class TeamApi
      * Update a specific team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\Team $params The team data to update (required)
+     * @param  \Kleister\Model\Team $team The team data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Team|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updateTeamWithHttpInfo($teamId, $params)
+    public function updateTeamWithHttpInfo($teamId, $team)
     {
-        $request = $this->updateTeamRequest($teamId, $params);
+        $request = $this->updateTeamRequest($teamId, $team);
 
         try {
             $options = $this->createHttpClientOption();
@@ -5824,14 +5824,14 @@ class TeamApi
      * Update a specific team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\Team $params The team data to update (required)
+     * @param  \Kleister\Model\Team $team The team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateTeamAsync($teamId, $params)
+    public function updateTeamAsync($teamId, $team)
     {
-        return $this->updateTeamAsyncWithHttpInfo($teamId, $params)
+        return $this->updateTeamAsyncWithHttpInfo($teamId, $team)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -5845,15 +5845,15 @@ class TeamApi
      * Update a specific team
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\Team $params The team data to update (required)
+     * @param  \Kleister\Model\Team $team The team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateTeamAsyncWithHttpInfo($teamId, $params)
+    public function updateTeamAsyncWithHttpInfo($teamId, $team)
     {
         $returnType = '\Kleister\Model\Team';
-        $request = $this->updateTeamRequest($teamId, $params);
+        $request = $this->updateTeamRequest($teamId, $team);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -5893,12 +5893,12 @@ class TeamApi
      * Create request for operation 'updateTeam'
      *
      * @param  string $teamId A team UUID or slug (required)
-     * @param  \Kleister\Model\Team $params The team data to update (required)
+     * @param  \Kleister\Model\Team $team The team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function updateTeamRequest($teamId, $params)
+    protected function updateTeamRequest($teamId, $team)
     {
         // verify the required parameter 'teamId' is set
         if ($teamId === null || (is_array($teamId) && count($teamId) === 0)) {
@@ -5906,10 +5906,10 @@ class TeamApi
                 'Missing the required parameter $teamId when calling updateTeam'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'team' is set
+        if ($team === null || (is_array($team) && count($team) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling updateTeam'
+                'Missing the required parameter $team when calling updateTeam'
             );
         }
 
@@ -5932,8 +5932,8 @@ class TeamApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($team)) {
+            $_tempBody = $team;
         }
 
         if ($multipart) {

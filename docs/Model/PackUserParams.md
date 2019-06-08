@@ -4,7 +4,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**pack** | **string** |  | 
 **user** | **string** |  | 
 **perm** | **string** |  | 
 

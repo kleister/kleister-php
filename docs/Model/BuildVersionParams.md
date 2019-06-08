@@ -4,8 +4,6 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**pack** | **string** |  | 
-**build** | **string** |  | 
 **mod** | **string** |  | 
 **version** | **string** |  | 
 

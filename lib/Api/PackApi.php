@@ -124,15 +124,15 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $params The version data to append to build (required)
+     * @param  \Kleister\Model\BuildVersionParams $buildVersion The version data to append to build (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function appendBuildToVersion($packId, $buildId, $params)
+    public function appendBuildToVersion($packId, $buildId, $buildVersion)
     {
-        list($response) = $this->appendBuildToVersionWithHttpInfo($packId, $buildId, $params);
+        list($response) = $this->appendBuildToVersionWithHttpInfo($packId, $buildId, $buildVersion);
         return $response;
     }
 
@@ -143,15 +143,15 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $params The version data to append to build (required)
+     * @param  \Kleister\Model\BuildVersionParams $buildVersion The version data to append to build (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendBuildToVersionWithHttpInfo($packId, $buildId, $params)
+    public function appendBuildToVersionWithHttpInfo($packId, $buildId, $buildVersion)
     {
-        $request = $this->appendBuildToVersionRequest($packId, $buildId, $params);
+        $request = $this->appendBuildToVersionRequest($packId, $buildId, $buildVersion);
 
         try {
             $options = $this->createHttpClientOption();
@@ -313,14 +313,14 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $params The version data to append to build (required)
+     * @param  \Kleister\Model\BuildVersionParams $buildVersion The version data to append to build (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendBuildToVersionAsync($packId, $buildId, $params)
+    public function appendBuildToVersionAsync($packId, $buildId, $buildVersion)
     {
-        return $this->appendBuildToVersionAsyncWithHttpInfo($packId, $buildId, $params)
+        return $this->appendBuildToVersionAsyncWithHttpInfo($packId, $buildId, $buildVersion)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -335,15 +335,15 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $params The version data to append to build (required)
+     * @param  \Kleister\Model\BuildVersionParams $buildVersion The version data to append to build (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendBuildToVersionAsyncWithHttpInfo($packId, $buildId, $params)
+    public function appendBuildToVersionAsyncWithHttpInfo($packId, $buildId, $buildVersion)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendBuildToVersionRequest($packId, $buildId, $params);
+        $request = $this->appendBuildToVersionRequest($packId, $buildId, $buildVersion);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -384,12 +384,12 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $params The version data to append to build (required)
+     * @param  \Kleister\Model\BuildVersionParams $buildVersion The version data to append to build (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendBuildToVersionRequest($packId, $buildId, $params)
+    protected function appendBuildToVersionRequest($packId, $buildId, $buildVersion)
     {
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
@@ -403,10 +403,10 @@ class PackApi
                 'Missing the required parameter $buildId when calling appendBuildToVersion'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'buildVersion' is set
+        if ($buildVersion === null || (is_array($buildVersion) && count($buildVersion) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendBuildToVersion'
+                'Missing the required parameter $buildVersion when calling appendBuildToVersion'
             );
         }
 
@@ -437,8 +437,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($buildVersion)) {
+            $_tempBody = $buildVersion;
         }
 
         if ($multipart) {
@@ -508,15 +508,15 @@ class PackApi
      * Assign a team to pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to assign (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function appendPackToTeam($packId, $params)
+    public function appendPackToTeam($packId, $packTeam)
     {
-        list($response) = $this->appendPackToTeamWithHttpInfo($packId, $params);
+        list($response) = $this->appendPackToTeamWithHttpInfo($packId, $packTeam);
         return $response;
     }
 
@@ -526,15 +526,15 @@ class PackApi
      * Assign a team to pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to assign (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendPackToTeamWithHttpInfo($packId, $params)
+    public function appendPackToTeamWithHttpInfo($packId, $packTeam)
     {
-        $request = $this->appendPackToTeamRequest($packId, $params);
+        $request = $this->appendPackToTeamRequest($packId, $packTeam);
 
         try {
             $options = $this->createHttpClientOption();
@@ -695,14 +695,14 @@ class PackApi
      * Assign a team to pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to assign (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendPackToTeamAsync($packId, $params)
+    public function appendPackToTeamAsync($packId, $packTeam)
     {
-        return $this->appendPackToTeamAsyncWithHttpInfo($packId, $params)
+        return $this->appendPackToTeamAsyncWithHttpInfo($packId, $packTeam)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -716,15 +716,15 @@ class PackApi
      * Assign a team to pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to assign (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendPackToTeamAsyncWithHttpInfo($packId, $params)
+    public function appendPackToTeamAsyncWithHttpInfo($packId, $packTeam)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendPackToTeamRequest($packId, $params);
+        $request = $this->appendPackToTeamRequest($packId, $packTeam);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -764,12 +764,12 @@ class PackApi
      * Create request for operation 'appendPackToTeam'
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to assign (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendPackToTeamRequest($packId, $params)
+    protected function appendPackToTeamRequest($packId, $packTeam)
     {
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
@@ -777,10 +777,10 @@ class PackApi
                 'Missing the required parameter $packId when calling appendPackToTeam'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'packTeam' is set
+        if ($packTeam === null || (is_array($packTeam) && count($packTeam) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendPackToTeam'
+                'Missing the required parameter $packTeam when calling appendPackToTeam'
             );
         }
 
@@ -803,8 +803,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($packTeam)) {
+            $_tempBody = $packTeam;
         }
 
         if ($multipart) {
@@ -874,15 +874,15 @@ class PackApi
      * Assign a user to pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to assign (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function appendPackToUser($packId, $params)
+    public function appendPackToUser($packId, $packUser)
     {
-        list($response) = $this->appendPackToUserWithHttpInfo($packId, $params);
+        list($response) = $this->appendPackToUserWithHttpInfo($packId, $packUser);
         return $response;
     }
 
@@ -892,15 +892,15 @@ class PackApi
      * Assign a user to pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to assign (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendPackToUserWithHttpInfo($packId, $params)
+    public function appendPackToUserWithHttpInfo($packId, $packUser)
     {
-        $request = $this->appendPackToUserRequest($packId, $params);
+        $request = $this->appendPackToUserRequest($packId, $packUser);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1061,14 +1061,14 @@ class PackApi
      * Assign a user to pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to assign (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendPackToUserAsync($packId, $params)
+    public function appendPackToUserAsync($packId, $packUser)
     {
-        return $this->appendPackToUserAsyncWithHttpInfo($packId, $params)
+        return $this->appendPackToUserAsyncWithHttpInfo($packId, $packUser)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1082,15 +1082,15 @@ class PackApi
      * Assign a user to pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to assign (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendPackToUserAsyncWithHttpInfo($packId, $params)
+    public function appendPackToUserAsyncWithHttpInfo($packId, $packUser)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendPackToUserRequest($packId, $params);
+        $request = $this->appendPackToUserRequest($packId, $packUser);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1130,12 +1130,12 @@ class PackApi
      * Create request for operation 'appendPackToUser'
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to assign (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendPackToUserRequest($packId, $params)
+    protected function appendPackToUserRequest($packId, $packUser)
     {
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
@@ -1143,10 +1143,10 @@ class PackApi
                 'Missing the required parameter $packId when calling appendPackToUser'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'packUser' is set
+        if ($packUser === null || (is_array($packUser) && count($packUser) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendPackToUser'
+                'Missing the required parameter $packUser when calling appendPackToUser'
             );
         }
 
@@ -1169,8 +1169,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($packUser)) {
+            $_tempBody = $packUser;
         }
 
         if ($multipart) {
@@ -1240,15 +1240,15 @@ class PackApi
      * Create a new build for a pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\Build $params The build data to create (required)
+     * @param  \Kleister\Model\Build $build The build data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Build|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function createBuild($packId, $params)
+    public function createBuild($packId, $build)
     {
-        list($response) = $this->createBuildWithHttpInfo($packId, $params);
+        list($response) = $this->createBuildWithHttpInfo($packId, $build);
         return $response;
     }
 
@@ -1258,15 +1258,15 @@ class PackApi
      * Create a new build for a pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\Build $params The build data to create (required)
+     * @param  \Kleister\Model\Build $build The build data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Build|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createBuildWithHttpInfo($packId, $params)
+    public function createBuildWithHttpInfo($packId, $build)
     {
-        $request = $this->createBuildRequest($packId, $params);
+        $request = $this->createBuildRequest($packId, $build);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1427,14 +1427,14 @@ class PackApi
      * Create a new build for a pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\Build $params The build data to create (required)
+     * @param  \Kleister\Model\Build $build The build data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createBuildAsync($packId, $params)
+    public function createBuildAsync($packId, $build)
     {
-        return $this->createBuildAsyncWithHttpInfo($packId, $params)
+        return $this->createBuildAsyncWithHttpInfo($packId, $build)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1448,15 +1448,15 @@ class PackApi
      * Create a new build for a pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\Build $params The build data to create (required)
+     * @param  \Kleister\Model\Build $build The build data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createBuildAsyncWithHttpInfo($packId, $params)
+    public function createBuildAsyncWithHttpInfo($packId, $build)
     {
         $returnType = '\Kleister\Model\Build';
-        $request = $this->createBuildRequest($packId, $params);
+        $request = $this->createBuildRequest($packId, $build);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1496,12 +1496,12 @@ class PackApi
      * Create request for operation 'createBuild'
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\Build $params The build data to create (required)
+     * @param  \Kleister\Model\Build $build The build data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function createBuildRequest($packId, $params)
+    protected function createBuildRequest($packId, $build)
     {
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
@@ -1509,10 +1509,10 @@ class PackApi
                 'Missing the required parameter $packId when calling createBuild'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'build' is set
+        if ($build === null || (is_array($build) && count($build) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling createBuild'
+                'Missing the required parameter $build when calling createBuild'
             );
         }
 
@@ -1535,8 +1535,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($build)) {
+            $_tempBody = $build;
         }
 
         if ($multipart) {
@@ -1605,15 +1605,15 @@ class PackApi
      *
      * Create a new pack
      *
-     * @param  \Kleister\Model\Pack $params The pack data to create (required)
+     * @param  \Kleister\Model\Pack $pack The pack data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Pack|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function createPack($params)
+    public function createPack($pack)
     {
-        list($response) = $this->createPackWithHttpInfo($params);
+        list($response) = $this->createPackWithHttpInfo($pack);
         return $response;
     }
 
@@ -1622,15 +1622,15 @@ class PackApi
      *
      * Create a new pack
      *
-     * @param  \Kleister\Model\Pack $params The pack data to create (required)
+     * @param  \Kleister\Model\Pack $pack The pack data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Pack|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createPackWithHttpInfo($params)
+    public function createPackWithHttpInfo($pack)
     {
-        $request = $this->createPackRequest($params);
+        $request = $this->createPackRequest($pack);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1790,14 +1790,14 @@ class PackApi
      *
      * Create a new pack
      *
-     * @param  \Kleister\Model\Pack $params The pack data to create (required)
+     * @param  \Kleister\Model\Pack $pack The pack data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createPackAsync($params)
+    public function createPackAsync($pack)
     {
-        return $this->createPackAsyncWithHttpInfo($params)
+        return $this->createPackAsyncWithHttpInfo($pack)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1810,15 +1810,15 @@ class PackApi
      *
      * Create a new pack
      *
-     * @param  \Kleister\Model\Pack $params The pack data to create (required)
+     * @param  \Kleister\Model\Pack $pack The pack data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createPackAsyncWithHttpInfo($params)
+    public function createPackAsyncWithHttpInfo($pack)
     {
         $returnType = '\Kleister\Model\Pack';
-        $request = $this->createPackRequest($params);
+        $request = $this->createPackRequest($pack);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1857,17 +1857,17 @@ class PackApi
     /**
      * Create request for operation 'createPack'
      *
-     * @param  \Kleister\Model\Pack $params The pack data to create (required)
+     * @param  \Kleister\Model\Pack $pack The pack data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function createPackRequest($params)
+    protected function createPackRequest($pack)
     {
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'pack' is set
+        if ($pack === null || (is_array($pack) && count($pack) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling createPack'
+                'Missing the required parameter $pack when calling createPack'
             );
         }
 
@@ -1882,8 +1882,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($pack)) {
+            $_tempBody = $pack;
         }
 
         if ($multipart) {
@@ -2305,15 +2305,15 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $params The version data to unlink from build (required)
+     * @param  \Kleister\Model\BuildVersionParams $buildVersion The version data to unlink from build (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deleteBuildFromVersion($packId, $buildId, $params)
+    public function deleteBuildFromVersion($packId, $buildId, $buildVersion)
     {
-        list($response) = $this->deleteBuildFromVersionWithHttpInfo($packId, $buildId, $params);
+        list($response) = $this->deleteBuildFromVersionWithHttpInfo($packId, $buildId, $buildVersion);
         return $response;
     }
 
@@ -2324,15 +2324,15 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $params The version data to unlink from build (required)
+     * @param  \Kleister\Model\BuildVersionParams $buildVersion The version data to unlink from build (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteBuildFromVersionWithHttpInfo($packId, $buildId, $params)
+    public function deleteBuildFromVersionWithHttpInfo($packId, $buildId, $buildVersion)
     {
-        $request = $this->deleteBuildFromVersionRequest($packId, $buildId, $params);
+        $request = $this->deleteBuildFromVersionRequest($packId, $buildId, $buildVersion);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2474,14 +2474,14 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $params The version data to unlink from build (required)
+     * @param  \Kleister\Model\BuildVersionParams $buildVersion The version data to unlink from build (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteBuildFromVersionAsync($packId, $buildId, $params)
+    public function deleteBuildFromVersionAsync($packId, $buildId, $buildVersion)
     {
-        return $this->deleteBuildFromVersionAsyncWithHttpInfo($packId, $buildId, $params)
+        return $this->deleteBuildFromVersionAsyncWithHttpInfo($packId, $buildId, $buildVersion)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2496,15 +2496,15 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $params The version data to unlink from build (required)
+     * @param  \Kleister\Model\BuildVersionParams $buildVersion The version data to unlink from build (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteBuildFromVersionAsyncWithHttpInfo($packId, $buildId, $params)
+    public function deleteBuildFromVersionAsyncWithHttpInfo($packId, $buildId, $buildVersion)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deleteBuildFromVersionRequest($packId, $buildId, $params);
+        $request = $this->deleteBuildFromVersionRequest($packId, $buildId, $buildVersion);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2545,12 +2545,12 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $params The version data to unlink from build (required)
+     * @param  \Kleister\Model\BuildVersionParams $buildVersion The version data to unlink from build (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteBuildFromVersionRequest($packId, $buildId, $params)
+    protected function deleteBuildFromVersionRequest($packId, $buildId, $buildVersion)
     {
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
@@ -2564,10 +2564,10 @@ class PackApi
                 'Missing the required parameter $buildId when calling deleteBuildFromVersion'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'buildVersion' is set
+        if ($buildVersion === null || (is_array($buildVersion) && count($buildVersion) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteBuildFromVersion'
+                'Missing the required parameter $buildVersion when calling deleteBuildFromVersion'
             );
         }
 
@@ -2598,8 +2598,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($buildVersion)) {
+            $_tempBody = $buildVersion;
         }
 
         if ($multipart) {
@@ -3001,15 +3001,15 @@ class PackApi
      * Remove a team from pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to delete (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deletePackFromTeam($packId, $params)
+    public function deletePackFromTeam($packId, $packTeam)
     {
-        list($response) = $this->deletePackFromTeamWithHttpInfo($packId, $params);
+        list($response) = $this->deletePackFromTeamWithHttpInfo($packId, $packTeam);
         return $response;
     }
 
@@ -3019,15 +3019,15 @@ class PackApi
      * Remove a team from pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to delete (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deletePackFromTeamWithHttpInfo($packId, $params)
+    public function deletePackFromTeamWithHttpInfo($packId, $packTeam)
     {
-        $request = $this->deletePackFromTeamRequest($packId, $params);
+        $request = $this->deletePackFromTeamRequest($packId, $packTeam);
 
         try {
             $options = $this->createHttpClientOption();
@@ -3188,14 +3188,14 @@ class PackApi
      * Remove a team from pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to delete (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deletePackFromTeamAsync($packId, $params)
+    public function deletePackFromTeamAsync($packId, $packTeam)
     {
-        return $this->deletePackFromTeamAsyncWithHttpInfo($packId, $params)
+        return $this->deletePackFromTeamAsyncWithHttpInfo($packId, $packTeam)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -3209,15 +3209,15 @@ class PackApi
      * Remove a team from pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to delete (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deletePackFromTeamAsyncWithHttpInfo($packId, $params)
+    public function deletePackFromTeamAsyncWithHttpInfo($packId, $packTeam)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deletePackFromTeamRequest($packId, $params);
+        $request = $this->deletePackFromTeamRequest($packId, $packTeam);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -3257,12 +3257,12 @@ class PackApi
      * Create request for operation 'deletePackFromTeam'
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to delete (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deletePackFromTeamRequest($packId, $params)
+    protected function deletePackFromTeamRequest($packId, $packTeam)
     {
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
@@ -3270,10 +3270,10 @@ class PackApi
                 'Missing the required parameter $packId when calling deletePackFromTeam'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'packTeam' is set
+        if ($packTeam === null || (is_array($packTeam) && count($packTeam) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deletePackFromTeam'
+                'Missing the required parameter $packTeam when calling deletePackFromTeam'
             );
         }
 
@@ -3296,8 +3296,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($packTeam)) {
+            $_tempBody = $packTeam;
         }
 
         if ($multipart) {
@@ -3367,15 +3367,15 @@ class PackApi
      * Remove a user from pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to delete (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deletePackFromUser($packId, $params)
+    public function deletePackFromUser($packId, $packUser)
     {
-        list($response) = $this->deletePackFromUserWithHttpInfo($packId, $params);
+        list($response) = $this->deletePackFromUserWithHttpInfo($packId, $packUser);
         return $response;
     }
 
@@ -3385,15 +3385,15 @@ class PackApi
      * Remove a user from pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to delete (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deletePackFromUserWithHttpInfo($packId, $params)
+    public function deletePackFromUserWithHttpInfo($packId, $packUser)
     {
-        $request = $this->deletePackFromUserRequest($packId, $params);
+        $request = $this->deletePackFromUserRequest($packId, $packUser);
 
         try {
             $options = $this->createHttpClientOption();
@@ -3554,14 +3554,14 @@ class PackApi
      * Remove a user from pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to delete (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deletePackFromUserAsync($packId, $params)
+    public function deletePackFromUserAsync($packId, $packUser)
     {
-        return $this->deletePackFromUserAsyncWithHttpInfo($packId, $params)
+        return $this->deletePackFromUserAsyncWithHttpInfo($packId, $packUser)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -3575,15 +3575,15 @@ class PackApi
      * Remove a user from pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to delete (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deletePackFromUserAsyncWithHttpInfo($packId, $params)
+    public function deletePackFromUserAsyncWithHttpInfo($packId, $packUser)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deletePackFromUserRequest($packId, $params);
+        $request = $this->deletePackFromUserRequest($packId, $packUser);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -3623,12 +3623,12 @@ class PackApi
      * Create request for operation 'deletePackFromUser'
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to delete (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deletePackFromUserRequest($packId, $params)
+    protected function deletePackFromUserRequest($packId, $packUser)
     {
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
@@ -3636,10 +3636,10 @@ class PackApi
                 'Missing the required parameter $packId when calling deletePackFromUser'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'packUser' is set
+        if ($packUser === null || (is_array($packUser) && count($packUser) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deletePackFromUser'
+                'Missing the required parameter $packUser when calling deletePackFromUser'
             );
         }
 
@@ -3662,8 +3662,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($packUser)) {
+            $_tempBody = $packUser;
         }
 
         if ($multipart) {
@@ -5293,15 +5293,15 @@ class PackApi
      * Update team perms for pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to update (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function permitPackTeam($packId, $params)
+    public function permitPackTeam($packId, $packTeam)
     {
-        list($response) = $this->permitPackTeamWithHttpInfo($packId, $params);
+        list($response) = $this->permitPackTeamWithHttpInfo($packId, $packTeam);
         return $response;
     }
 
@@ -5311,15 +5311,15 @@ class PackApi
      * Update team perms for pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to update (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitPackTeamWithHttpInfo($packId, $params)
+    public function permitPackTeamWithHttpInfo($packId, $packTeam)
     {
-        $request = $this->permitPackTeamRequest($packId, $params);
+        $request = $this->permitPackTeamRequest($packId, $packTeam);
 
         try {
             $options = $this->createHttpClientOption();
@@ -5480,14 +5480,14 @@ class PackApi
      * Update team perms for pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to update (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitPackTeamAsync($packId, $params)
+    public function permitPackTeamAsync($packId, $packTeam)
     {
-        return $this->permitPackTeamAsyncWithHttpInfo($packId, $params)
+        return $this->permitPackTeamAsyncWithHttpInfo($packId, $packTeam)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -5501,15 +5501,15 @@ class PackApi
      * Update team perms for pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to update (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitPackTeamAsyncWithHttpInfo($packId, $params)
+    public function permitPackTeamAsyncWithHttpInfo($packId, $packTeam)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->permitPackTeamRequest($packId, $params);
+        $request = $this->permitPackTeamRequest($packId, $packTeam);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -5549,12 +5549,12 @@ class PackApi
      * Create request for operation 'permitPackTeam'
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $params The pack team data to update (required)
+     * @param  \Kleister\Model\PackTeamParams $packTeam The pack team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function permitPackTeamRequest($packId, $params)
+    protected function permitPackTeamRequest($packId, $packTeam)
     {
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
@@ -5562,10 +5562,10 @@ class PackApi
                 'Missing the required parameter $packId when calling permitPackTeam'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'packTeam' is set
+        if ($packTeam === null || (is_array($packTeam) && count($packTeam) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling permitPackTeam'
+                'Missing the required parameter $packTeam when calling permitPackTeam'
             );
         }
 
@@ -5588,8 +5588,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($packTeam)) {
+            $_tempBody = $packTeam;
         }
 
         if ($multipart) {
@@ -5659,15 +5659,15 @@ class PackApi
      * Update user perms for pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to update (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function permitPackUser($packId, $params)
+    public function permitPackUser($packId, $packUser)
     {
-        list($response) = $this->permitPackUserWithHttpInfo($packId, $params);
+        list($response) = $this->permitPackUserWithHttpInfo($packId, $packUser);
         return $response;
     }
 
@@ -5677,15 +5677,15 @@ class PackApi
      * Update user perms for pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to update (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitPackUserWithHttpInfo($packId, $params)
+    public function permitPackUserWithHttpInfo($packId, $packUser)
     {
-        $request = $this->permitPackUserRequest($packId, $params);
+        $request = $this->permitPackUserRequest($packId, $packUser);
 
         try {
             $options = $this->createHttpClientOption();
@@ -5846,14 +5846,14 @@ class PackApi
      * Update user perms for pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to update (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitPackUserAsync($packId, $params)
+    public function permitPackUserAsync($packId, $packUser)
     {
-        return $this->permitPackUserAsyncWithHttpInfo($packId, $params)
+        return $this->permitPackUserAsyncWithHttpInfo($packId, $packUser)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -5867,15 +5867,15 @@ class PackApi
      * Update user perms for pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to update (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitPackUserAsyncWithHttpInfo($packId, $params)
+    public function permitPackUserAsyncWithHttpInfo($packId, $packUser)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->permitPackUserRequest($packId, $params);
+        $request = $this->permitPackUserRequest($packId, $packUser);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -5915,12 +5915,12 @@ class PackApi
      * Create request for operation 'permitPackUser'
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\PackUserParams $params The pack user data to update (required)
+     * @param  \Kleister\Model\PackUserParams $packUser The pack user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function permitPackUserRequest($packId, $params)
+    protected function permitPackUserRequest($packId, $packUser)
     {
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
@@ -5928,10 +5928,10 @@ class PackApi
                 'Missing the required parameter $packId when calling permitPackUser'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'packUser' is set
+        if ($packUser === null || (is_array($packUser) && count($packUser) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling permitPackUser'
+                'Missing the required parameter $packUser when calling permitPackUser'
             );
         }
 
@@ -5954,8 +5954,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($packUser)) {
+            $_tempBody = $packUser;
         }
 
         if ($multipart) {
@@ -6669,15 +6669,15 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\Build $params The build data to update (required)
+     * @param  \Kleister\Model\Build $build The build data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Build|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function updateBuild($packId, $buildId, $params)
+    public function updateBuild($packId, $buildId, $build)
     {
-        list($response) = $this->updateBuildWithHttpInfo($packId, $buildId, $params);
+        list($response) = $this->updateBuildWithHttpInfo($packId, $buildId, $build);
         return $response;
     }
 
@@ -6688,15 +6688,15 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\Build $params The build data to update (required)
+     * @param  \Kleister\Model\Build $build The build data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Build|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updateBuildWithHttpInfo($packId, $buildId, $params)
+    public function updateBuildWithHttpInfo($packId, $buildId, $build)
     {
-        $request = $this->updateBuildRequest($packId, $buildId, $params);
+        $request = $this->updateBuildRequest($packId, $buildId, $build);
 
         try {
             $options = $this->createHttpClientOption();
@@ -6858,14 +6858,14 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\Build $params The build data to update (required)
+     * @param  \Kleister\Model\Build $build The build data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateBuildAsync($packId, $buildId, $params)
+    public function updateBuildAsync($packId, $buildId, $build)
     {
-        return $this->updateBuildAsyncWithHttpInfo($packId, $buildId, $params)
+        return $this->updateBuildAsyncWithHttpInfo($packId, $buildId, $build)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -6880,15 +6880,15 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\Build $params The build data to update (required)
+     * @param  \Kleister\Model\Build $build The build data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateBuildAsyncWithHttpInfo($packId, $buildId, $params)
+    public function updateBuildAsyncWithHttpInfo($packId, $buildId, $build)
     {
         $returnType = '\Kleister\Model\Build';
-        $request = $this->updateBuildRequest($packId, $buildId, $params);
+        $request = $this->updateBuildRequest($packId, $buildId, $build);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -6929,12 +6929,12 @@ class PackApi
      *
      * @param  string $packId A pack UUID or slug (required)
      * @param  string $buildId A build UUID or slug (required)
-     * @param  \Kleister\Model\Build $params The build data to update (required)
+     * @param  \Kleister\Model\Build $build The build data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function updateBuildRequest($packId, $buildId, $params)
+    protected function updateBuildRequest($packId, $buildId, $build)
     {
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
@@ -6948,10 +6948,10 @@ class PackApi
                 'Missing the required parameter $buildId when calling updateBuild'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'build' is set
+        if ($build === null || (is_array($build) && count($build) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling updateBuild'
+                'Missing the required parameter $build when calling updateBuild'
             );
         }
 
@@ -6982,8 +6982,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($build)) {
+            $_tempBody = $build;
         }
 
         if ($multipart) {
@@ -7053,15 +7053,15 @@ class PackApi
      * Update a specific pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\Pack $params The pack data to update (required)
+     * @param  \Kleister\Model\Pack $pack The pack data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Pack|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function updatePack($packId, $params)
+    public function updatePack($packId, $pack)
     {
-        list($response) = $this->updatePackWithHttpInfo($packId, $params);
+        list($response) = $this->updatePackWithHttpInfo($packId, $pack);
         return $response;
     }
 
@@ -7071,15 +7071,15 @@ class PackApi
      * Update a specific pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\Pack $params The pack data to update (required)
+     * @param  \Kleister\Model\Pack $pack The pack data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Pack|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updatePackWithHttpInfo($packId, $params)
+    public function updatePackWithHttpInfo($packId, $pack)
     {
-        $request = $this->updatePackRequest($packId, $params);
+        $request = $this->updatePackRequest($packId, $pack);
 
         try {
             $options = $this->createHttpClientOption();
@@ -7240,14 +7240,14 @@ class PackApi
      * Update a specific pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\Pack $params The pack data to update (required)
+     * @param  \Kleister\Model\Pack $pack The pack data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updatePackAsync($packId, $params)
+    public function updatePackAsync($packId, $pack)
     {
-        return $this->updatePackAsyncWithHttpInfo($packId, $params)
+        return $this->updatePackAsyncWithHttpInfo($packId, $pack)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -7261,15 +7261,15 @@ class PackApi
      * Update a specific pack
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\Pack $params The pack data to update (required)
+     * @param  \Kleister\Model\Pack $pack The pack data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updatePackAsyncWithHttpInfo($packId, $params)
+    public function updatePackAsyncWithHttpInfo($packId, $pack)
     {
         $returnType = '\Kleister\Model\Pack';
-        $request = $this->updatePackRequest($packId, $params);
+        $request = $this->updatePackRequest($packId, $pack);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -7309,12 +7309,12 @@ class PackApi
      * Create request for operation 'updatePack'
      *
      * @param  string $packId A pack UUID or slug (required)
-     * @param  \Kleister\Model\Pack $params The pack data to update (required)
+     * @param  \Kleister\Model\Pack $pack The pack data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function updatePackRequest($packId, $params)
+    protected function updatePackRequest($packId, $pack)
     {
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
@@ -7322,10 +7322,10 @@ class PackApi
                 'Missing the required parameter $packId when calling updatePack'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'pack' is set
+        if ($pack === null || (is_array($pack) && count($pack) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling updatePack'
+                'Missing the required parameter $pack when calling updatePack'
             );
         }
 
@@ -7348,8 +7348,8 @@ class PackApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($pack)) {
+            $_tempBody = $pack;
         }
 
         if ($multipart) {

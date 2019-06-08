@@ -123,15 +123,15 @@ class ForgeApi
      * Assign a build to a Forge version
      *
      * @param  string $forgeId A forge UUID or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $params The build data to append (required)
+     * @param  \Kleister\Model\ForgeBuildParams $forgeBuild The build data to append (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function appendForgeToBuild($forgeId, $params)
+    public function appendForgeToBuild($forgeId, $forgeBuild)
     {
-        list($response) = $this->appendForgeToBuildWithHttpInfo($forgeId, $params);
+        list($response) = $this->appendForgeToBuildWithHttpInfo($forgeId, $forgeBuild);
         return $response;
     }
 
@@ -141,15 +141,15 @@ class ForgeApi
      * Assign a build to a Forge version
      *
      * @param  string $forgeId A forge UUID or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $params The build data to append (required)
+     * @param  \Kleister\Model\ForgeBuildParams $forgeBuild The build data to append (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendForgeToBuildWithHttpInfo($forgeId, $params)
+    public function appendForgeToBuildWithHttpInfo($forgeId, $forgeBuild)
     {
-        $request = $this->appendForgeToBuildRequest($forgeId, $params);
+        $request = $this->appendForgeToBuildRequest($forgeId, $forgeBuild);
 
         try {
             $options = $this->createHttpClientOption();
@@ -310,14 +310,14 @@ class ForgeApi
      * Assign a build to a Forge version
      *
      * @param  string $forgeId A forge UUID or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $params The build data to append (required)
+     * @param  \Kleister\Model\ForgeBuildParams $forgeBuild The build data to append (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendForgeToBuildAsync($forgeId, $params)
+    public function appendForgeToBuildAsync($forgeId, $forgeBuild)
     {
-        return $this->appendForgeToBuildAsyncWithHttpInfo($forgeId, $params)
+        return $this->appendForgeToBuildAsyncWithHttpInfo($forgeId, $forgeBuild)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -331,15 +331,15 @@ class ForgeApi
      * Assign a build to a Forge version
      *
      * @param  string $forgeId A forge UUID or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $params The build data to append (required)
+     * @param  \Kleister\Model\ForgeBuildParams $forgeBuild The build data to append (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendForgeToBuildAsyncWithHttpInfo($forgeId, $params)
+    public function appendForgeToBuildAsyncWithHttpInfo($forgeId, $forgeBuild)
     {
         $returnType = '\Kleister\Model\Build[]';
-        $request = $this->appendForgeToBuildRequest($forgeId, $params);
+        $request = $this->appendForgeToBuildRequest($forgeId, $forgeBuild);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -379,12 +379,12 @@ class ForgeApi
      * Create request for operation 'appendForgeToBuild'
      *
      * @param  string $forgeId A forge UUID or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $params The build data to append (required)
+     * @param  \Kleister\Model\ForgeBuildParams $forgeBuild The build data to append (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendForgeToBuildRequest($forgeId, $params)
+    protected function appendForgeToBuildRequest($forgeId, $forgeBuild)
     {
         // verify the required parameter 'forgeId' is set
         if ($forgeId === null || (is_array($forgeId) && count($forgeId) === 0)) {
@@ -392,10 +392,10 @@ class ForgeApi
                 'Missing the required parameter $forgeId when calling appendForgeToBuild'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'forgeBuild' is set
+        if ($forgeBuild === null || (is_array($forgeBuild) && count($forgeBuild) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendForgeToBuild'
+                'Missing the required parameter $forgeBuild when calling appendForgeToBuild'
             );
         }
 
@@ -418,8 +418,8 @@ class ForgeApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($forgeBuild)) {
+            $_tempBody = $forgeBuild;
         }
 
         if ($multipart) {
@@ -489,15 +489,15 @@ class ForgeApi
      * Unlink a build from a Forge version
      *
      * @param  string $forgeId A forge UUID or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $params The build data to unlink (required)
+     * @param  \Kleister\Model\ForgeBuildParams $forgeBuild The build data to unlink (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function deleteForgeFromBuild($forgeId, $params)
+    public function deleteForgeFromBuild($forgeId, $forgeBuild)
     {
-        list($response) = $this->deleteForgeFromBuildWithHttpInfo($forgeId, $params);
+        list($response) = $this->deleteForgeFromBuildWithHttpInfo($forgeId, $forgeBuild);
         return $response;
     }
 
@@ -507,15 +507,15 @@ class ForgeApi
      * Unlink a build from a Forge version
      *
      * @param  string $forgeId A forge UUID or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $params The build data to unlink (required)
+     * @param  \Kleister\Model\ForgeBuildParams $forgeBuild The build data to unlink (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Build[]|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteForgeFromBuildWithHttpInfo($forgeId, $params)
+    public function deleteForgeFromBuildWithHttpInfo($forgeId, $forgeBuild)
     {
-        $request = $this->deleteForgeFromBuildRequest($forgeId, $params);
+        $request = $this->deleteForgeFromBuildRequest($forgeId, $forgeBuild);
 
         try {
             $options = $this->createHttpClientOption();
@@ -676,14 +676,14 @@ class ForgeApi
      * Unlink a build from a Forge version
      *
      * @param  string $forgeId A forge UUID or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $params The build data to unlink (required)
+     * @param  \Kleister\Model\ForgeBuildParams $forgeBuild The build data to unlink (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteForgeFromBuildAsync($forgeId, $params)
+    public function deleteForgeFromBuildAsync($forgeId, $forgeBuild)
     {
-        return $this->deleteForgeFromBuildAsyncWithHttpInfo($forgeId, $params)
+        return $this->deleteForgeFromBuildAsyncWithHttpInfo($forgeId, $forgeBuild)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -697,15 +697,15 @@ class ForgeApi
      * Unlink a build from a Forge version
      *
      * @param  string $forgeId A forge UUID or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $params The build data to unlink (required)
+     * @param  \Kleister\Model\ForgeBuildParams $forgeBuild The build data to unlink (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteForgeFromBuildAsyncWithHttpInfo($forgeId, $params)
+    public function deleteForgeFromBuildAsyncWithHttpInfo($forgeId, $forgeBuild)
     {
         $returnType = '\Kleister\Model\Build[]';
-        $request = $this->deleteForgeFromBuildRequest($forgeId, $params);
+        $request = $this->deleteForgeFromBuildRequest($forgeId, $forgeBuild);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -745,12 +745,12 @@ class ForgeApi
      * Create request for operation 'deleteForgeFromBuild'
      *
      * @param  string $forgeId A forge UUID or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $params The build data to unlink (required)
+     * @param  \Kleister\Model\ForgeBuildParams $forgeBuild The build data to unlink (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteForgeFromBuildRequest($forgeId, $params)
+    protected function deleteForgeFromBuildRequest($forgeId, $forgeBuild)
     {
         // verify the required parameter 'forgeId' is set
         if ($forgeId === null || (is_array($forgeId) && count($forgeId) === 0)) {
@@ -758,10 +758,10 @@ class ForgeApi
                 'Missing the required parameter $forgeId when calling deleteForgeFromBuild'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'forgeBuild' is set
+        if ($forgeBuild === null || (is_array($forgeBuild) && count($forgeBuild) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteForgeFromBuild'
+                'Missing the required parameter $forgeBuild when calling deleteForgeFromBuild'
             );
         }
 
@@ -784,8 +784,8 @@ class ForgeApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($forgeBuild)) {
+            $_tempBody = $forgeBuild;
         }
 
         if ($multipart) {

@@ -15,7 +15,7 @@ Method | HTTP request | Description
 
 ## appendForgeToBuild
 
-> \Kleister\Model\Build[] appendForgeToBuild($forgeId, $params)
+> \Kleister\Model\Build[] appendForgeToBuild($forgeId, $forgeBuild)
 
 Assign a build to a Forge version
 
@@ -32,10 +32,10 @@ $apiInstance = new Kleister\Api\ForgeApi(
     new GuzzleHttp\Client()
 );
 $forgeId = 'forgeId_example'; // string | A forge UUID or slug
-$params = new \Kleister\Model\ForgeBuildParams(); // \Kleister\Model\ForgeBuildParams | The build data to append
+$forgeBuild = new \Kleister\Model\ForgeBuildParams(); // \Kleister\Model\ForgeBuildParams | The build data to append
 
 try {
-    $result = $apiInstance->appendForgeToBuild($forgeId, $params);
+    $result = $apiInstance->appendForgeToBuild($forgeId, $forgeBuild);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ForgeApi->appendForgeToBuild: ', $e->getMessage(), PHP_EOL;
@@ -49,7 +49,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **forgeId** | **string**| A forge UUID or slug |
- **params** | [**\Kleister\Model\ForgeBuildParams**](../Model/ForgeBuildParams.md)| The build data to append |
+ **forgeBuild** | [**\Kleister\Model\ForgeBuildParams**](../Model/ForgeBuildParams.md)| The build data to append |
 
 ### Return type
 
@@ -71,7 +71,7 @@ No authorization required
 
 ## deleteForgeFromBuild
 
-> \Kleister\Model\Build[] deleteForgeFromBuild($forgeId, $params)
+> \Kleister\Model\Build[] deleteForgeFromBuild($forgeId, $forgeBuild)
 
 Unlink a build from a Forge version
 
@@ -88,10 +88,10 @@ $apiInstance = new Kleister\Api\ForgeApi(
     new GuzzleHttp\Client()
 );
 $forgeId = 'forgeId_example'; // string | A forge UUID or slug
-$params = new \Kleister\Model\ForgeBuildParams(); // \Kleister\Model\ForgeBuildParams | The build data to unlink
+$forgeBuild = new \Kleister\Model\ForgeBuildParams(); // \Kleister\Model\ForgeBuildParams | The build data to unlink
 
 try {
-    $result = $apiInstance->deleteForgeFromBuild($forgeId, $params);
+    $result = $apiInstance->deleteForgeFromBuild($forgeId, $forgeBuild);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ForgeApi->deleteForgeFromBuild: ', $e->getMessage(), PHP_EOL;
@@ -105,7 +105,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **forgeId** | **string**| A forge UUID or slug |
- **params** | [**\Kleister\Model\ForgeBuildParams**](../Model/ForgeBuildParams.md)| The build data to unlink |
+ **forgeBuild** | [**\Kleister\Model\ForgeBuildParams**](../Model/ForgeBuildParams.md)| The build data to unlink |
 
 ### Return type
 

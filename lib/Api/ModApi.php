@@ -123,15 +123,15 @@ class ModApi
      * Assign a team to mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to assign (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function appendModToTeam($modId, $params)
+    public function appendModToTeam($modId, $modTeam)
     {
-        list($response) = $this->appendModToTeamWithHttpInfo($modId, $params);
+        list($response) = $this->appendModToTeamWithHttpInfo($modId, $modTeam);
         return $response;
     }
 
@@ -141,15 +141,15 @@ class ModApi
      * Assign a team to mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to assign (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendModToTeamWithHttpInfo($modId, $params)
+    public function appendModToTeamWithHttpInfo($modId, $modTeam)
     {
-        $request = $this->appendModToTeamRequest($modId, $params);
+        $request = $this->appendModToTeamRequest($modId, $modTeam);
 
         try {
             $options = $this->createHttpClientOption();
@@ -310,14 +310,14 @@ class ModApi
      * Assign a team to mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to assign (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendModToTeamAsync($modId, $params)
+    public function appendModToTeamAsync($modId, $modTeam)
     {
-        return $this->appendModToTeamAsyncWithHttpInfo($modId, $params)
+        return $this->appendModToTeamAsyncWithHttpInfo($modId, $modTeam)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -331,15 +331,15 @@ class ModApi
      * Assign a team to mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to assign (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendModToTeamAsyncWithHttpInfo($modId, $params)
+    public function appendModToTeamAsyncWithHttpInfo($modId, $modTeam)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendModToTeamRequest($modId, $params);
+        $request = $this->appendModToTeamRequest($modId, $modTeam);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -379,12 +379,12 @@ class ModApi
      * Create request for operation 'appendModToTeam'
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to assign (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendModToTeamRequest($modId, $params)
+    protected function appendModToTeamRequest($modId, $modTeam)
     {
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
@@ -392,10 +392,10 @@ class ModApi
                 'Missing the required parameter $modId when calling appendModToTeam'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'modTeam' is set
+        if ($modTeam === null || (is_array($modTeam) && count($modTeam) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendModToTeam'
+                'Missing the required parameter $modTeam when calling appendModToTeam'
             );
         }
 
@@ -418,8 +418,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($modTeam)) {
+            $_tempBody = $modTeam;
         }
 
         if ($multipart) {
@@ -489,15 +489,15 @@ class ModApi
      * Assign a user to mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to assign (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function appendModToUser($modId, $params)
+    public function appendModToUser($modId, $modUser)
     {
-        list($response) = $this->appendModToUserWithHttpInfo($modId, $params);
+        list($response) = $this->appendModToUserWithHttpInfo($modId, $modUser);
         return $response;
     }
 
@@ -507,15 +507,15 @@ class ModApi
      * Assign a user to mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to assign (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to assign (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendModToUserWithHttpInfo($modId, $params)
+    public function appendModToUserWithHttpInfo($modId, $modUser)
     {
-        $request = $this->appendModToUserRequest($modId, $params);
+        $request = $this->appendModToUserRequest($modId, $modUser);
 
         try {
             $options = $this->createHttpClientOption();
@@ -676,14 +676,14 @@ class ModApi
      * Assign a user to mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to assign (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendModToUserAsync($modId, $params)
+    public function appendModToUserAsync($modId, $modUser)
     {
-        return $this->appendModToUserAsyncWithHttpInfo($modId, $params)
+        return $this->appendModToUserAsyncWithHttpInfo($modId, $modUser)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -697,15 +697,15 @@ class ModApi
      * Assign a user to mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to assign (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendModToUserAsyncWithHttpInfo($modId, $params)
+    public function appendModToUserAsyncWithHttpInfo($modId, $modUser)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendModToUserRequest($modId, $params);
+        $request = $this->appendModToUserRequest($modId, $modUser);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -745,12 +745,12 @@ class ModApi
      * Create request for operation 'appendModToUser'
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to assign (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to assign (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendModToUserRequest($modId, $params)
+    protected function appendModToUserRequest($modId, $modUser)
     {
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
@@ -758,10 +758,10 @@ class ModApi
                 'Missing the required parameter $modId when calling appendModToUser'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'modUser' is set
+        if ($modUser === null || (is_array($modUser) && count($modUser) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendModToUser'
+                'Missing the required parameter $modUser when calling appendModToUser'
             );
         }
 
@@ -784,8 +784,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($modUser)) {
+            $_tempBody = $modUser;
         }
 
         if ($multipart) {
@@ -856,15 +856,15 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $params The build data to append to version (required)
+     * @param  \Kleister\Model\VersionBuildParams $versionBuild The build data to append to version (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function appendVersionToBuild($modId, $versionId, $params)
+    public function appendVersionToBuild($modId, $versionId, $versionBuild)
     {
-        list($response) = $this->appendVersionToBuildWithHttpInfo($modId, $versionId, $params);
+        list($response) = $this->appendVersionToBuildWithHttpInfo($modId, $versionId, $versionBuild);
         return $response;
     }
 
@@ -875,15 +875,15 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $params The build data to append to version (required)
+     * @param  \Kleister\Model\VersionBuildParams $versionBuild The build data to append to version (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function appendVersionToBuildWithHttpInfo($modId, $versionId, $params)
+    public function appendVersionToBuildWithHttpInfo($modId, $versionId, $versionBuild)
     {
-        $request = $this->appendVersionToBuildRequest($modId, $versionId, $params);
+        $request = $this->appendVersionToBuildRequest($modId, $versionId, $versionBuild);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1045,14 +1045,14 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $params The build data to append to version (required)
+     * @param  \Kleister\Model\VersionBuildParams $versionBuild The build data to append to version (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendVersionToBuildAsync($modId, $versionId, $params)
+    public function appendVersionToBuildAsync($modId, $versionId, $versionBuild)
     {
-        return $this->appendVersionToBuildAsyncWithHttpInfo($modId, $versionId, $params)
+        return $this->appendVersionToBuildAsyncWithHttpInfo($modId, $versionId, $versionBuild)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1067,15 +1067,15 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $params The build data to append to version (required)
+     * @param  \Kleister\Model\VersionBuildParams $versionBuild The build data to append to version (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function appendVersionToBuildAsyncWithHttpInfo($modId, $versionId, $params)
+    public function appendVersionToBuildAsyncWithHttpInfo($modId, $versionId, $versionBuild)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->appendVersionToBuildRequest($modId, $versionId, $params);
+        $request = $this->appendVersionToBuildRequest($modId, $versionId, $versionBuild);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1116,12 +1116,12 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $params The build data to append to version (required)
+     * @param  \Kleister\Model\VersionBuildParams $versionBuild The build data to append to version (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function appendVersionToBuildRequest($modId, $versionId, $params)
+    protected function appendVersionToBuildRequest($modId, $versionId, $versionBuild)
     {
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
@@ -1135,10 +1135,10 @@ class ModApi
                 'Missing the required parameter $versionId when calling appendVersionToBuild'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'versionBuild' is set
+        if ($versionBuild === null || (is_array($versionBuild) && count($versionBuild) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling appendVersionToBuild'
+                'Missing the required parameter $versionBuild when calling appendVersionToBuild'
             );
         }
 
@@ -1169,8 +1169,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($versionBuild)) {
+            $_tempBody = $versionBuild;
         }
 
         if ($multipart) {
@@ -1239,15 +1239,15 @@ class ModApi
      *
      * Create a new mod
      *
-     * @param  \Kleister\Model\Mod $params The mod data to create (required)
+     * @param  \Kleister\Model\Mod $mod The mod data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Mod|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function createMod($params)
+    public function createMod($mod)
     {
-        list($response) = $this->createModWithHttpInfo($params);
+        list($response) = $this->createModWithHttpInfo($mod);
         return $response;
     }
 
@@ -1256,15 +1256,15 @@ class ModApi
      *
      * Create a new mod
      *
-     * @param  \Kleister\Model\Mod $params The mod data to create (required)
+     * @param  \Kleister\Model\Mod $mod The mod data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Mod|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createModWithHttpInfo($params)
+    public function createModWithHttpInfo($mod)
     {
-        $request = $this->createModRequest($params);
+        $request = $this->createModRequest($mod);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1424,14 +1424,14 @@ class ModApi
      *
      * Create a new mod
      *
-     * @param  \Kleister\Model\Mod $params The mod data to create (required)
+     * @param  \Kleister\Model\Mod $mod The mod data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createModAsync($params)
+    public function createModAsync($mod)
     {
-        return $this->createModAsyncWithHttpInfo($params)
+        return $this->createModAsyncWithHttpInfo($mod)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1444,15 +1444,15 @@ class ModApi
      *
      * Create a new mod
      *
-     * @param  \Kleister\Model\Mod $params The mod data to create (required)
+     * @param  \Kleister\Model\Mod $mod The mod data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createModAsyncWithHttpInfo($params)
+    public function createModAsyncWithHttpInfo($mod)
     {
         $returnType = '\Kleister\Model\Mod';
-        $request = $this->createModRequest($params);
+        $request = $this->createModRequest($mod);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1491,17 +1491,17 @@ class ModApi
     /**
      * Create request for operation 'createMod'
      *
-     * @param  \Kleister\Model\Mod $params The mod data to create (required)
+     * @param  \Kleister\Model\Mod $mod The mod data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function createModRequest($params)
+    protected function createModRequest($mod)
     {
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'mod' is set
+        if ($mod === null || (is_array($mod) && count($mod) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling createMod'
+                'Missing the required parameter $mod when calling createMod'
             );
         }
 
@@ -1516,8 +1516,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($mod)) {
+            $_tempBody = $mod;
         }
 
         if ($multipart) {
@@ -1587,15 +1587,15 @@ class ModApi
      * Create a new version for a mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\Version $params The version data to create (required)
+     * @param  \Kleister\Model\Version $version The version data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Version|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function createVersion($modId, $params)
+    public function createVersion($modId, $version)
     {
-        list($response) = $this->createVersionWithHttpInfo($modId, $params);
+        list($response) = $this->createVersionWithHttpInfo($modId, $version);
         return $response;
     }
 
@@ -1605,15 +1605,15 @@ class ModApi
      * Create a new version for a mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\Version $params The version data to create (required)
+     * @param  \Kleister\Model\Version $version The version data to create (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Version|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createVersionWithHttpInfo($modId, $params)
+    public function createVersionWithHttpInfo($modId, $version)
     {
-        $request = $this->createVersionRequest($modId, $params);
+        $request = $this->createVersionRequest($modId, $version);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1774,14 +1774,14 @@ class ModApi
      * Create a new version for a mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\Version $params The version data to create (required)
+     * @param  \Kleister\Model\Version $version The version data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createVersionAsync($modId, $params)
+    public function createVersionAsync($modId, $version)
     {
-        return $this->createVersionAsyncWithHttpInfo($modId, $params)
+        return $this->createVersionAsyncWithHttpInfo($modId, $version)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1795,15 +1795,15 @@ class ModApi
      * Create a new version for a mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\Version $params The version data to create (required)
+     * @param  \Kleister\Model\Version $version The version data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createVersionAsyncWithHttpInfo($modId, $params)
+    public function createVersionAsyncWithHttpInfo($modId, $version)
     {
         $returnType = '\Kleister\Model\Version';
-        $request = $this->createVersionRequest($modId, $params);
+        $request = $this->createVersionRequest($modId, $version);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1843,12 +1843,12 @@ class ModApi
      * Create request for operation 'createVersion'
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\Version $params The version data to create (required)
+     * @param  \Kleister\Model\Version $version The version data to create (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function createVersionRequest($modId, $params)
+    protected function createVersionRequest($modId, $version)
     {
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
@@ -1856,10 +1856,10 @@ class ModApi
                 'Missing the required parameter $modId when calling createVersion'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'version' is set
+        if ($version === null || (is_array($version) && count($version) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling createVersion'
+                'Missing the required parameter $version when calling createVersion'
             );
         }
 
@@ -1882,8 +1882,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($version)) {
+            $_tempBody = $version;
         }
 
         if ($multipart) {
@@ -2285,15 +2285,15 @@ class ModApi
      * Remove a team from mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to delete (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deleteModFromTeam($modId, $params)
+    public function deleteModFromTeam($modId, $modTeam)
     {
-        list($response) = $this->deleteModFromTeamWithHttpInfo($modId, $params);
+        list($response) = $this->deleteModFromTeamWithHttpInfo($modId, $modTeam);
         return $response;
     }
 
@@ -2303,15 +2303,15 @@ class ModApi
      * Remove a team from mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to delete (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteModFromTeamWithHttpInfo($modId, $params)
+    public function deleteModFromTeamWithHttpInfo($modId, $modTeam)
     {
-        $request = $this->deleteModFromTeamRequest($modId, $params);
+        $request = $this->deleteModFromTeamRequest($modId, $modTeam);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2472,14 +2472,14 @@ class ModApi
      * Remove a team from mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to delete (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteModFromTeamAsync($modId, $params)
+    public function deleteModFromTeamAsync($modId, $modTeam)
     {
-        return $this->deleteModFromTeamAsyncWithHttpInfo($modId, $params)
+        return $this->deleteModFromTeamAsyncWithHttpInfo($modId, $modTeam)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2493,15 +2493,15 @@ class ModApi
      * Remove a team from mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to delete (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteModFromTeamAsyncWithHttpInfo($modId, $params)
+    public function deleteModFromTeamAsyncWithHttpInfo($modId, $modTeam)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deleteModFromTeamRequest($modId, $params);
+        $request = $this->deleteModFromTeamRequest($modId, $modTeam);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2541,12 +2541,12 @@ class ModApi
      * Create request for operation 'deleteModFromTeam'
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to delete (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteModFromTeamRequest($modId, $params)
+    protected function deleteModFromTeamRequest($modId, $modTeam)
     {
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
@@ -2554,10 +2554,10 @@ class ModApi
                 'Missing the required parameter $modId when calling deleteModFromTeam'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'modTeam' is set
+        if ($modTeam === null || (is_array($modTeam) && count($modTeam) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteModFromTeam'
+                'Missing the required parameter $modTeam when calling deleteModFromTeam'
             );
         }
 
@@ -2580,8 +2580,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($modTeam)) {
+            $_tempBody = $modTeam;
         }
 
         if ($multipart) {
@@ -2651,15 +2651,15 @@ class ModApi
      * Remove a user from mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to delete (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deleteModFromUser($modId, $params)
+    public function deleteModFromUser($modId, $modUser)
     {
-        list($response) = $this->deleteModFromUserWithHttpInfo($modId, $params);
+        list($response) = $this->deleteModFromUserWithHttpInfo($modId, $modUser);
         return $response;
     }
 
@@ -2669,15 +2669,15 @@ class ModApi
      * Remove a user from mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to delete (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to delete (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteModFromUserWithHttpInfo($modId, $params)
+    public function deleteModFromUserWithHttpInfo($modId, $modUser)
     {
-        $request = $this->deleteModFromUserRequest($modId, $params);
+        $request = $this->deleteModFromUserRequest($modId, $modUser);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2838,14 +2838,14 @@ class ModApi
      * Remove a user from mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to delete (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteModFromUserAsync($modId, $params)
+    public function deleteModFromUserAsync($modId, $modUser)
     {
-        return $this->deleteModFromUserAsyncWithHttpInfo($modId, $params)
+        return $this->deleteModFromUserAsyncWithHttpInfo($modId, $modUser)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2859,15 +2859,15 @@ class ModApi
      * Remove a user from mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to delete (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteModFromUserAsyncWithHttpInfo($modId, $params)
+    public function deleteModFromUserAsyncWithHttpInfo($modId, $modUser)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deleteModFromUserRequest($modId, $params);
+        $request = $this->deleteModFromUserRequest($modId, $modUser);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2907,12 +2907,12 @@ class ModApi
      * Create request for operation 'deleteModFromUser'
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to delete (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to delete (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteModFromUserRequest($modId, $params)
+    protected function deleteModFromUserRequest($modId, $modUser)
     {
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
@@ -2920,10 +2920,10 @@ class ModApi
                 'Missing the required parameter $modId when calling deleteModFromUser'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'modUser' is set
+        if ($modUser === null || (is_array($modUser) && count($modUser) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteModFromUser'
+                'Missing the required parameter $modUser when calling deleteModFromUser'
             );
         }
 
@@ -2946,8 +2946,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($modUser)) {
+            $_tempBody = $modUser;
         }
 
         if ($multipart) {
@@ -3369,15 +3369,15 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $params The build data to unlink from version (required)
+     * @param  \Kleister\Model\VersionBuildParams $versionBuild The build data to unlink from version (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function deleteVersionFromBuild($modId, $versionId, $params)
+    public function deleteVersionFromBuild($modId, $versionId, $versionBuild)
     {
-        list($response) = $this->deleteVersionFromBuildWithHttpInfo($modId, $versionId, $params);
+        list($response) = $this->deleteVersionFromBuildWithHttpInfo($modId, $versionId, $versionBuild);
         return $response;
     }
 
@@ -3388,15 +3388,15 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $params The build data to unlink from version (required)
+     * @param  \Kleister\Model\VersionBuildParams $versionBuild The build data to unlink from version (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteVersionFromBuildWithHttpInfo($modId, $versionId, $params)
+    public function deleteVersionFromBuildWithHttpInfo($modId, $versionId, $versionBuild)
     {
-        $request = $this->deleteVersionFromBuildRequest($modId, $versionId, $params);
+        $request = $this->deleteVersionFromBuildRequest($modId, $versionId, $versionBuild);
 
         try {
             $options = $this->createHttpClientOption();
@@ -3538,14 +3538,14 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $params The build data to unlink from version (required)
+     * @param  \Kleister\Model\VersionBuildParams $versionBuild The build data to unlink from version (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteVersionFromBuildAsync($modId, $versionId, $params)
+    public function deleteVersionFromBuildAsync($modId, $versionId, $versionBuild)
     {
-        return $this->deleteVersionFromBuildAsyncWithHttpInfo($modId, $versionId, $params)
+        return $this->deleteVersionFromBuildAsyncWithHttpInfo($modId, $versionId, $versionBuild)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -3560,15 +3560,15 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $params The build data to unlink from version (required)
+     * @param  \Kleister\Model\VersionBuildParams $versionBuild The build data to unlink from version (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteVersionFromBuildAsyncWithHttpInfo($modId, $versionId, $params)
+    public function deleteVersionFromBuildAsyncWithHttpInfo($modId, $versionId, $versionBuild)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->deleteVersionFromBuildRequest($modId, $versionId, $params);
+        $request = $this->deleteVersionFromBuildRequest($modId, $versionId, $versionBuild);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -3609,12 +3609,12 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $params The build data to unlink from version (required)
+     * @param  \Kleister\Model\VersionBuildParams $versionBuild The build data to unlink from version (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function deleteVersionFromBuildRequest($modId, $versionId, $params)
+    protected function deleteVersionFromBuildRequest($modId, $versionId, $versionBuild)
     {
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
@@ -3628,10 +3628,10 @@ class ModApi
                 'Missing the required parameter $versionId when calling deleteVersionFromBuild'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'versionBuild' is set
+        if ($versionBuild === null || (is_array($versionBuild) && count($versionBuild) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling deleteVersionFromBuild'
+                'Missing the required parameter $versionBuild when calling deleteVersionFromBuild'
             );
         }
 
@@ -3662,8 +3662,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($versionBuild)) {
+            $_tempBody = $versionBuild;
         }
 
         if ($multipart) {
@@ -5293,15 +5293,15 @@ class ModApi
      * Update team perms for mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to update (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function permitModTeam($modId, $params)
+    public function permitModTeam($modId, $modTeam)
     {
-        list($response) = $this->permitModTeamWithHttpInfo($modId, $params);
+        list($response) = $this->permitModTeamWithHttpInfo($modId, $modTeam);
         return $response;
     }
 
@@ -5311,15 +5311,15 @@ class ModApi
      * Update team perms for mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to update (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitModTeamWithHttpInfo($modId, $params)
+    public function permitModTeamWithHttpInfo($modId, $modTeam)
     {
-        $request = $this->permitModTeamRequest($modId, $params);
+        $request = $this->permitModTeamRequest($modId, $modTeam);
 
         try {
             $options = $this->createHttpClientOption();
@@ -5480,14 +5480,14 @@ class ModApi
      * Update team perms for mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to update (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitModTeamAsync($modId, $params)
+    public function permitModTeamAsync($modId, $modTeam)
     {
-        return $this->permitModTeamAsyncWithHttpInfo($modId, $params)
+        return $this->permitModTeamAsyncWithHttpInfo($modId, $modTeam)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -5501,15 +5501,15 @@ class ModApi
      * Update team perms for mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to update (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitModTeamAsyncWithHttpInfo($modId, $params)
+    public function permitModTeamAsyncWithHttpInfo($modId, $modTeam)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->permitModTeamRequest($modId, $params);
+        $request = $this->permitModTeamRequest($modId, $modTeam);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -5549,12 +5549,12 @@ class ModApi
      * Create request for operation 'permitModTeam'
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $params The mod team data to update (required)
+     * @param  \Kleister\Model\ModTeamParams $modTeam The mod team data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function permitModTeamRequest($modId, $params)
+    protected function permitModTeamRequest($modId, $modTeam)
     {
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
@@ -5562,10 +5562,10 @@ class ModApi
                 'Missing the required parameter $modId when calling permitModTeam'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'modTeam' is set
+        if ($modTeam === null || (is_array($modTeam) && count($modTeam) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling permitModTeam'
+                'Missing the required parameter $modTeam when calling permitModTeam'
             );
         }
 
@@ -5588,8 +5588,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($modTeam)) {
+            $_tempBody = $modTeam;
         }
 
         if ($multipart) {
@@ -5659,15 +5659,15 @@ class ModApi
      * Update user perms for mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to update (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError
      */
-    public function permitModUser($modId, $params)
+    public function permitModUser($modId, $modUser)
     {
-        list($response) = $this->permitModUserWithHttpInfo($modId, $params);
+        list($response) = $this->permitModUserWithHttpInfo($modId, $modUser);
         return $response;
     }
 
@@ -5677,15 +5677,15 @@ class ModApi
      * Update user perms for mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to update (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitModUserWithHttpInfo($modId, $params)
+    public function permitModUserWithHttpInfo($modId, $modUser)
     {
-        $request = $this->permitModUserRequest($modId, $params);
+        $request = $this->permitModUserRequest($modId, $modUser);
 
         try {
             $options = $this->createHttpClientOption();
@@ -5846,14 +5846,14 @@ class ModApi
      * Update user perms for mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to update (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitModUserAsync($modId, $params)
+    public function permitModUserAsync($modId, $modUser)
     {
-        return $this->permitModUserAsyncWithHttpInfo($modId, $params)
+        return $this->permitModUserAsyncWithHttpInfo($modId, $modUser)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -5867,15 +5867,15 @@ class ModApi
      * Update user perms for mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to update (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitModUserAsyncWithHttpInfo($modId, $params)
+    public function permitModUserAsyncWithHttpInfo($modId, $modUser)
     {
         $returnType = '\Kleister\Model\GeneralError';
-        $request = $this->permitModUserRequest($modId, $params);
+        $request = $this->permitModUserRequest($modId, $modUser);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -5915,12 +5915,12 @@ class ModApi
      * Create request for operation 'permitModUser'
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\ModUserParams $params The mod user data to update (required)
+     * @param  \Kleister\Model\ModUserParams $modUser The mod user data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function permitModUserRequest($modId, $params)
+    protected function permitModUserRequest($modId, $modUser)
     {
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
@@ -5928,10 +5928,10 @@ class ModApi
                 'Missing the required parameter $modId when calling permitModUser'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'modUser' is set
+        if ($modUser === null || (is_array($modUser) && count($modUser) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling permitModUser'
+                'Missing the required parameter $modUser when calling permitModUser'
             );
         }
 
@@ -5954,8 +5954,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($modUser)) {
+            $_tempBody = $modUser;
         }
 
         if ($multipart) {
@@ -6668,15 +6668,15 @@ class ModApi
      * Update a specific mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\Mod $params The mod data to update (required)
+     * @param  \Kleister\Model\Mod $mod The mod data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Mod|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function updateMod($modId, $params)
+    public function updateMod($modId, $mod)
     {
-        list($response) = $this->updateModWithHttpInfo($modId, $params);
+        list($response) = $this->updateModWithHttpInfo($modId, $mod);
         return $response;
     }
 
@@ -6686,15 +6686,15 @@ class ModApi
      * Update a specific mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\Mod $params The mod data to update (required)
+     * @param  \Kleister\Model\Mod $mod The mod data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Mod|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updateModWithHttpInfo($modId, $params)
+    public function updateModWithHttpInfo($modId, $mod)
     {
-        $request = $this->updateModRequest($modId, $params);
+        $request = $this->updateModRequest($modId, $mod);
 
         try {
             $options = $this->createHttpClientOption();
@@ -6855,14 +6855,14 @@ class ModApi
      * Update a specific mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\Mod $params The mod data to update (required)
+     * @param  \Kleister\Model\Mod $mod The mod data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateModAsync($modId, $params)
+    public function updateModAsync($modId, $mod)
     {
-        return $this->updateModAsyncWithHttpInfo($modId, $params)
+        return $this->updateModAsyncWithHttpInfo($modId, $mod)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -6876,15 +6876,15 @@ class ModApi
      * Update a specific mod
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\Mod $params The mod data to update (required)
+     * @param  \Kleister\Model\Mod $mod The mod data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateModAsyncWithHttpInfo($modId, $params)
+    public function updateModAsyncWithHttpInfo($modId, $mod)
     {
         $returnType = '\Kleister\Model\Mod';
-        $request = $this->updateModRequest($modId, $params);
+        $request = $this->updateModRequest($modId, $mod);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -6924,12 +6924,12 @@ class ModApi
      * Create request for operation 'updateMod'
      *
      * @param  string $modId A mod UUID or slug (required)
-     * @param  \Kleister\Model\Mod $params The mod data to update (required)
+     * @param  \Kleister\Model\Mod $mod The mod data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function updateModRequest($modId, $params)
+    protected function updateModRequest($modId, $mod)
     {
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
@@ -6937,10 +6937,10 @@ class ModApi
                 'Missing the required parameter $modId when calling updateMod'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'mod' is set
+        if ($mod === null || (is_array($mod) && count($mod) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling updateMod'
+                'Missing the required parameter $mod when calling updateMod'
             );
         }
 
@@ -6963,8 +6963,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($mod)) {
+            $_tempBody = $mod;
         }
 
         if ($multipart) {
@@ -7035,15 +7035,15 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\Version $params The version data to update (required)
+     * @param  \Kleister\Model\Version $version The version data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Version|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError
      */
-    public function updateVersion($modId, $versionId, $params)
+    public function updateVersion($modId, $versionId, $version)
     {
-        list($response) = $this->updateVersionWithHttpInfo($modId, $versionId, $params);
+        list($response) = $this->updateVersionWithHttpInfo($modId, $versionId, $version);
         return $response;
     }
 
@@ -7054,15 +7054,15 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\Version $params The version data to update (required)
+     * @param  \Kleister\Model\Version $version The version data to update (required)
      *
      * @throws \Kleister\ApiException on non-2xx response
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Version|\Kleister\Model\GeneralError|\Kleister\Model\GeneralError|\Kleister\Model\ValidationError|\Kleister\Model\GeneralError, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updateVersionWithHttpInfo($modId, $versionId, $params)
+    public function updateVersionWithHttpInfo($modId, $versionId, $version)
     {
-        $request = $this->updateVersionRequest($modId, $versionId, $params);
+        $request = $this->updateVersionRequest($modId, $versionId, $version);
 
         try {
             $options = $this->createHttpClientOption();
@@ -7224,14 +7224,14 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\Version $params The version data to update (required)
+     * @param  \Kleister\Model\Version $version The version data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateVersionAsync($modId, $versionId, $params)
+    public function updateVersionAsync($modId, $versionId, $version)
     {
-        return $this->updateVersionAsyncWithHttpInfo($modId, $versionId, $params)
+        return $this->updateVersionAsyncWithHttpInfo($modId, $versionId, $version)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -7246,15 +7246,15 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\Version $params The version data to update (required)
+     * @param  \Kleister\Model\Version $version The version data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateVersionAsyncWithHttpInfo($modId, $versionId, $params)
+    public function updateVersionAsyncWithHttpInfo($modId, $versionId, $version)
     {
         $returnType = '\Kleister\Model\Version';
-        $request = $this->updateVersionRequest($modId, $versionId, $params);
+        $request = $this->updateVersionRequest($modId, $versionId, $version);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -7295,12 +7295,12 @@ class ModApi
      *
      * @param  string $modId A mod UUID or slug (required)
      * @param  string $versionId A version UUID or slug (required)
-     * @param  \Kleister\Model\Version $params The version data to update (required)
+     * @param  \Kleister\Model\Version $version The version data to update (required)
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    protected function updateVersionRequest($modId, $versionId, $params)
+    protected function updateVersionRequest($modId, $versionId, $version)
     {
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
@@ -7314,10 +7314,10 @@ class ModApi
                 'Missing the required parameter $versionId when calling updateVersion'
             );
         }
-        // verify the required parameter 'params' is set
-        if ($params === null || (is_array($params) && count($params) === 0)) {
+        // verify the required parameter 'version' is set
+        if ($version === null || (is_array($version) && count($version) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $params when calling updateVersion'
+                'Missing the required parameter $version when calling updateVersion'
             );
         }
 
@@ -7348,8 +7348,8 @@ class ModApi
 
         // body params
         $_tempBody = null;
-        if (isset($params)) {
-            $_tempBody = $params;
+        if (isset($version)) {
+            $_tempBody = $version;
         }
 
         if ($multipart) {

@@ -81,13 +81,6 @@ class PackTeamParamsTest extends TestCase
     }
 
     /**
-     * Test attribute "pack"
-     */
-    public function testPropertyPack()
-    {
-    }
-
-    /**
      * Test attribute "team"
      */
     public function testPropertyTeam()

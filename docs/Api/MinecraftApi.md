@@ -15,7 +15,7 @@ Method | HTTP request | Description
 
 ## appendMinecraftToBuild
 
-> \Kleister\Model\Build[] appendMinecraftToBuild($minecraftId, $params)
+> \Kleister\Model\Build[] appendMinecraftToBuild($minecraftId, $minecraftBuild)
 
 Assign a build to a Minecraft version
 
@@ -32,10 +32,10 @@ $apiInstance = new Kleister\Api\MinecraftApi(
     new GuzzleHttp\Client()
 );
 $minecraftId = 'minecraftId_example'; // string | A minecraft UUID or slug
-$params = new \Kleister\Model\MinecraftBuildParams(); // \Kleister\Model\MinecraftBuildParams | The build data to append
+$minecraftBuild = new \Kleister\Model\MinecraftBuildParams(); // \Kleister\Model\MinecraftBuildParams | The build data to append
 
 try {
-    $result = $apiInstance->appendMinecraftToBuild($minecraftId, $params);
+    $result = $apiInstance->appendMinecraftToBuild($minecraftId, $minecraftBuild);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling MinecraftApi->appendMinecraftToBuild: ', $e->getMessage(), PHP_EOL;
@@ -49,7 +49,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **minecraftId** | **string**| A minecraft UUID or slug |
- **params** | [**\Kleister\Model\MinecraftBuildParams**](../Model/MinecraftBuildParams.md)| The build data to append |
+ **minecraftBuild** | [**\Kleister\Model\MinecraftBuildParams**](../Model/MinecraftBuildParams.md)| The build data to append |
 
 ### Return type
 
@@ -71,7 +71,7 @@ No authorization required
 
 ## deleteMinecraftFromBuild
 
-> \Kleister\Model\Build[] deleteMinecraftFromBuild($minecraftId, $params)
+> \Kleister\Model\Build[] deleteMinecraftFromBuild($minecraftId, $minecraftBuild)
 
 Unlink a build from a Minecraft version
 
@@ -88,10 +88,10 @@ $apiInstance = new Kleister\Api\MinecraftApi(
     new GuzzleHttp\Client()
 );
 $minecraftId = 'minecraftId_example'; // string | A minecraft UUID or slug
-$params = new \Kleister\Model\MinecraftBuildParams(); // \Kleister\Model\MinecraftBuildParams | The build data to unlink
+$minecraftBuild = new \Kleister\Model\MinecraftBuildParams(); // \Kleister\Model\MinecraftBuildParams | The build data to unlink
 
 try {
-    $result = $apiInstance->deleteMinecraftFromBuild($minecraftId, $params);
+    $result = $apiInstance->deleteMinecraftFromBuild($minecraftId, $minecraftBuild);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling MinecraftApi->deleteMinecraftFromBuild: ', $e->getMessage(), PHP_EOL;
@@ -105,7 +105,7 @@ try {
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **minecraftId** | **string**| A minecraft UUID or slug |
- **params** | [**\Kleister\Model\MinecraftBuildParams**](../Model/MinecraftBuildParams.md)| The build data to unlink |
+ **minecraftBuild** | [**\Kleister\Model\MinecraftBuildParams**](../Model/MinecraftBuildParams.md)| The build data to unlink |
 
 ### Return type
 
