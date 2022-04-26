@@ -1,32 +1,33 @@
 # Kleister\UserApi
 
-All URIs are relative to *http://try.kleister.tech/api/v1*
+All URIs are relative to http://try.kleister.tech/api/v1.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**appendUserToMod**](UserApi.md#appendUserToMod) | **POST** /users/{user_id}/mods | Assign a mod to user
-[**appendUserToPack**](UserApi.md#appendUserToPack) | **POST** /users/{user_id}/packs | Assign a pack to user
-[**appendUserToTeam**](UserApi.md#appendUserToTeam) | **POST** /users/{user_id}/teams | Assign a team to user
-[**createUser**](UserApi.md#createUser) | **POST** /users | Create a new user
-[**deleteUser**](UserApi.md#deleteUser) | **DELETE** /users/{user_id} | Delete a specific user
-[**deleteUserFromMod**](UserApi.md#deleteUserFromMod) | **DELETE** /users/{user_id}/mods | Remove a mod from user
-[**deleteUserFromPack**](UserApi.md#deleteUserFromPack) | **DELETE** /users/{user_id}/packs | Remove a pack from user
-[**deleteUserFromTeam**](UserApi.md#deleteUserFromTeam) | **DELETE** /users/{user_id}/teams | Remove a team from user
-[**listUserMods**](UserApi.md#listUserMods) | **GET** /users/{user_id}/mods | Fetch all mods assigned to user
-[**listUserPacks**](UserApi.md#listUserPacks) | **GET** /users/{user_id}/packs | Fetch all packs assigned to user
-[**listUserTeams**](UserApi.md#listUserTeams) | **GET** /users/{user_id}/teams | Fetch all teams assigned to user
-[**listUsers**](UserApi.md#listUsers) | **GET** /users | Fetch all available users
-[**permitUserMod**](UserApi.md#permitUserMod) | **PUT** /users/{user_id}/mods | Update mod perms for user
-[**permitUserPack**](UserApi.md#permitUserPack) | **PUT** /users/{user_id}/packs | Update pack perms for user
-[**permitUserTeam**](UserApi.md#permitUserTeam) | **PUT** /users/{user_id}/teams | Update team perms for user
-[**showUser**](UserApi.md#showUser) | **GET** /users/{user_id} | Fetch a specific user
-[**updateUser**](UserApi.md#updateUser) | **PUT** /users/{user_id} | Update a specific user
+[**appendUserToMod()**](UserApi.md#appendUserToMod) | **POST** /users/{user_id}/mods | Assign a mod to user
+[**appendUserToPack()**](UserApi.md#appendUserToPack) | **POST** /users/{user_id}/packs | Assign a pack to user
+[**appendUserToTeam()**](UserApi.md#appendUserToTeam) | **POST** /users/{user_id}/teams | Assign a team to user
+[**createUser()**](UserApi.md#createUser) | **POST** /users | Create a new user
+[**deleteUser()**](UserApi.md#deleteUser) | **DELETE** /users/{user_id} | Delete a specific user
+[**deleteUserFromMod()**](UserApi.md#deleteUserFromMod) | **DELETE** /users/{user_id}/mods | Remove a mod from user
+[**deleteUserFromPack()**](UserApi.md#deleteUserFromPack) | **DELETE** /users/{user_id}/packs | Remove a pack from user
+[**deleteUserFromTeam()**](UserApi.md#deleteUserFromTeam) | **DELETE** /users/{user_id}/teams | Remove a team from user
+[**listUserMods()**](UserApi.md#listUserMods) | **GET** /users/{user_id}/mods | Fetch all mods assigned to user
+[**listUserPacks()**](UserApi.md#listUserPacks) | **GET** /users/{user_id}/packs | Fetch all packs assigned to user
+[**listUserTeams()**](UserApi.md#listUserTeams) | **GET** /users/{user_id}/teams | Fetch all teams assigned to user
+[**listUsers()**](UserApi.md#listUsers) | **GET** /users | Fetch all available users
+[**permitUserMod()**](UserApi.md#permitUserMod) | **PUT** /users/{user_id}/mods | Update mod perms for user
+[**permitUserPack()**](UserApi.md#permitUserPack) | **PUT** /users/{user_id}/packs | Update pack perms for user
+[**permitUserTeam()**](UserApi.md#permitUserTeam) | **PUT** /users/{user_id}/teams | Update team perms for user
+[**showUser()**](UserApi.md#showUser) | **GET** /users/{user_id} | Fetch a specific user
+[**updateUser()**](UserApi.md#updateUser) | **PUT** /users/{user_id} | Update a specific user
 
 
+## `appendUserToMod()`
 
-## appendUserToMod
-
-> \Kleister\Model\GeneralError appendUserToMod($userId, $userMod)
+```php
+appendUserToMod($userId, $userMod): \Kleister\Model\GeneralError
+```
 
 Assign a mod to user
 
@@ -35,6 +36,7 @@ Assign a mod to user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -51,11 +53,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->appendUserToMod: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -72,17 +72,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `appendUserToPack()`
 
-## appendUserToPack
-
-> \Kleister\Model\GeneralError appendUserToPack($userId, $userPack)
+```php
+appendUserToPack($userId, $userPack): \Kleister\Model\GeneralError
+```
 
 Assign a pack to user
 
@@ -91,6 +92,7 @@ Assign a pack to user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -107,11 +109,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->appendUserToPack: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -128,17 +128,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `appendUserToTeam()`
 
-## appendUserToTeam
-
-> \Kleister\Model\GeneralError appendUserToTeam($userId, $userTeam)
+```php
+appendUserToTeam($userId, $userTeam): \Kleister\Model\GeneralError
+```
 
 Assign a team to user
 
@@ -147,6 +148,7 @@ Assign a team to user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -163,11 +165,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->appendUserToTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -184,17 +184,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `createUser()`
 
-## createUser
-
-> \Kleister\Model\User createUser($user)
+```php
+createUser($user): \Kleister\Model\User
+```
 
 Create a new user
 
@@ -203,6 +204,7 @@ Create a new user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -218,11 +220,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->createUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -238,17 +238,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteUser()`
 
-## deleteUser
-
-> \Kleister\Model\GeneralError deleteUser($userId)
+```php
+deleteUser($userId): \Kleister\Model\GeneralError
+```
 
 Delete a specific user
 
@@ -257,6 +258,7 @@ Delete a specific user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -272,11 +274,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->deleteUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -293,16 +293,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteUserFromMod()`
 
-## deleteUserFromMod
-
-> \Kleister\Model\GeneralError deleteUserFromMod($userId, $userMod)
+```php
+deleteUserFromMod($userId, $userMod): \Kleister\Model\GeneralError
+```
 
 Remove a mod from user
 
@@ -311,6 +312,7 @@ Remove a mod from user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -327,11 +329,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->deleteUserFromMod: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -348,17 +348,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteUserFromPack()`
 
-## deleteUserFromPack
-
-> \Kleister\Model\GeneralError deleteUserFromPack($userId, $userPack)
+```php
+deleteUserFromPack($userId, $userPack): \Kleister\Model\GeneralError
+```
 
 Remove a pack from user
 
@@ -367,6 +368,7 @@ Remove a pack from user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -383,11 +385,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->deleteUserFromPack: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -404,17 +404,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteUserFromTeam()`
 
-## deleteUserFromTeam
-
-> \Kleister\Model\GeneralError deleteUserFromTeam($userId, $userTeam)
+```php
+deleteUserFromTeam($userId, $userTeam): \Kleister\Model\GeneralError
+```
 
 Remove a team from user
 
@@ -423,6 +424,7 @@ Remove a team from user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -439,11 +441,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->deleteUserFromTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -460,17 +460,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listUserMods()`
 
-## listUserMods
-
-> \Kleister\Model\UserMod[] listUserMods($userId)
+```php
+listUserMods($userId): \Kleister\Model\UserMod[]
+```
 
 Fetch all mods assigned to user
 
@@ -479,6 +480,7 @@ Fetch all mods assigned to user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -494,11 +496,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->listUserMods: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -515,16 +515,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listUserPacks()`
 
-## listUserPacks
-
-> \Kleister\Model\UserPack[] listUserPacks($userId)
+```php
+listUserPacks($userId): \Kleister\Model\UserPack[]
+```
 
 Fetch all packs assigned to user
 
@@ -533,6 +534,7 @@ Fetch all packs assigned to user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -548,11 +550,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->listUserPacks: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -569,16 +569,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listUserTeams()`
 
-## listUserTeams
-
-> \Kleister\Model\TeamUser[] listUserTeams($userId)
+```php
+listUserTeams($userId): \Kleister\Model\TeamUser[]
+```
 
 Fetch all teams assigned to user
 
@@ -587,6 +588,7 @@ Fetch all teams assigned to user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -602,11 +604,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->listUserTeams: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -623,16 +623,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listUsers()`
 
-## listUsers
-
-> \Kleister\Model\User[] listUsers()
+```php
+listUsers(): \Kleister\Model\User[]
+```
 
 Fetch all available users
 
@@ -641,6 +642,7 @@ Fetch all available users
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -655,7 +657,6 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->listUsers: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
@@ -673,16 +674,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `permitUserMod()`
 
-## permitUserMod
-
-> \Kleister\Model\GeneralError permitUserMod($userId, $userMod)
+```php
+permitUserMod($userId, $userMod): \Kleister\Model\GeneralError
+```
 
 Update mod perms for user
 
@@ -691,6 +693,7 @@ Update mod perms for user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -707,11 +710,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->permitUserMod: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -728,17 +729,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `permitUserPack()`
 
-## permitUserPack
-
-> \Kleister\Model\GeneralError permitUserPack($userId, $userPack)
+```php
+permitUserPack($userId, $userPack): \Kleister\Model\GeneralError
+```
 
 Update pack perms for user
 
@@ -747,6 +749,7 @@ Update pack perms for user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -763,11 +766,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->permitUserPack: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -784,17 +785,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `permitUserTeam()`
 
-## permitUserTeam
-
-> \Kleister\Model\GeneralError permitUserTeam($userId, $userTeam)
+```php
+permitUserTeam($userId, $userTeam): \Kleister\Model\GeneralError
+```
 
 Update team perms for user
 
@@ -803,6 +805,7 @@ Update team perms for user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -819,11 +822,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->permitUserTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -840,17 +841,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `showUser()`
 
-## showUser
-
-> \Kleister\Model\User showUser($userId)
+```php
+showUser($userId): \Kleister\Model\User
+```
 
 Fetch a specific user
 
@@ -859,6 +861,7 @@ Fetch a specific user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -874,11 +877,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->showUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -895,16 +896,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `updateUser()`
 
-## updateUser
-
-> \Kleister\Model\User updateUser($userId, $user)
+```php
+updateUser($userId, $user): \Kleister\Model\User
+```
 
 Update a specific user
 
@@ -913,6 +915,7 @@ Update a specific user
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\UserApi(
@@ -929,11 +932,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->updateUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -950,10 +951,9 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
-

@@ -1,36 +1,37 @@
 # Kleister\ModApi
 
-All URIs are relative to *http://try.kleister.tech/api/v1*
+All URIs are relative to http://try.kleister.tech/api/v1.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**appendModToTeam**](ModApi.md#appendModToTeam) | **POST** /mods/{mod_id}/teams | Assign a team to mod
-[**appendModToUser**](ModApi.md#appendModToUser) | **POST** /mods/{mod_id}/users | Assign a user to mod
-[**appendVersionToBuild**](ModApi.md#appendVersionToBuild) | **POST** /mods/{mod_id}/versions/{version_id}/builds | Assign a build to a version
-[**createMod**](ModApi.md#createMod) | **POST** /mods | Create a new mod
-[**createVersion**](ModApi.md#createVersion) | **POST** /mods/{mod_id}/versions | Create a new version for a mod
-[**deleteMod**](ModApi.md#deleteMod) | **DELETE** /mods/{mod_id} | Delete a specific mod
-[**deleteModFromTeam**](ModApi.md#deleteModFromTeam) | **DELETE** /mods/{mod_id}/teams | Remove a team from mod
-[**deleteModFromUser**](ModApi.md#deleteModFromUser) | **DELETE** /mods/{mod_id}/users | Remove a user from mod
-[**deleteVersion**](ModApi.md#deleteVersion) | **DELETE** /mods/{mod_id}/versions/{version_id} | Delete a specific version for a mod
-[**deleteVersionFromBuild**](ModApi.md#deleteVersionFromBuild) | **DELETE** /mods/{mod_id}/versions/{version_id}/builds | Unlink a build from a version
-[**listModTeams**](ModApi.md#listModTeams) | **GET** /mods/{mod_id}/teams | Fetch all teams assigned to mod
-[**listModUsers**](ModApi.md#listModUsers) | **GET** /mods/{mod_id}/users | Fetch all users assigned to mod
-[**listMods**](ModApi.md#listMods) | **GET** /mods | Fetch all available mods
-[**listVersionBuilds**](ModApi.md#listVersionBuilds) | **GET** /mods/{mod_id}/versions/{version_id}/builds | Fetch all builds assigned to version
-[**listVersions**](ModApi.md#listVersions) | **GET** /mods/{mod_id}/versions | Fetch all available versions for a mod
-[**permitModTeam**](ModApi.md#permitModTeam) | **PUT** /mods/{mod_id}/teams | Update team perms for mod
-[**permitModUser**](ModApi.md#permitModUser) | **PUT** /mods/{mod_id}/users | Update user perms for mod
-[**showMod**](ModApi.md#showMod) | **GET** /mods/{mod_id} | Fetch a specific mod
-[**showVersion**](ModApi.md#showVersion) | **GET** /mods/{mod_id}/versions/{version_id} | Fetch a specific version for a mod
-[**updateMod**](ModApi.md#updateMod) | **PUT** /mods/{mod_id} | Update a specific mod
-[**updateVersion**](ModApi.md#updateVersion) | **PUT** /mods/{mod_id}/versions/{version_id} | Update a specific version for a mod
+[**appendModToTeam()**](ModApi.md#appendModToTeam) | **POST** /mods/{mod_id}/teams | Assign a team to mod
+[**appendModToUser()**](ModApi.md#appendModToUser) | **POST** /mods/{mod_id}/users | Assign a user to mod
+[**appendVersionToBuild()**](ModApi.md#appendVersionToBuild) | **POST** /mods/{mod_id}/versions/{version_id}/builds | Assign a build to a version
+[**createMod()**](ModApi.md#createMod) | **POST** /mods | Create a new mod
+[**createVersion()**](ModApi.md#createVersion) | **POST** /mods/{mod_id}/versions | Create a new version for a mod
+[**deleteMod()**](ModApi.md#deleteMod) | **DELETE** /mods/{mod_id} | Delete a specific mod
+[**deleteModFromTeam()**](ModApi.md#deleteModFromTeam) | **DELETE** /mods/{mod_id}/teams | Remove a team from mod
+[**deleteModFromUser()**](ModApi.md#deleteModFromUser) | **DELETE** /mods/{mod_id}/users | Remove a user from mod
+[**deleteVersion()**](ModApi.md#deleteVersion) | **DELETE** /mods/{mod_id}/versions/{version_id} | Delete a specific version for a mod
+[**deleteVersionFromBuild()**](ModApi.md#deleteVersionFromBuild) | **DELETE** /mods/{mod_id}/versions/{version_id}/builds | Unlink a build from a version
+[**listModTeams()**](ModApi.md#listModTeams) | **GET** /mods/{mod_id}/teams | Fetch all teams assigned to mod
+[**listModUsers()**](ModApi.md#listModUsers) | **GET** /mods/{mod_id}/users | Fetch all users assigned to mod
+[**listMods()**](ModApi.md#listMods) | **GET** /mods | Fetch all available mods
+[**listVersionBuilds()**](ModApi.md#listVersionBuilds) | **GET** /mods/{mod_id}/versions/{version_id}/builds | Fetch all builds assigned to version
+[**listVersions()**](ModApi.md#listVersions) | **GET** /mods/{mod_id}/versions | Fetch all available versions for a mod
+[**permitModTeam()**](ModApi.md#permitModTeam) | **PUT** /mods/{mod_id}/teams | Update team perms for mod
+[**permitModUser()**](ModApi.md#permitModUser) | **PUT** /mods/{mod_id}/users | Update user perms for mod
+[**showMod()**](ModApi.md#showMod) | **GET** /mods/{mod_id} | Fetch a specific mod
+[**showVersion()**](ModApi.md#showVersion) | **GET** /mods/{mod_id}/versions/{version_id} | Fetch a specific version for a mod
+[**updateMod()**](ModApi.md#updateMod) | **PUT** /mods/{mod_id} | Update a specific mod
+[**updateVersion()**](ModApi.md#updateVersion) | **PUT** /mods/{mod_id}/versions/{version_id} | Update a specific version for a mod
 
 
+## `appendModToTeam()`
 
-## appendModToTeam
-
-> \Kleister\Model\GeneralError appendModToTeam($modId, $modTeam)
+```php
+appendModToTeam($modId, $modTeam): \Kleister\Model\GeneralError
+```
 
 Assign a team to mod
 
@@ -39,6 +40,7 @@ Assign a team to mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -55,11 +57,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->appendModToTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -76,17 +76,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `appendModToUser()`
 
-## appendModToUser
-
-> \Kleister\Model\GeneralError appendModToUser($modId, $modUser)
+```php
+appendModToUser($modId, $modUser): \Kleister\Model\GeneralError
+```
 
 Assign a user to mod
 
@@ -95,6 +96,7 @@ Assign a user to mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -111,11 +113,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->appendModToUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -132,17 +132,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `appendVersionToBuild()`
 
-## appendVersionToBuild
-
-> \Kleister\Model\GeneralError appendVersionToBuild($modId, $versionId, $versionBuild)
+```php
+appendVersionToBuild($modId, $versionId, $versionBuild): \Kleister\Model\GeneralError
+```
 
 Assign a build to a version
 
@@ -151,6 +152,7 @@ Assign a build to a version
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -168,11 +170,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->appendVersionToBuild: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -190,17 +190,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `createMod()`
 
-## createMod
-
-> \Kleister\Model\Mod createMod($mod)
+```php
+createMod($mod): \Kleister\Model\Mod
+```
 
 Create a new mod
 
@@ -209,6 +210,7 @@ Create a new mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -224,11 +226,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->createMod: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -244,17 +244,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `createVersion()`
 
-## createVersion
-
-> \Kleister\Model\Version createVersion($modId, $version)
+```php
+createVersion($modId, $version): \Kleister\Model\Version
+```
 
 Create a new version for a mod
 
@@ -263,6 +264,7 @@ Create a new version for a mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -279,11 +281,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->createVersion: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -300,17 +300,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteMod()`
 
-## deleteMod
-
-> \Kleister\Model\GeneralError deleteMod($modId)
+```php
+deleteMod($modId): \Kleister\Model\GeneralError
+```
 
 Delete a specific mod
 
@@ -319,6 +320,7 @@ Delete a specific mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -334,11 +336,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->deleteMod: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -355,16 +355,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteModFromTeam()`
 
-## deleteModFromTeam
-
-> \Kleister\Model\GeneralError deleteModFromTeam($modId, $modTeam)
+```php
+deleteModFromTeam($modId, $modTeam): \Kleister\Model\GeneralError
+```
 
 Remove a team from mod
 
@@ -373,6 +374,7 @@ Remove a team from mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -389,11 +391,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->deleteModFromTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -410,17 +410,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteModFromUser()`
 
-## deleteModFromUser
-
-> \Kleister\Model\GeneralError deleteModFromUser($modId, $modUser)
+```php
+deleteModFromUser($modId, $modUser): \Kleister\Model\GeneralError
+```
 
 Remove a user from mod
 
@@ -429,6 +430,7 @@ Remove a user from mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -445,11 +447,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->deleteModFromUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -466,17 +466,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteVersion()`
 
-## deleteVersion
-
-> \Kleister\Model\GeneralError deleteVersion($modId, $versionId)
+```php
+deleteVersion($modId, $versionId): \Kleister\Model\GeneralError
+```
 
 Delete a specific version for a mod
 
@@ -485,6 +486,7 @@ Delete a specific version for a mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -501,11 +503,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->deleteVersion: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -523,16 +523,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteVersionFromBuild()`
 
-## deleteVersionFromBuild
-
-> \Kleister\Model\GeneralError deleteVersionFromBuild($modId, $versionId, $versionBuild)
+```php
+deleteVersionFromBuild($modId, $versionId, $versionBuild): \Kleister\Model\GeneralError
+```
 
 Unlink a build from a version
 
@@ -541,6 +542,7 @@ Unlink a build from a version
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -558,11 +560,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->deleteVersionFromBuild: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -580,17 +580,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listModTeams()`
 
-## listModTeams
-
-> \Kleister\Model\TeamMod[] listModTeams($modId)
+```php
+listModTeams($modId): \Kleister\Model\TeamMod[]
+```
 
 Fetch all teams assigned to mod
 
@@ -599,6 +600,7 @@ Fetch all teams assigned to mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -614,11 +616,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->listModTeams: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -635,16 +635,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listModUsers()`
 
-## listModUsers
-
-> \Kleister\Model\UserMod[] listModUsers($modId)
+```php
+listModUsers($modId): \Kleister\Model\UserMod[]
+```
 
 Fetch all users assigned to mod
 
@@ -653,6 +654,7 @@ Fetch all users assigned to mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -668,11 +670,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->listModUsers: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -689,16 +689,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listMods()`
 
-## listMods
-
-> \Kleister\Model\Mod[] listMods()
+```php
+listMods(): \Kleister\Model\Mod[]
+```
 
 Fetch all available mods
 
@@ -707,6 +708,7 @@ Fetch all available mods
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -721,7 +723,6 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->listMods: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
@@ -739,16 +740,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listVersionBuilds()`
 
-## listVersionBuilds
-
-> \Kleister\Model\BuildVersion[] listVersionBuilds($modId, $versionId)
+```php
+listVersionBuilds($modId, $versionId): \Kleister\Model\BuildVersion[]
+```
 
 Fetch all builds assigned to version
 
@@ -757,6 +759,7 @@ Fetch all builds assigned to version
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -773,11 +776,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->listVersionBuilds: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -795,16 +796,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listVersions()`
 
-## listVersions
-
-> \Kleister\Model\Version[] listVersions($modId)
+```php
+listVersions($modId): \Kleister\Model\Version[]
+```
 
 Fetch all available versions for a mod
 
@@ -813,6 +815,7 @@ Fetch all available versions for a mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -828,11 +831,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->listVersions: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -849,16 +850,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `permitModTeam()`
 
-## permitModTeam
-
-> \Kleister\Model\GeneralError permitModTeam($modId, $modTeam)
+```php
+permitModTeam($modId, $modTeam): \Kleister\Model\GeneralError
+```
 
 Update team perms for mod
 
@@ -867,6 +869,7 @@ Update team perms for mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -883,11 +886,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->permitModTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -904,17 +905,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `permitModUser()`
 
-## permitModUser
-
-> \Kleister\Model\GeneralError permitModUser($modId, $modUser)
+```php
+permitModUser($modId, $modUser): \Kleister\Model\GeneralError
+```
 
 Update user perms for mod
 
@@ -923,6 +925,7 @@ Update user perms for mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -939,11 +942,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->permitModUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -960,17 +961,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `showMod()`
 
-## showMod
-
-> \Kleister\Model\Mod showMod($modId)
+```php
+showMod($modId): \Kleister\Model\Mod
+```
 
 Fetch a specific mod
 
@@ -979,6 +981,7 @@ Fetch a specific mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -994,11 +997,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->showMod: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1015,16 +1016,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `showVersion()`
 
-## showVersion
-
-> \Kleister\Model\Version showVersion($modId, $versionId)
+```php
+showVersion($modId, $versionId): \Kleister\Model\Version
+```
 
 Fetch a specific version for a mod
 
@@ -1033,6 +1035,7 @@ Fetch a specific version for a mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -1049,11 +1052,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->showVersion: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1071,16 +1072,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `updateMod()`
 
-## updateMod
-
-> \Kleister\Model\Mod updateMod($modId, $mod)
+```php
+updateMod($modId, $mod): \Kleister\Model\Mod
+```
 
 Update a specific mod
 
@@ -1089,6 +1091,7 @@ Update a specific mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -1105,11 +1108,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->updateMod: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1126,17 +1127,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `updateVersion()`
 
-## updateVersion
-
-> \Kleister\Model\Version updateVersion($modId, $versionId, $version)
+```php
+updateVersion($modId, $versionId, $version): \Kleister\Model\Version
+```
 
 Update a specific version for a mod
 
@@ -1145,6 +1147,7 @@ Update a specific version for a mod
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ModApi(
@@ -1162,11 +1165,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->updateVersion: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1184,10 +1185,9 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
-

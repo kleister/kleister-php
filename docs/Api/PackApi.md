@@ -1,36 +1,37 @@
 # Kleister\PackApi
 
-All URIs are relative to *http://try.kleister.tech/api/v1*
+All URIs are relative to http://try.kleister.tech/api/v1.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**appendBuildToVersion**](PackApi.md#appendBuildToVersion) | **POST** /packs/{pack_id}/builds/{build_id}/versions | Assign a version to a build
-[**appendPackToTeam**](PackApi.md#appendPackToTeam) | **POST** /packs/{pack_id}/teams | Assign a team to pack
-[**appendPackToUser**](PackApi.md#appendPackToUser) | **POST** /packs/{pack_id}/users | Assign a user to pack
-[**createBuild**](PackApi.md#createBuild) | **POST** /packs/{pack_id}/builds | Create a new build for a pack
-[**createPack**](PackApi.md#createPack) | **POST** /packs | Create a new pack
-[**deleteBuild**](PackApi.md#deleteBuild) | **DELETE** /packs/{pack_id}/builds/{build_id} | Delete a specific build for a pack
-[**deleteBuildFromVersion**](PackApi.md#deleteBuildFromVersion) | **DELETE** /packs/{pack_id}/builds/{build_id}/versions | Unlink a version from a build
-[**deletePack**](PackApi.md#deletePack) | **DELETE** /packs/{pack_id} | Delete a specific pack
-[**deletePackFromTeam**](PackApi.md#deletePackFromTeam) | **DELETE** /packs/{pack_id}/teams | Remove a team from pack
-[**deletePackFromUser**](PackApi.md#deletePackFromUser) | **DELETE** /packs/{pack_id}/users | Remove a user from pack
-[**listBuildVersions**](PackApi.md#listBuildVersions) | **GET** /packs/{pack_id}/builds/{build_id}/versions | Fetch all versions assigned to build
-[**listBuilds**](PackApi.md#listBuilds) | **GET** /packs/{pack_id}/builds | Fetch all available builds for a pack
-[**listPackTeams**](PackApi.md#listPackTeams) | **GET** /packs/{pack_id}/teams | Fetch all teams assigned to pack
-[**listPackUsers**](PackApi.md#listPackUsers) | **GET** /packs/{pack_id}/users | Fetch all users assigned to pack
-[**listPacks**](PackApi.md#listPacks) | **GET** /packs | Fetch all available packs
-[**permitPackTeam**](PackApi.md#permitPackTeam) | **PUT** /packs/{pack_id}/teams | Update team perms for pack
-[**permitPackUser**](PackApi.md#permitPackUser) | **PUT** /packs/{pack_id}/users | Update user perms for pack
-[**showBuild**](PackApi.md#showBuild) | **GET** /packs/{pack_id}/builds/{build_id} | Fetch a specific build for a pack
-[**showPack**](PackApi.md#showPack) | **GET** /packs/{pack_id} | Fetch a specific pack
-[**updateBuild**](PackApi.md#updateBuild) | **PUT** /packs/{pack_id}/builds/{build_id} | Update a specific build for a pack
-[**updatePack**](PackApi.md#updatePack) | **PUT** /packs/{pack_id} | Update a specific pack
+[**appendBuildToVersion()**](PackApi.md#appendBuildToVersion) | **POST** /packs/{pack_id}/builds/{build_id}/versions | Assign a version to a build
+[**appendPackToTeam()**](PackApi.md#appendPackToTeam) | **POST** /packs/{pack_id}/teams | Assign a team to pack
+[**appendPackToUser()**](PackApi.md#appendPackToUser) | **POST** /packs/{pack_id}/users | Assign a user to pack
+[**createBuild()**](PackApi.md#createBuild) | **POST** /packs/{pack_id}/builds | Create a new build for a pack
+[**createPack()**](PackApi.md#createPack) | **POST** /packs | Create a new pack
+[**deleteBuild()**](PackApi.md#deleteBuild) | **DELETE** /packs/{pack_id}/builds/{build_id} | Delete a specific build for a pack
+[**deleteBuildFromVersion()**](PackApi.md#deleteBuildFromVersion) | **DELETE** /packs/{pack_id}/builds/{build_id}/versions | Unlink a version from a build
+[**deletePack()**](PackApi.md#deletePack) | **DELETE** /packs/{pack_id} | Delete a specific pack
+[**deletePackFromTeam()**](PackApi.md#deletePackFromTeam) | **DELETE** /packs/{pack_id}/teams | Remove a team from pack
+[**deletePackFromUser()**](PackApi.md#deletePackFromUser) | **DELETE** /packs/{pack_id}/users | Remove a user from pack
+[**listBuildVersions()**](PackApi.md#listBuildVersions) | **GET** /packs/{pack_id}/builds/{build_id}/versions | Fetch all versions assigned to build
+[**listBuilds()**](PackApi.md#listBuilds) | **GET** /packs/{pack_id}/builds | Fetch all available builds for a pack
+[**listPackTeams()**](PackApi.md#listPackTeams) | **GET** /packs/{pack_id}/teams | Fetch all teams assigned to pack
+[**listPackUsers()**](PackApi.md#listPackUsers) | **GET** /packs/{pack_id}/users | Fetch all users assigned to pack
+[**listPacks()**](PackApi.md#listPacks) | **GET** /packs | Fetch all available packs
+[**permitPackTeam()**](PackApi.md#permitPackTeam) | **PUT** /packs/{pack_id}/teams | Update team perms for pack
+[**permitPackUser()**](PackApi.md#permitPackUser) | **PUT** /packs/{pack_id}/users | Update user perms for pack
+[**showBuild()**](PackApi.md#showBuild) | **GET** /packs/{pack_id}/builds/{build_id} | Fetch a specific build for a pack
+[**showPack()**](PackApi.md#showPack) | **GET** /packs/{pack_id} | Fetch a specific pack
+[**updateBuild()**](PackApi.md#updateBuild) | **PUT** /packs/{pack_id}/builds/{build_id} | Update a specific build for a pack
+[**updatePack()**](PackApi.md#updatePack) | **PUT** /packs/{pack_id} | Update a specific pack
 
 
+## `appendBuildToVersion()`
 
-## appendBuildToVersion
-
-> \Kleister\Model\GeneralError appendBuildToVersion($packId, $buildId, $buildVersion)
+```php
+appendBuildToVersion($packId, $buildId, $buildVersion): \Kleister\Model\GeneralError
+```
 
 Assign a version to a build
 
@@ -39,6 +40,7 @@ Assign a version to a build
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -56,11 +58,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->appendBuildToVersion: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -78,17 +78,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `appendPackToTeam()`
 
-## appendPackToTeam
-
-> \Kleister\Model\GeneralError appendPackToTeam($packId, $packTeam)
+```php
+appendPackToTeam($packId, $packTeam): \Kleister\Model\GeneralError
+```
 
 Assign a team to pack
 
@@ -97,6 +98,7 @@ Assign a team to pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -113,11 +115,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->appendPackToTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -134,17 +134,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `appendPackToUser()`
 
-## appendPackToUser
-
-> \Kleister\Model\GeneralError appendPackToUser($packId, $packUser)
+```php
+appendPackToUser($packId, $packUser): \Kleister\Model\GeneralError
+```
 
 Assign a user to pack
 
@@ -153,6 +154,7 @@ Assign a user to pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -169,11 +171,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->appendPackToUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -190,17 +190,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `createBuild()`
 
-## createBuild
-
-> \Kleister\Model\Build createBuild($packId, $build)
+```php
+createBuild($packId, $build): \Kleister\Model\Build
+```
 
 Create a new build for a pack
 
@@ -209,6 +210,7 @@ Create a new build for a pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -225,11 +227,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->createBuild: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -246,17 +246,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `createPack()`
 
-## createPack
-
-> \Kleister\Model\Pack createPack($pack)
+```php
+createPack($pack): \Kleister\Model\Pack
+```
 
 Create a new pack
 
@@ -265,6 +266,7 @@ Create a new pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -280,11 +282,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->createPack: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -300,17 +300,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteBuild()`
 
-## deleteBuild
-
-> \Kleister\Model\GeneralError deleteBuild($packId, $buildId)
+```php
+deleteBuild($packId, $buildId): \Kleister\Model\GeneralError
+```
 
 Delete a specific build for a pack
 
@@ -319,6 +320,7 @@ Delete a specific build for a pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -335,11 +337,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->deleteBuild: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -357,16 +357,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteBuildFromVersion()`
 
-## deleteBuildFromVersion
-
-> \Kleister\Model\GeneralError deleteBuildFromVersion($packId, $buildId, $buildVersion)
+```php
+deleteBuildFromVersion($packId, $buildId, $buildVersion): \Kleister\Model\GeneralError
+```
 
 Unlink a version from a build
 
@@ -375,6 +376,7 @@ Unlink a version from a build
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -392,11 +394,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->deleteBuildFromVersion: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -414,17 +414,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deletePack()`
 
-## deletePack
-
-> \Kleister\Model\GeneralError deletePack($packId)
+```php
+deletePack($packId): \Kleister\Model\GeneralError
+```
 
 Delete a specific pack
 
@@ -433,6 +434,7 @@ Delete a specific pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -448,11 +450,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->deletePack: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -469,16 +469,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deletePackFromTeam()`
 
-## deletePackFromTeam
-
-> \Kleister\Model\GeneralError deletePackFromTeam($packId, $packTeam)
+```php
+deletePackFromTeam($packId, $packTeam): \Kleister\Model\GeneralError
+```
 
 Remove a team from pack
 
@@ -487,6 +488,7 @@ Remove a team from pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -503,11 +505,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->deletePackFromTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -524,17 +524,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deletePackFromUser()`
 
-## deletePackFromUser
-
-> \Kleister\Model\GeneralError deletePackFromUser($packId, $packUser)
+```php
+deletePackFromUser($packId, $packUser): \Kleister\Model\GeneralError
+```
 
 Remove a user from pack
 
@@ -543,6 +544,7 @@ Remove a user from pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -559,11 +561,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->deletePackFromUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -580,17 +580,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listBuildVersions()`
 
-## listBuildVersions
-
-> \Kleister\Model\BuildVersion[] listBuildVersions($packId, $buildId)
+```php
+listBuildVersions($packId, $buildId): \Kleister\Model\BuildVersion[]
+```
 
 Fetch all versions assigned to build
 
@@ -599,6 +600,7 @@ Fetch all versions assigned to build
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -615,11 +617,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->listBuildVersions: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -637,16 +637,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listBuilds()`
 
-## listBuilds
-
-> \Kleister\Model\Build[] listBuilds($packId)
+```php
+listBuilds($packId): \Kleister\Model\Build[]
+```
 
 Fetch all available builds for a pack
 
@@ -655,6 +656,7 @@ Fetch all available builds for a pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -670,11 +672,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->listBuilds: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -691,16 +691,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listPackTeams()`
 
-## listPackTeams
-
-> \Kleister\Model\TeamPack[] listPackTeams($packId)
+```php
+listPackTeams($packId): \Kleister\Model\TeamPack[]
+```
 
 Fetch all teams assigned to pack
 
@@ -709,6 +710,7 @@ Fetch all teams assigned to pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -724,11 +726,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->listPackTeams: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -745,16 +745,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listPackUsers()`
 
-## listPackUsers
-
-> \Kleister\Model\UserPack[] listPackUsers($packId)
+```php
+listPackUsers($packId): \Kleister\Model\UserPack[]
+```
 
 Fetch all users assigned to pack
 
@@ -763,6 +764,7 @@ Fetch all users assigned to pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -778,11 +780,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->listPackUsers: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -799,16 +799,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listPacks()`
 
-## listPacks
-
-> \Kleister\Model\Pack[] listPacks()
+```php
+listPacks(): \Kleister\Model\Pack[]
+```
 
 Fetch all available packs
 
@@ -817,6 +818,7 @@ Fetch all available packs
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -831,7 +833,6 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->listPacks: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
@@ -849,16 +850,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `permitPackTeam()`
 
-## permitPackTeam
-
-> \Kleister\Model\GeneralError permitPackTeam($packId, $packTeam)
+```php
+permitPackTeam($packId, $packTeam): \Kleister\Model\GeneralError
+```
 
 Update team perms for pack
 
@@ -867,6 +869,7 @@ Update team perms for pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -883,11 +886,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->permitPackTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -904,17 +905,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `permitPackUser()`
 
-## permitPackUser
-
-> \Kleister\Model\GeneralError permitPackUser($packId, $packUser)
+```php
+permitPackUser($packId, $packUser): \Kleister\Model\GeneralError
+```
 
 Update user perms for pack
 
@@ -923,6 +925,7 @@ Update user perms for pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -939,11 +942,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->permitPackUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -960,17 +961,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `showBuild()`
 
-## showBuild
-
-> \Kleister\Model\Build showBuild($packId, $buildId)
+```php
+showBuild($packId, $buildId): \Kleister\Model\Build
+```
 
 Fetch a specific build for a pack
 
@@ -979,6 +981,7 @@ Fetch a specific build for a pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -995,11 +998,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->showBuild: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1017,16 +1018,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `showPack()`
 
-## showPack
-
-> \Kleister\Model\Pack showPack($packId)
+```php
+showPack($packId): \Kleister\Model\Pack
+```
 
 Fetch a specific pack
 
@@ -1035,6 +1037,7 @@ Fetch a specific pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -1050,11 +1053,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->showPack: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1071,16 +1072,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `updateBuild()`
 
-## updateBuild
-
-> \Kleister\Model\Build updateBuild($packId, $buildId, $build)
+```php
+updateBuild($packId, $buildId, $build): \Kleister\Model\Build
+```
 
 Update a specific build for a pack
 
@@ -1089,6 +1091,7 @@ Update a specific build for a pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -1106,11 +1109,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->updateBuild: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1128,17 +1129,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `updatePack()`
 
-## updatePack
-
-> \Kleister\Model\Pack updatePack($packId, $pack)
+```php
+updatePack($packId, $pack): \Kleister\Model\Pack
+```
 
 Update a specific pack
 
@@ -1147,6 +1149,7 @@ Update a specific pack
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\PackApi(
@@ -1163,11 +1166,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->updatePack: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -1184,10 +1185,9 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
-

@@ -1,32 +1,33 @@
 # Kleister\TeamApi
 
-All URIs are relative to *http://try.kleister.tech/api/v1*
+All URIs are relative to http://try.kleister.tech/api/v1.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**appendTeamToMod**](TeamApi.md#appendTeamToMod) | **POST** /teams/{team_id}/mods | Assign a mod to team
-[**appendTeamToPack**](TeamApi.md#appendTeamToPack) | **POST** /teams/{team_id}/packs | Assign a pack to team
-[**appendTeamToUser**](TeamApi.md#appendTeamToUser) | **POST** /teams/{team_id}/users | Assign a user to team
-[**createTeam**](TeamApi.md#createTeam) | **POST** /teams | Create a new team
-[**deleteTeam**](TeamApi.md#deleteTeam) | **DELETE** /teams/{team_id} | Delete a specific team
-[**deleteTeamFromMod**](TeamApi.md#deleteTeamFromMod) | **DELETE** /teams/{team_id}/mods | Remove a mod from team
-[**deleteTeamFromPack**](TeamApi.md#deleteTeamFromPack) | **DELETE** /teams/{team_id}/packs | Remove a pack from team
-[**deleteTeamFromUser**](TeamApi.md#deleteTeamFromUser) | **DELETE** /teams/{team_id}/users | Remove a user from team
-[**listTeamMods**](TeamApi.md#listTeamMods) | **GET** /teams/{team_id}/mods | Fetch all mods assigned to team
-[**listTeamPacks**](TeamApi.md#listTeamPacks) | **GET** /teams/{team_id}/packs | Fetch all packs assigned to team
-[**listTeamUsers**](TeamApi.md#listTeamUsers) | **GET** /teams/{team_id}/users | Fetch all users assigned to team
-[**listTeams**](TeamApi.md#listTeams) | **GET** /teams | Fetch all available teams
-[**permitTeamMod**](TeamApi.md#permitTeamMod) | **PUT** /teams/{team_id}/mods | Update mod perms for team
-[**permitTeamPack**](TeamApi.md#permitTeamPack) | **PUT** /teams/{team_id}/packs | Update pack perms for team
-[**permitTeamUser**](TeamApi.md#permitTeamUser) | **PUT** /teams/{team_id}/users | Update user perms for team
-[**showTeam**](TeamApi.md#showTeam) | **GET** /teams/{team_id} | Fetch a specific team
-[**updateTeam**](TeamApi.md#updateTeam) | **PUT** /teams/{team_id} | Update a specific team
+[**appendTeamToMod()**](TeamApi.md#appendTeamToMod) | **POST** /teams/{team_id}/mods | Assign a mod to team
+[**appendTeamToPack()**](TeamApi.md#appendTeamToPack) | **POST** /teams/{team_id}/packs | Assign a pack to team
+[**appendTeamToUser()**](TeamApi.md#appendTeamToUser) | **POST** /teams/{team_id}/users | Assign a user to team
+[**createTeam()**](TeamApi.md#createTeam) | **POST** /teams | Create a new team
+[**deleteTeam()**](TeamApi.md#deleteTeam) | **DELETE** /teams/{team_id} | Delete a specific team
+[**deleteTeamFromMod()**](TeamApi.md#deleteTeamFromMod) | **DELETE** /teams/{team_id}/mods | Remove a mod from team
+[**deleteTeamFromPack()**](TeamApi.md#deleteTeamFromPack) | **DELETE** /teams/{team_id}/packs | Remove a pack from team
+[**deleteTeamFromUser()**](TeamApi.md#deleteTeamFromUser) | **DELETE** /teams/{team_id}/users | Remove a user from team
+[**listTeamMods()**](TeamApi.md#listTeamMods) | **GET** /teams/{team_id}/mods | Fetch all mods assigned to team
+[**listTeamPacks()**](TeamApi.md#listTeamPacks) | **GET** /teams/{team_id}/packs | Fetch all packs assigned to team
+[**listTeamUsers()**](TeamApi.md#listTeamUsers) | **GET** /teams/{team_id}/users | Fetch all users assigned to team
+[**listTeams()**](TeamApi.md#listTeams) | **GET** /teams | Fetch all available teams
+[**permitTeamMod()**](TeamApi.md#permitTeamMod) | **PUT** /teams/{team_id}/mods | Update mod perms for team
+[**permitTeamPack()**](TeamApi.md#permitTeamPack) | **PUT** /teams/{team_id}/packs | Update pack perms for team
+[**permitTeamUser()**](TeamApi.md#permitTeamUser) | **PUT** /teams/{team_id}/users | Update user perms for team
+[**showTeam()**](TeamApi.md#showTeam) | **GET** /teams/{team_id} | Fetch a specific team
+[**updateTeam()**](TeamApi.md#updateTeam) | **PUT** /teams/{team_id} | Update a specific team
 
 
+## `appendTeamToMod()`
 
-## appendTeamToMod
-
-> \Kleister\Model\GeneralError appendTeamToMod($teamId, $teamMod)
+```php
+appendTeamToMod($teamId, $teamMod): \Kleister\Model\GeneralError
+```
 
 Assign a mod to team
 
@@ -35,6 +36,7 @@ Assign a mod to team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -51,11 +53,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->appendTeamToMod: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -72,17 +72,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `appendTeamToPack()`
 
-## appendTeamToPack
-
-> \Kleister\Model\GeneralError appendTeamToPack($teamId, $teamPack)
+```php
+appendTeamToPack($teamId, $teamPack): \Kleister\Model\GeneralError
+```
 
 Assign a pack to team
 
@@ -91,6 +92,7 @@ Assign a pack to team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -107,11 +109,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->appendTeamToPack: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -128,17 +128,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `appendTeamToUser()`
 
-## appendTeamToUser
-
-> \Kleister\Model\GeneralError appendTeamToUser($teamId, $teamUser)
+```php
+appendTeamToUser($teamId, $teamUser): \Kleister\Model\GeneralError
+```
 
 Assign a user to team
 
@@ -147,6 +148,7 @@ Assign a user to team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -163,11 +165,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->appendTeamToUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -184,17 +184,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `createTeam()`
 
-## createTeam
-
-> \Kleister\Model\Team createTeam($team)
+```php
+createTeam($team): \Kleister\Model\Team
+```
 
 Create a new team
 
@@ -203,6 +204,7 @@ Create a new team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -218,11 +220,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->createTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -238,17 +238,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteTeam()`
 
-## deleteTeam
-
-> \Kleister\Model\GeneralError deleteTeam($teamId)
+```php
+deleteTeam($teamId): \Kleister\Model\GeneralError
+```
 
 Delete a specific team
 
@@ -257,6 +258,7 @@ Delete a specific team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -272,11 +274,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->deleteTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -293,16 +293,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteTeamFromMod()`
 
-## deleteTeamFromMod
-
-> \Kleister\Model\GeneralError deleteTeamFromMod($teamId, $teamMod)
+```php
+deleteTeamFromMod($teamId, $teamMod): \Kleister\Model\GeneralError
+```
 
 Remove a mod from team
 
@@ -311,6 +312,7 @@ Remove a mod from team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -327,11 +329,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->deleteTeamFromMod: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -348,17 +348,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteTeamFromPack()`
 
-## deleteTeamFromPack
-
-> \Kleister\Model\GeneralError deleteTeamFromPack($teamId, $teamPack)
+```php
+deleteTeamFromPack($teamId, $teamPack): \Kleister\Model\GeneralError
+```
 
 Remove a pack from team
 
@@ -367,6 +368,7 @@ Remove a pack from team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -383,11 +385,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->deleteTeamFromPack: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -404,17 +404,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteTeamFromUser()`
 
-## deleteTeamFromUser
-
-> \Kleister\Model\GeneralError deleteTeamFromUser($teamId, $teamUser)
+```php
+deleteTeamFromUser($teamId, $teamUser): \Kleister\Model\GeneralError
+```
 
 Remove a user from team
 
@@ -423,6 +424,7 @@ Remove a user from team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -439,11 +441,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->deleteTeamFromUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -460,17 +460,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listTeamMods()`
 
-## listTeamMods
-
-> \Kleister\Model\TeamMod[] listTeamMods($teamId)
+```php
+listTeamMods($teamId): \Kleister\Model\TeamMod[]
+```
 
 Fetch all mods assigned to team
 
@@ -479,6 +480,7 @@ Fetch all mods assigned to team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -494,11 +496,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->listTeamMods: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -515,16 +515,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listTeamPacks()`
 
-## listTeamPacks
-
-> \Kleister\Model\TeamPack[] listTeamPacks($teamId)
+```php
+listTeamPacks($teamId): \Kleister\Model\TeamPack[]
+```
 
 Fetch all packs assigned to team
 
@@ -533,6 +534,7 @@ Fetch all packs assigned to team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -548,11 +550,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->listTeamPacks: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -569,16 +569,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listTeamUsers()`
 
-## listTeamUsers
-
-> \Kleister\Model\TeamUser[] listTeamUsers($teamId)
+```php
+listTeamUsers($teamId): \Kleister\Model\TeamUser[]
+```
 
 Fetch all users assigned to team
 
@@ -587,6 +588,7 @@ Fetch all users assigned to team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -602,11 +604,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->listTeamUsers: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -623,16 +623,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listTeams()`
 
-## listTeams
-
-> \Kleister\Model\Team[] listTeams()
+```php
+listTeams(): \Kleister\Model\Team[]
+```
 
 Fetch all available teams
 
@@ -641,6 +642,7 @@ Fetch all available teams
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -655,7 +657,6 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->listTeams: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
@@ -673,16 +674,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `permitTeamMod()`
 
-## permitTeamMod
-
-> \Kleister\Model\GeneralError permitTeamMod($teamId, $teamMod)
+```php
+permitTeamMod($teamId, $teamMod): \Kleister\Model\GeneralError
+```
 
 Update mod perms for team
 
@@ -691,6 +693,7 @@ Update mod perms for team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -707,11 +710,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->permitTeamMod: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -728,17 +729,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `permitTeamPack()`
 
-## permitTeamPack
-
-> \Kleister\Model\GeneralError permitTeamPack($teamId, $teamPack)
+```php
+permitTeamPack($teamId, $teamPack): \Kleister\Model\GeneralError
+```
 
 Update pack perms for team
 
@@ -747,6 +749,7 @@ Update pack perms for team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -763,11 +766,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->permitTeamPack: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -784,17 +785,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `permitTeamUser()`
 
-## permitTeamUser
-
-> \Kleister\Model\GeneralError permitTeamUser($teamId, $teamUser)
+```php
+permitTeamUser($teamId, $teamUser): \Kleister\Model\GeneralError
+```
 
 Update user perms for team
 
@@ -803,6 +805,7 @@ Update user perms for team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -819,11 +822,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->permitTeamUser: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -840,17 +841,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `showTeam()`
 
-## showTeam
-
-> \Kleister\Model\Team showTeam($teamId)
+```php
+showTeam($teamId): \Kleister\Model\Team
+```
 
 Fetch a specific team
 
@@ -859,6 +861,7 @@ Fetch a specific team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -874,11 +877,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->showTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -895,16 +896,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `updateTeam()`
 
-## updateTeam
-
-> \Kleister\Model\Team updateTeam($teamId, $team)
+```php
+updateTeam($teamId, $team): \Kleister\Model\Team
+```
 
 Update a specific team
 
@@ -913,6 +915,7 @@ Update a specific team
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\TeamApi(
@@ -929,11 +932,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling TeamApi->updateTeam: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -950,10 +951,9 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
-

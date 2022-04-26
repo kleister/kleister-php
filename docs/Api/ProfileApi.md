@@ -1,18 +1,19 @@
 # Kleister\ProfileApi
 
-All URIs are relative to *http://try.kleister.tech/api/v1*
+All URIs are relative to http://try.kleister.tech/api/v1.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**showProfile**](ProfileApi.md#showProfile) | **GET** /profile/self | Retrieve an unlimited auth token
-[**tokenProfile**](ProfileApi.md#tokenProfile) | **GET** /profile/token | Retrieve an unlimited auth token
-[**updateProfile**](ProfileApi.md#updateProfile) | **PUT** /profile/self | Retrieve an unlimited auth token
+[**showProfile()**](ProfileApi.md#showProfile) | **GET** /profile/self | Retrieve an unlimited auth token
+[**tokenProfile()**](ProfileApi.md#tokenProfile) | **GET** /profile/token | Retrieve an unlimited auth token
+[**updateProfile()**](ProfileApi.md#updateProfile) | **PUT** /profile/self | Retrieve an unlimited auth token
 
 
+## `showProfile()`
 
-## showProfile
-
-> \Kleister\Model\Profile showProfile()
+```php
+showProfile(): \Kleister\Model\Profile
+```
 
 Retrieve an unlimited auth token
 
@@ -21,6 +22,7 @@ Retrieve an unlimited auth token
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ProfileApi(
@@ -35,7 +37,6 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ProfileApi->showProfile: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
@@ -53,16 +54,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `tokenProfile()`
 
-## tokenProfile
-
-> \Kleister\Model\AuthToken tokenProfile()
+```php
+tokenProfile(): \Kleister\Model\AuthToken
+```
 
 Retrieve an unlimited auth token
 
@@ -71,6 +73,7 @@ Retrieve an unlimited auth token
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ProfileApi(
@@ -85,7 +88,6 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ProfileApi->tokenProfile: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
@@ -103,16 +105,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `updateProfile()`
 
-## updateProfile
-
-> \Kleister\Model\Profile updateProfile($profile)
+```php
+updateProfile($profile): \Kleister\Model\Profile
+```
 
 Retrieve an unlimited auth token
 
@@ -121,6 +124,7 @@ Retrieve an unlimited auth token
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ProfileApi(
@@ -136,11 +140,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ProfileApi->updateProfile: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -156,10 +158,9 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
-

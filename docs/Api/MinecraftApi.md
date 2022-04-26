@@ -1,21 +1,22 @@
 # Kleister\MinecraftApi
 
-All URIs are relative to *http://try.kleister.tech/api/v1*
+All URIs are relative to http://try.kleister.tech/api/v1.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**appendMinecraftToBuild**](MinecraftApi.md#appendMinecraftToBuild) | **POST** /minecraft/{minecraft_id}/builds | Assign a build to a Minecraft version
-[**deleteMinecraftFromBuild**](MinecraftApi.md#deleteMinecraftFromBuild) | **DELETE** /minecraft/{minecraft_id}/builds | Unlink a build from a Minecraft version
-[**listMinecraftBuilds**](MinecraftApi.md#listMinecraftBuilds) | **GET** /minecraft/{minecraft_id}/builds | Fetch the builds assigned to a Minecraft version
-[**listMinecrafts**](MinecraftApi.md#listMinecrafts) | **GET** /minecraft | Fetch the available Minecraft versions
-[**searchMinecrafts**](MinecraftApi.md#searchMinecrafts) | **GET** /minecraft/{minecraft_id} | Search for available Minecraft versions
-[**updateMinecraft**](MinecraftApi.md#updateMinecraft) | **PUT** /minecraft | Update the available Minecraft versions
+[**appendMinecraftToBuild()**](MinecraftApi.md#appendMinecraftToBuild) | **POST** /minecraft/{minecraft_id}/builds | Assign a build to a Minecraft version
+[**deleteMinecraftFromBuild()**](MinecraftApi.md#deleteMinecraftFromBuild) | **DELETE** /minecraft/{minecraft_id}/builds | Unlink a build from a Minecraft version
+[**listMinecraftBuilds()**](MinecraftApi.md#listMinecraftBuilds) | **GET** /minecraft/{minecraft_id}/builds | Fetch the builds assigned to a Minecraft version
+[**listMinecrafts()**](MinecraftApi.md#listMinecrafts) | **GET** /minecraft | Fetch the available Minecraft versions
+[**searchMinecrafts()**](MinecraftApi.md#searchMinecrafts) | **GET** /minecraft/{minecraft_id} | Search for available Minecraft versions
+[**updateMinecraft()**](MinecraftApi.md#updateMinecraft) | **PUT** /minecraft | Update the available Minecraft versions
 
 
+## `appendMinecraftToBuild()`
 
-## appendMinecraftToBuild
-
-> \Kleister\Model\Build[] appendMinecraftToBuild($minecraftId, $minecraftBuild)
+```php
+appendMinecraftToBuild($minecraftId, $minecraftBuild): \Kleister\Model\Build[]
+```
 
 Assign a build to a Minecraft version
 
@@ -24,6 +25,7 @@ Assign a build to a Minecraft version
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\MinecraftApi(
@@ -40,11 +42,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling MinecraftApi->appendMinecraftToBuild: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -61,17 +61,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteMinecraftFromBuild()`
 
-## deleteMinecraftFromBuild
-
-> \Kleister\Model\Build[] deleteMinecraftFromBuild($minecraftId, $minecraftBuild)
+```php
+deleteMinecraftFromBuild($minecraftId, $minecraftBuild): \Kleister\Model\Build[]
+```
 
 Unlink a build from a Minecraft version
 
@@ -80,6 +81,7 @@ Unlink a build from a Minecraft version
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\MinecraftApi(
@@ -96,11 +98,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling MinecraftApi->deleteMinecraftFromBuild: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -117,17 +117,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listMinecraftBuilds()`
 
-## listMinecraftBuilds
-
-> \Kleister\Model\Build[] listMinecraftBuilds($minecraftId)
+```php
+listMinecraftBuilds($minecraftId): \Kleister\Model\Build[]
+```
 
 Fetch the builds assigned to a Minecraft version
 
@@ -136,6 +137,7 @@ Fetch the builds assigned to a Minecraft version
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\MinecraftApi(
@@ -151,11 +153,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling MinecraftApi->listMinecraftBuilds: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -172,16 +172,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listMinecrafts()`
 
-## listMinecrafts
-
-> \Kleister\Model\Minecraft[] listMinecrafts()
+```php
+listMinecrafts(): \Kleister\Model\Minecraft[]
+```
 
 Fetch the available Minecraft versions
 
@@ -190,6 +191,7 @@ Fetch the available Minecraft versions
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\MinecraftApi(
@@ -204,7 +206,6 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling MinecraftApi->listMinecrafts: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
@@ -222,16 +223,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `searchMinecrafts()`
 
-## searchMinecrafts
-
-> \Kleister\Model\Minecraft[] searchMinecrafts($minecraftId)
+```php
+searchMinecrafts($minecraftId): \Kleister\Model\Minecraft[]
+```
 
 Search for available Minecraft versions
 
@@ -240,6 +242,7 @@ Search for available Minecraft versions
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\MinecraftApi(
@@ -255,11 +258,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling MinecraftApi->searchMinecrafts: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -276,16 +277,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `updateMinecraft()`
 
-## updateMinecraft
-
-> \Kleister\Model\GeneralError updateMinecraft()
+```php
+updateMinecraft(): \Kleister\Model\GeneralError
+```
 
 Update the available Minecraft versions
 
@@ -294,6 +296,7 @@ Update the available Minecraft versions
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\MinecraftApi(
@@ -308,7 +311,6 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling MinecraftApi->updateMinecraft: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
@@ -326,9 +328,8 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
-

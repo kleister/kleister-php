@@ -1,21 +1,22 @@
 # Kleister\ForgeApi
 
-All URIs are relative to *http://try.kleister.tech/api/v1*
+All URIs are relative to http://try.kleister.tech/api/v1.
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**appendForgeToBuild**](ForgeApi.md#appendForgeToBuild) | **POST** /forge/{forge_id}/builds | Assign a build to a Forge version
-[**deleteForgeFromBuild**](ForgeApi.md#deleteForgeFromBuild) | **DELETE** /forge/{forge_id}/builds | Unlink a build from a Forge version
-[**listForgeBuilds**](ForgeApi.md#listForgeBuilds) | **GET** /forge/{forge_id}/builds | Fetch the builds assigned to a Forge version
-[**listForges**](ForgeApi.md#listForges) | **GET** /forge | Fetch the available Forge versions
-[**searchForges**](ForgeApi.md#searchForges) | **GET** /forge/{forge_id} | Search for available Forge versions
-[**updateForge**](ForgeApi.md#updateForge) | **PUT** /forge | Update the available Forge versions
+[**appendForgeToBuild()**](ForgeApi.md#appendForgeToBuild) | **POST** /forge/{forge_id}/builds | Assign a build to a Forge version
+[**deleteForgeFromBuild()**](ForgeApi.md#deleteForgeFromBuild) | **DELETE** /forge/{forge_id}/builds | Unlink a build from a Forge version
+[**listForgeBuilds()**](ForgeApi.md#listForgeBuilds) | **GET** /forge/{forge_id}/builds | Fetch the builds assigned to a Forge version
+[**listForges()**](ForgeApi.md#listForges) | **GET** /forge | Fetch the available Forge versions
+[**searchForges()**](ForgeApi.md#searchForges) | **GET** /forge/{forge_id} | Search for available Forge versions
+[**updateForge()**](ForgeApi.md#updateForge) | **PUT** /forge | Update the available Forge versions
 
 
+## `appendForgeToBuild()`
 
-## appendForgeToBuild
-
-> \Kleister\Model\Build[] appendForgeToBuild($forgeId, $forgeBuild)
+```php
+appendForgeToBuild($forgeId, $forgeBuild): \Kleister\Model\Build[]
+```
 
 Assign a build to a Forge version
 
@@ -24,6 +25,7 @@ Assign a build to a Forge version
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ForgeApi(
@@ -40,11 +42,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ForgeApi->appendForgeToBuild: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -61,17 +61,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `deleteForgeFromBuild()`
 
-## deleteForgeFromBuild
-
-> \Kleister\Model\Build[] deleteForgeFromBuild($forgeId, $forgeBuild)
+```php
+deleteForgeFromBuild($forgeId, $forgeBuild): \Kleister\Model\Build[]
+```
 
 Unlink a build from a Forge version
 
@@ -80,6 +81,7 @@ Unlink a build from a Forge version
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ForgeApi(
@@ -96,11 +98,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ForgeApi->deleteForgeFromBuild: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -117,17 +117,18 @@ No authorization required
 
 ### HTTP request headers
 
-- **Content-Type**: application/json
-- **Accept**: application/json
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listForgeBuilds()`
 
-## listForgeBuilds
-
-> \Kleister\Model\Build[] listForgeBuilds($forgeId)
+```php
+listForgeBuilds($forgeId): \Kleister\Model\Build[]
+```
 
 Fetch the builds assigned to a Forge version
 
@@ -136,6 +137,7 @@ Fetch the builds assigned to a Forge version
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ForgeApi(
@@ -151,11 +153,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ForgeApi->listForgeBuilds: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -172,16 +172,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `listForges()`
 
-## listForges
-
-> \Kleister\Model\Forge[] listForges()
+```php
+listForges(): \Kleister\Model\Forge[]
+```
 
 Fetch the available Forge versions
 
@@ -190,6 +191,7 @@ Fetch the available Forge versions
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ForgeApi(
@@ -204,7 +206,6 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ForgeApi->listForges: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
@@ -222,16 +223,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `searchForges()`
 
-## searchForges
-
-> \Kleister\Model\Forge[] searchForges($forgeId)
+```php
+searchForges($forgeId): \Kleister\Model\Forge[]
+```
 
 Search for available Forge versions
 
@@ -240,6 +242,7 @@ Search for available Forge versions
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ForgeApi(
@@ -255,11 +258,9 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ForgeApi->searchForges: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
-
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
@@ -276,16 +277,17 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
+## `updateForge()`
 
-## updateForge
-
-> \Kleister\Model\GeneralError updateForge()
+```php
+updateForge(): \Kleister\Model\GeneralError
+```
 
 Update the available Forge versions
 
@@ -294,6 +296,7 @@ Update the available Forge versions
 ```php
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
+
 
 
 $apiInstance = new Kleister\Api\ForgeApi(
@@ -308,7 +311,6 @@ try {
 } catch (Exception $e) {
     echo 'Exception when calling ForgeApi->updateForge: ', $e->getMessage(), PHP_EOL;
 }
-?>
 ```
 
 ### Parameters
@@ -326,9 +328,8 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: Not defined
-- **Accept**: application/json
+- **Accept**: `application/json`
 
-[[Back to top]](#) [[Back to API list]](../../README.md#documentation-for-api-endpoints)
-[[Back to Model list]](../../README.md#documentation-for-models)
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
-
