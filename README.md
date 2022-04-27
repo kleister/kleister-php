@@ -181,44 +181,43 @@ Class | Method | HTTP request | Description
 
 ## Documentation for models
 
-- [AuthLogin](docs/Model/AuthLogin.md)
-- [AuthToken](docs/Model/AuthToken.md)
-- [AuthVerify](docs/Model/AuthVerify.md)
-- [Build](docs/Model/Build.md)
-- [BuildVersion](docs/Model/BuildVersion.md)
-- [BuildVersionParams](docs/Model/BuildVersionParams.md)
-- [Forge](docs/Model/Forge.md)
-- [ForgeBuildParams](docs/Model/ForgeBuildParams.md)
-- [GeneralError](docs/Model/GeneralError.md)
-- [Minecraft](docs/Model/Minecraft.md)
-- [MinecraftBuildParams](docs/Model/MinecraftBuildParams.md)
-- [Mod](docs/Model/Mod.md)
-- [ModTeamParams](docs/Model/ModTeamParams.md)
-- [ModUserParams](docs/Model/ModUserParams.md)
-- [Pack](docs/Model/Pack.md)
-- [PackTeamParams](docs/Model/PackTeamParams.md)
-- [PackUserParams](docs/Model/PackUserParams.md)
-- [Profile](docs/Model/Profile.md)
-- [Team](docs/Model/Team.md)
-- [TeamMod](docs/Model/TeamMod.md)
-- [TeamModParams](docs/Model/TeamModParams.md)
-- [TeamPack](docs/Model/TeamPack.md)
-- [TeamPackParams](docs/Model/TeamPackParams.md)
-- [TeamUser](docs/Model/TeamUser.md)
-- [TeamUserParams](docs/Model/TeamUserParams.md)
-- [User](docs/Model/User.md)
-- [UserMod](docs/Model/UserMod.md)
-- [UserModParams](docs/Model/UserModParams.md)
-- [UserPack](docs/Model/UserPack.md)
-- [UserPackParams](docs/Model/UserPackParams.md)
-- [UserTeamParams](docs/Model/UserTeamParams.md)
-- [ValidationError](docs/Model/ValidationError.md)
-- [ValidationErrorErrors](docs/Model/ValidationErrorErrors.md)
-- [Version](docs/Model/Version.md)
-- [VersionBuildParams](docs/Model/VersionBuildParams.md)
+-   [AuthLogin](docs/Model/AuthLogin.md)
+-   [AuthToken](docs/Model/AuthToken.md)
+-   [AuthVerify](docs/Model/AuthVerify.md)
+-   [Build](docs/Model/Build.md)
+-   [BuildVersion](docs/Model/BuildVersion.md)
+-   [BuildVersionParams](docs/Model/BuildVersionParams.md)
+-   [Forge](docs/Model/Forge.md)
+-   [ForgeBuildParams](docs/Model/ForgeBuildParams.md)
+-   [GeneralError](docs/Model/GeneralError.md)
+-   [Minecraft](docs/Model/Minecraft.md)
+-   [MinecraftBuildParams](docs/Model/MinecraftBuildParams.md)
+-   [Mod](docs/Model/Mod.md)
+-   [ModTeamParams](docs/Model/ModTeamParams.md)
+-   [ModUserParams](docs/Model/ModUserParams.md)
+-   [Pack](docs/Model/Pack.md)
+-   [PackTeamParams](docs/Model/PackTeamParams.md)
+-   [PackUserParams](docs/Model/PackUserParams.md)
+-   [Profile](docs/Model/Profile.md)
+-   [Team](docs/Model/Team.md)
+-   [TeamMod](docs/Model/TeamMod.md)
+-   [TeamModParams](docs/Model/TeamModParams.md)
+-   [TeamPack](docs/Model/TeamPack.md)
+-   [TeamPackParams](docs/Model/TeamPackParams.md)
+-   [TeamUser](docs/Model/TeamUser.md)
+-   [TeamUserParams](docs/Model/TeamUserParams.md)
+-   [User](docs/Model/User.md)
+-   [UserMod](docs/Model/UserMod.md)
+-   [UserModParams](docs/Model/UserModParams.md)
+-   [UserPack](docs/Model/UserPack.md)
+-   [UserPackParams](docs/Model/UserPackParams.md)
+-   [UserTeamParams](docs/Model/UserTeamParams.md)
+-   [ValidationError](docs/Model/ValidationError.md)
+-   [ValidationErrorErrors](docs/Model/ValidationErrorErrors.md)
+-   [Version](docs/Model/Version.md)
+-   [VersionBuildParams](docs/Model/VersionBuildParams.md)
 
 ## Documentation for authorization
-
 
 ### BasicAuth
 
@@ -229,7 +228,6 @@ Class | Method | HTTP request | Description
 -   **Type**: API key
 -   **API key parameter name**: X-API-Key
 -   **Location**: HTTP header
-
 
 ## Security
 
