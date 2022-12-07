@@ -3,7 +3,7 @@ repository:
   name: kleister-php
   description: "Kleister: SDK for PHP"
   homepage: https://kleister.eu
-  topics: kleister, minecraft, sdk, openapi, php
+  topics: kleister, minecraft, sdk, client, grpc, php
 
   private: false
   has_issues: true
