@@ -15,7 +15,23 @@ jobs:
 
     steps:
       - name: Checkout source
-        id: source
         uses: actions/checkout@v4
+
+      - name: Setup php
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+
+      - name: Install generator
+        run: npm install @openapitools/openapi-generator-cli -g
+
+      - name: Run generate
+        run: bash hack/generate-client.sh
+
+      - name: Run install
+        run: composer install
+
+      - name: Run test
+        run: vendor/bin/phpunit
 
 ...
