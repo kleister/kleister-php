@@ -69,10 +69,7 @@ class User implements ModelInterface, ArrayAccess, \JsonSerializable
         'active' => 'bool',
         'createdAt' => '\DateTime',
         'updatedAt' => '\DateTime',
-        'auths' => '\Kleister\Model\UserAuth[]',
-        'teams' => '\Kleister\Model\UserTeam[]',
-        'packs' => '\Kleister\Model\UserPack[]',
-        'mods' => '\Kleister\Model\UserMod[]'
+        'auths' => '\Kleister\Model\UserAuth[]'
     ];
 
     /**
@@ -93,10 +90,7 @@ class User implements ModelInterface, ArrayAccess, \JsonSerializable
         'active' => null,
         'createdAt' => 'date-time',
         'updatedAt' => 'date-time',
-        'auths' => null,
-        'teams' => null,
-        'packs' => null,
-        'mods' => null
+        'auths' => null
     ];
 
     /**
@@ -115,10 +109,7 @@ class User implements ModelInterface, ArrayAccess, \JsonSerializable
         'active' => true,
         'createdAt' => false,
         'updatedAt' => false,
-        'auths' => true,
-        'teams' => true,
-        'packs' => true,
-        'mods' => true
+        'auths' => true
     ];
 
     /**
@@ -217,10 +208,7 @@ class User implements ModelInterface, ArrayAccess, \JsonSerializable
         'active' => 'active',
         'createdAt' => 'created_at',
         'updatedAt' => 'updated_at',
-        'auths' => 'auths',
-        'teams' => 'teams',
-        'packs' => 'packs',
-        'mods' => 'mods'
+        'auths' => 'auths'
     ];
 
     /**
@@ -239,10 +227,7 @@ class User implements ModelInterface, ArrayAccess, \JsonSerializable
         'active' => 'setActive',
         'createdAt' => 'setCreatedAt',
         'updatedAt' => 'setUpdatedAt',
-        'auths' => 'setAuths',
-        'teams' => 'setTeams',
-        'packs' => 'setPacks',
-        'mods' => 'setMods'
+        'auths' => 'setAuths'
     ];
 
     /**
@@ -261,10 +246,7 @@ class User implements ModelInterface, ArrayAccess, \JsonSerializable
         'active' => 'getActive',
         'createdAt' => 'getCreatedAt',
         'updatedAt' => 'getUpdatedAt',
-        'auths' => 'getAuths',
-        'teams' => 'getTeams',
-        'packs' => 'getPacks',
-        'mods' => 'getMods'
+        'auths' => 'getAuths'
     ];
 
     /**
@@ -335,9 +317,6 @@ class User implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('createdAt', $data ?? [], null);
         $this->setIfExists('updatedAt', $data ?? [], null);
         $this->setIfExists('auths', $data ?? [], null);
-        $this->setIfExists('teams', $data ?? [], null);
-        $this->setIfExists('packs', $data ?? [], null);
-        $this->setIfExists('mods', $data ?? [], null);
     }
 
     /**
@@ -731,108 +710,6 @@ class User implements ModelInterface, ArrayAccess, \JsonSerializable
             }
         }
         $this->container['auths'] = $auths;
-
-        return $this;
-    }
-
-    /**
-     * Gets teams
-     *
-     * @return \Kleister\Model\UserTeam[]|null
-     */
-    public function getTeams()
-    {
-        return $this->container['teams'];
-    }
-
-    /**
-     * Sets teams
-     *
-     * @param \Kleister\Model\UserTeam[]|null $teams teams
-     *
-     * @return self
-     */
-    public function setTeams($teams)
-    {
-        if (is_null($teams)) {
-            array_push($this->openAPINullablesSetToNull, 'teams');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('teams', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['teams'] = $teams;
-
-        return $this;
-    }
-
-    /**
-     * Gets packs
-     *
-     * @return \Kleister\Model\UserPack[]|null
-     */
-    public function getPacks()
-    {
-        return $this->container['packs'];
-    }
-
-    /**
-     * Sets packs
-     *
-     * @param \Kleister\Model\UserPack[]|null $packs packs
-     *
-     * @return self
-     */
-    public function setPacks($packs)
-    {
-        if (is_null($packs)) {
-            array_push($this->openAPINullablesSetToNull, 'packs');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('packs', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['packs'] = $packs;
-
-        return $this;
-    }
-
-    /**
-     * Gets mods
-     *
-     * @return \Kleister\Model\UserMod[]|null
-     */
-    public function getMods()
-    {
-        return $this->container['mods'];
-    }
-
-    /**
-     * Sets mods
-     *
-     * @param \Kleister\Model\UserMod[]|null $mods mods
-     *
-     * @return self
-     */
-    public function setMods($mods)
-    {
-        if (is_null($mods)) {
-            array_push($this->openAPINullablesSetToNull, 'mods');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('mods', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['mods'] = $mods;
 
         return $this;
     }

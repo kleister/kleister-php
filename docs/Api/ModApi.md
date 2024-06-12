@@ -257,7 +257,7 @@ try {
 ## `createMod()`
 
 ```php
-createMod($mod): \Kleister\Model\User
+createMod($mod): \Kleister\Model\Mod
 ```
 
 Create a new mod
@@ -312,7 +312,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\User**](../Model/User.md)
+[**\Kleister\Model\Mod**](../Model/Mod.md)
 
 ### Authorization
 

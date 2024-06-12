@@ -69,10 +69,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
         'donate' => 'string',
         'public' => 'bool',
         'createdAt' => '\DateTime',
-        'updatedAt' => '\DateTime',
-        'versions' => '\Kleister\Model\Version[]',
-        'users' => '\Kleister\Model\UserMod[]',
-        'teams' => '\Kleister\Model\TeamMod[]'
+        'updatedAt' => '\DateTime'
     ];
 
     /**
@@ -93,10 +90,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
         'donate' => null,
         'public' => null,
         'createdAt' => 'date-time',
-        'updatedAt' => 'date-time',
-        'versions' => null,
-        'users' => null,
-        'teams' => null
+        'updatedAt' => 'date-time'
     ];
 
     /**
@@ -115,10 +109,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
         'donate' => true,
         'public' => true,
         'createdAt' => false,
-        'updatedAt' => false,
-        'versions' => true,
-        'users' => true,
-        'teams' => true
+        'updatedAt' => false
     ];
 
     /**
@@ -217,10 +208,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
         'donate' => 'donate',
         'public' => 'public',
         'createdAt' => 'created_at',
-        'updatedAt' => 'updated_at',
-        'versions' => 'versions',
-        'users' => 'users',
-        'teams' => 'teams'
+        'updatedAt' => 'updated_at'
     ];
 
     /**
@@ -239,10 +227,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
         'donate' => 'setDonate',
         'public' => 'setPublic',
         'createdAt' => 'setCreatedAt',
-        'updatedAt' => 'setUpdatedAt',
-        'versions' => 'setVersions',
-        'users' => 'setUsers',
-        'teams' => 'setTeams'
+        'updatedAt' => 'setUpdatedAt'
     ];
 
     /**
@@ -261,10 +246,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
         'donate' => 'getDonate',
         'public' => 'getPublic',
         'createdAt' => 'getCreatedAt',
-        'updatedAt' => 'getUpdatedAt',
-        'versions' => 'getVersions',
-        'users' => 'getUsers',
-        'teams' => 'getTeams'
+        'updatedAt' => 'getUpdatedAt'
     ];
 
     /**
@@ -308,23 +290,6 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
-    public const SIDE_BOTH = 'both';
-    public const SIDE_SERVER = 'server';
-    public const SIDE_CLIENT = 'client';
-
-    /**
-     * Gets allowable values of the enum
-     *
-     * @return string[]
-     */
-    public function getSideAllowableValues()
-    {
-        return [
-            self::SIDE_BOTH,
-            self::SIDE_SERVER,
-            self::SIDE_CLIENT,
-        ];
-    }
 
     /**
      * Associative array for storing property values
@@ -352,9 +317,6 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('public', $data ?? [], null);
         $this->setIfExists('createdAt', $data ?? [], null);
         $this->setIfExists('updatedAt', $data ?? [], null);
-        $this->setIfExists('versions', $data ?? [], null);
-        $this->setIfExists('users', $data ?? [], null);
-        $this->setIfExists('teams', $data ?? [], null);
     }
 
     /**
@@ -383,15 +345,6 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
     public function listInvalidProperties()
     {
         $invalidProperties = [];
-
-        $allowedValues = $this->getSideAllowableValues();
-        if (!is_null($this->container['side']) && !in_array($this->container['side'], $allowedValues, true)) {
-            $invalidProperties[] = sprintf(
-                "invalid value '%s' for 'side', must be one of '%s'",
-                $this->container['side'],
-                implode("', '", $allowedValues)
-            );
-        }
 
         return $invalidProperties;
     }
@@ -531,16 +484,6 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
                 unset($nullablesSetToNull[$index]);
                 $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
             }
-        }
-        $allowedValues = $this->getSideAllowableValues();
-        if (!is_null($side) && !in_array($side, $allowedValues, true)) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    "Invalid value '%s' for 'side', must be one of '%s'",
-                    $side,
-                    implode("', '", $allowedValues)
-                )
-            );
         }
         $this->container['side'] = $side;
 
@@ -767,108 +710,6 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable updatedAt cannot be null');
         }
         $this->container['updatedAt'] = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Gets versions
-     *
-     * @return \Kleister\Model\Version[]|null
-     */
-    public function getVersions()
-    {
-        return $this->container['versions'];
-    }
-
-    /**
-     * Sets versions
-     *
-     * @param \Kleister\Model\Version[]|null $versions versions
-     *
-     * @return self
-     */
-    public function setVersions($versions)
-    {
-        if (is_null($versions)) {
-            array_push($this->openAPINullablesSetToNull, 'versions');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('versions', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['versions'] = $versions;
-
-        return $this;
-    }
-
-    /**
-     * Gets users
-     *
-     * @return \Kleister\Model\UserMod[]|null
-     */
-    public function getUsers()
-    {
-        return $this->container['users'];
-    }
-
-    /**
-     * Sets users
-     *
-     * @param \Kleister\Model\UserMod[]|null $users users
-     *
-     * @return self
-     */
-    public function setUsers($users)
-    {
-        if (is_null($users)) {
-            array_push($this->openAPINullablesSetToNull, 'users');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('users', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['users'] = $users;
-
-        return $this;
-    }
-
-    /**
-     * Gets teams
-     *
-     * @return \Kleister\Model\TeamMod[]|null
-     */
-    public function getTeams()
-    {
-        return $this->container['teams'];
-    }
-
-    /**
-     * Sets teams
-     *
-     * @param \Kleister\Model\TeamMod[]|null $teams teams
-     *
-     * @return self
-     */
-    public function setTeams($teams)
-    {
-        if (is_null($teams)) {
-            array_push($this->openAPINullablesSetToNull, 'teams');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('teams', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['teams'] = $teams;
 
         return $this;
     }

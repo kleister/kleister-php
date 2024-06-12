@@ -60,7 +60,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPITypes = [
         'id' => 'string',
-        'packId' => 'string',
         'pack' => '\Kleister\Model\Pack',
         'minecraftId' => 'string',
         'minecraft' => '\Kleister\Model\Minecraft',
@@ -76,10 +75,11 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'name' => 'string',
         'java' => 'string',
         'memory' => 'string',
+        'latest' => 'bool',
+        'recommended' => 'bool',
         'public' => 'bool',
         'createdAt' => '\DateTime',
-        'updatedAt' => '\DateTime',
-        'versions' => '\Kleister\Model\BuildVersion[]'
+        'updatedAt' => '\DateTime'
     ];
 
     /**
@@ -91,7 +91,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPIFormats = [
         'id' => null,
-        'packId' => null,
         'pack' => null,
         'minecraftId' => null,
         'minecraft' => null,
@@ -107,10 +106,11 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'name' => null,
         'java' => null,
         'memory' => null,
+        'latest' => null,
+        'recommended' => null,
         'public' => null,
         'createdAt' => 'date-time',
-        'updatedAt' => 'date-time',
-        'versions' => null
+        'updatedAt' => 'date-time'
     ];
 
     /**
@@ -120,7 +120,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static array $openAPINullables = [
         'id' => false,
-        'packId' => false,
         'pack' => false,
         'minecraftId' => true,
         'minecraft' => false,
@@ -136,10 +135,11 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'name' => true,
         'java' => true,
         'memory' => true,
+        'latest' => true,
+        'recommended' => true,
         'public' => true,
         'createdAt' => false,
-        'updatedAt' => false,
-        'versions' => true
+        'updatedAt' => false
     ];
 
     /**
@@ -229,7 +229,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $attributeMap = [
         'id' => 'id',
-        'packId' => 'pack_id',
         'pack' => 'pack',
         'minecraftId' => 'minecraft_id',
         'minecraft' => 'minecraft',
@@ -245,10 +244,11 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'name' => 'name',
         'java' => 'java',
         'memory' => 'memory',
+        'latest' => 'latest',
+        'recommended' => 'recommended',
         'public' => 'public',
         'createdAt' => 'created_at',
-        'updatedAt' => 'updated_at',
-        'versions' => 'versions'
+        'updatedAt' => 'updated_at'
     ];
 
     /**
@@ -258,7 +258,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $setters = [
         'id' => 'setId',
-        'packId' => 'setPackId',
         'pack' => 'setPack',
         'minecraftId' => 'setMinecraftId',
         'minecraft' => 'setMinecraft',
@@ -274,10 +273,11 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'name' => 'setName',
         'java' => 'setJava',
         'memory' => 'setMemory',
+        'latest' => 'setLatest',
+        'recommended' => 'setRecommended',
         'public' => 'setPublic',
         'createdAt' => 'setCreatedAt',
-        'updatedAt' => 'setUpdatedAt',
-        'versions' => 'setVersions'
+        'updatedAt' => 'setUpdatedAt'
     ];
 
     /**
@@ -287,7 +287,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $getters = [
         'id' => 'getId',
-        'packId' => 'getPackId',
         'pack' => 'getPack',
         'minecraftId' => 'getMinecraftId',
         'minecraft' => 'getMinecraft',
@@ -303,10 +302,11 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'name' => 'getName',
         'java' => 'getJava',
         'memory' => 'getMemory',
+        'latest' => 'getLatest',
+        'recommended' => 'getRecommended',
         'public' => 'getPublic',
         'createdAt' => 'getCreatedAt',
-        'updatedAt' => 'getUpdatedAt',
-        'versions' => 'getVersions'
+        'updatedAt' => 'getUpdatedAt'
     ];
 
     /**
@@ -367,7 +367,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
     public function __construct(array $data = null)
     {
         $this->setIfExists('id', $data ?? [], null);
-        $this->setIfExists('packId', $data ?? [], null);
         $this->setIfExists('pack', $data ?? [], null);
         $this->setIfExists('minecraftId', $data ?? [], null);
         $this->setIfExists('minecraft', $data ?? [], null);
@@ -383,10 +382,11 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('name', $data ?? [], null);
         $this->setIfExists('java', $data ?? [], null);
         $this->setIfExists('memory', $data ?? [], null);
+        $this->setIfExists('latest', $data ?? [], null);
+        $this->setIfExists('recommended', $data ?? [], null);
         $this->setIfExists('public', $data ?? [], null);
         $this->setIfExists('createdAt', $data ?? [], null);
         $this->setIfExists('updatedAt', $data ?? [], null);
-        $this->setIfExists('versions', $data ?? [], null);
     }
 
     /**
@@ -454,33 +454,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable id cannot be null');
         }
         $this->container['id'] = $id;
-
-        return $this;
-    }
-
-    /**
-     * Gets packId
-     *
-     * @return string|null
-     */
-    public function getPackId()
-    {
-        return $this->container['packId'];
-    }
-
-    /**
-     * Sets packId
-     *
-     * @param string|null $packId packId
-     *
-     * @return self
-     */
-    public function setPackId($packId)
-    {
-        if (is_null($packId)) {
-            throw new \InvalidArgumentException('non-nullable packId cannot be null');
-        }
-        $this->container['packId'] = $packId;
 
         return $this;
     }
@@ -954,6 +927,74 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
+     * Gets latest
+     *
+     * @return bool|null
+     */
+    public function getLatest()
+    {
+        return $this->container['latest'];
+    }
+
+    /**
+     * Sets latest
+     *
+     * @param bool|null $latest latest
+     *
+     * @return self
+     */
+    public function setLatest($latest)
+    {
+        if (is_null($latest)) {
+            array_push($this->openAPINullablesSetToNull, 'latest');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('latest', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
+        $this->container['latest'] = $latest;
+
+        return $this;
+    }
+
+    /**
+     * Gets recommended
+     *
+     * @return bool|null
+     */
+    public function getRecommended()
+    {
+        return $this->container['recommended'];
+    }
+
+    /**
+     * Sets recommended
+     *
+     * @param bool|null $recommended recommended
+     *
+     * @return self
+     */
+    public function setRecommended($recommended)
+    {
+        if (is_null($recommended)) {
+            array_push($this->openAPINullablesSetToNull, 'recommended');
+        } else {
+            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
+            $index = array_search('recommended', $nullablesSetToNull);
+            if ($index !== FALSE) {
+                unset($nullablesSetToNull[$index]);
+                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
+            }
+        }
+        $this->container['recommended'] = $recommended;
+
+        return $this;
+    }
+
+    /**
      * Gets public
      *
      * @return bool|null
@@ -1037,40 +1078,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable updatedAt cannot be null');
         }
         $this->container['updatedAt'] = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Gets versions
-     *
-     * @return \Kleister\Model\BuildVersion[]|null
-     */
-    public function getVersions()
-    {
-        return $this->container['versions'];
-    }
-
-    /**
-     * Sets versions
-     *
-     * @param \Kleister\Model\BuildVersion[]|null $versions versions
-     *
-     * @return self
-     */
-    public function setVersions($versions)
-    {
-        if (is_null($versions)) {
-            array_push($this->openAPINullablesSetToNull, 'versions');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('versions', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['versions'] = $versions;
 
         return $this;
     }

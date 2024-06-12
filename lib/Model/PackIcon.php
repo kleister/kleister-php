@@ -60,8 +60,6 @@ class PackIcon implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPITypes = [
         'id' => 'string',
-        'packId' => 'string',
-        'pack' => '\Kleister\Model\Pack',
         'slug' => 'string',
         'contentType' => 'string',
         'md5' => 'string',
@@ -81,8 +79,6 @@ class PackIcon implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPIFormats = [
         'id' => null,
-        'packId' => null,
-        'pack' => null,
         'slug' => null,
         'contentType' => null,
         'md5' => null,
@@ -100,8 +96,6 @@ class PackIcon implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static array $openAPINullables = [
         'id' => false,
-        'packId' => false,
-        'pack' => false,
         'slug' => true,
         'contentType' => true,
         'md5' => true,
@@ -199,8 +193,6 @@ class PackIcon implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $attributeMap = [
         'id' => 'id',
-        'packId' => 'pack_id',
-        'pack' => 'pack',
         'slug' => 'slug',
         'contentType' => 'content_type',
         'md5' => 'md5',
@@ -218,8 +210,6 @@ class PackIcon implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $setters = [
         'id' => 'setId',
-        'packId' => 'setPackId',
-        'pack' => 'setPack',
         'slug' => 'setSlug',
         'contentType' => 'setContentType',
         'md5' => 'setMd5',
@@ -237,8 +227,6 @@ class PackIcon implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $getters = [
         'id' => 'getId',
-        'packId' => 'getPackId',
-        'pack' => 'getPack',
         'slug' => 'getSlug',
         'contentType' => 'getContentType',
         'md5' => 'getMd5',
@@ -307,8 +295,6 @@ class PackIcon implements ModelInterface, ArrayAccess, \JsonSerializable
     public function __construct(array $data = null)
     {
         $this->setIfExists('id', $data ?? [], null);
-        $this->setIfExists('packId', $data ?? [], null);
-        $this->setIfExists('pack', $data ?? [], null);
         $this->setIfExists('slug', $data ?? [], null);
         $this->setIfExists('contentType', $data ?? [], null);
         $this->setIfExists('md5', $data ?? [], null);
@@ -384,60 +370,6 @@ class PackIcon implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable id cannot be null');
         }
         $this->container['id'] = $id;
-
-        return $this;
-    }
-
-    /**
-     * Gets packId
-     *
-     * @return string|null
-     */
-    public function getPackId()
-    {
-        return $this->container['packId'];
-    }
-
-    /**
-     * Sets packId
-     *
-     * @param string|null $packId packId
-     *
-     * @return self
-     */
-    public function setPackId($packId)
-    {
-        if (is_null($packId)) {
-            throw new \InvalidArgumentException('non-nullable packId cannot be null');
-        }
-        $this->container['packId'] = $packId;
-
-        return $this;
-    }
-
-    /**
-     * Gets pack
-     *
-     * @return \Kleister\Model\Pack|null
-     */
-    public function getPack()
-    {
-        return $this->container['pack'];
-    }
-
-    /**
-     * Sets pack
-     *
-     * @param \Kleister\Model\Pack|null $pack pack
-     *
-     * @return self
-     */
-    public function setPack($pack)
-    {
-        if (is_null($pack)) {
-            throw new \InvalidArgumentException('non-nullable pack cannot be null');
-        }
-        $this->container['pack'] = $pack;
 
         return $this;
     }

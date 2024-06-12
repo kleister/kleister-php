@@ -1875,7 +1875,7 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\User|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Mod|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function createMod($mod, string $contentType = self::contentTypes['createMod'][0])
     {
@@ -1893,7 +1893,7 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\User|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Mod|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function createModWithHttpInfo($mod, string $contentType = self::contentTypes['createMod'][0])
     {
@@ -1936,11 +1936,11 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\User' === '\SplFileObject') {
+                    if ('\Kleister\Model\Mod' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\User' !== 'string') {
+                        if ('\Kleister\Model\Mod' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -1958,7 +1958,7 @@ class ModApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\User', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Mod', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -2072,7 +2072,7 @@ class ModApi
                     ];
             }
 
-            $returnType = '\Kleister\Model\User';
+            $returnType = '\Kleister\Model\Mod';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -2105,7 +2105,7 @@ class ModApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\User',
+                        '\Kleister\Model\Mod',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -2181,7 +2181,7 @@ class ModApi
      */
     public function createModAsyncWithHttpInfo($mod, string $contentType = self::contentTypes['createMod'][0])
     {
-        $returnType = '\Kleister\Model\User';
+        $returnType = '\Kleister\Model\Mod';
         $request = $this->createModRequest($mod, $contentType);
 
         return $this->client
