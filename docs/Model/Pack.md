@@ -8,18 +8,11 @@ Name | Type | Description | Notes
 **icon** | [**\Kleister\Model\PackIcon**](PackIcon.md) |  | [optional]
 **logo** | [**\Kleister\Model\PackLogo**](PackLogo.md) |  | [optional]
 **back** | [**\Kleister\Model\PackBack**](PackBack.md) |  | [optional]
-**recommendedId** | **string** |  | [optional]
-**recommended** | [**\Kleister\Model\Build**](Build.md) |  | [optional]
-**latestId** | **string** |  | [optional]
-**latest** | [**\Kleister\Model\Build**](Build.md) |  | [optional]
 **slug** | **string** |  | [optional]
 **name** | **string** |  | [optional]
 **website** | **string** |  | [optional]
 **public** | **bool** |  | [optional]
 **createdAt** | **\DateTime** |  | [optional] [readonly]
 **updatedAt** | **\DateTime** |  | [optional] [readonly]
-**builds** | [**\Kleister\Model\Build[]**](Build.md) |  | [optional] [readonly]
-**users** | [**\Kleister\Model\UserPack[]**](UserPack.md) |  | [optional] [readonly]
-**teams** | [**\Kleister\Model\TeamPack[]**](TeamPack.md) |  | [optional] [readonly]
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

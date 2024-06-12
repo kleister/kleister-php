@@ -1215,7 +1215,7 @@ class ForgeApi
      *
      * @param  string $forgeId A forge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional, default to 'build_name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1225,7 +1225,7 @@ class ForgeApi
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\ForgeBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listForgeBuilds($forgeId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
+    public function listForgeBuilds($forgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
     {
         list($response) = $this->listForgeBuildsWithHttpInfo($forgeId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -1238,7 +1238,7 @@ class ForgeApi
      *
      * @param  string $forgeId A forge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional, default to 'build_name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1248,7 +1248,7 @@ class ForgeApi
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\ForgeBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listForgeBuildsWithHttpInfo($forgeId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
+    public function listForgeBuildsWithHttpInfo($forgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
     {
         $request = $this->listForgeBuildsRequest($forgeId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -1507,7 +1507,7 @@ class ForgeApi
      *
      * @param  string $forgeId A forge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional, default to 'build_name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1516,7 +1516,7 @@ class ForgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listForgeBuildsAsync($forgeId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
+    public function listForgeBuildsAsync($forgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
     {
         return $this->listForgeBuildsAsyncWithHttpInfo($forgeId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -1533,7 +1533,7 @@ class ForgeApi
      *
      * @param  string $forgeId A forge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional, default to 'build_name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1542,7 +1542,7 @@ class ForgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listForgeBuildsAsyncWithHttpInfo($forgeId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
+    public function listForgeBuildsAsyncWithHttpInfo($forgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
     {
         $returnType = '\Kleister\Model\ForgeBuilds';
         $request = $this->listForgeBuildsRequest($forgeId, $search, $sort, $order, $limit, $offset, $contentType);
@@ -1588,7 +1588,7 @@ class ForgeApi
      *
      * @param  string $forgeId A forge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional, default to 'build_name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1597,7 +1597,7 @@ class ForgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listForgeBuildsRequest($forgeId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
+    public function listForgeBuildsRequest($forgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
     {
 
         // verify the required parameter 'forgeId' is set

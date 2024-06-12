@@ -63,19 +63,12 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
         'icon' => '\Kleister\Model\PackIcon',
         'logo' => '\Kleister\Model\PackLogo',
         'back' => '\Kleister\Model\PackBack',
-        'recommendedId' => 'string',
-        'recommended' => '\Kleister\Model\Build',
-        'latestId' => 'string',
-        'latest' => '\Kleister\Model\Build',
         'slug' => 'string',
         'name' => 'string',
         'website' => 'string',
         'public' => 'bool',
         'createdAt' => '\DateTime',
-        'updatedAt' => '\DateTime',
-        'builds' => '\Kleister\Model\Build[]',
-        'users' => '\Kleister\Model\UserPack[]',
-        'teams' => '\Kleister\Model\TeamPack[]'
+        'updatedAt' => '\DateTime'
     ];
 
     /**
@@ -90,19 +83,12 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
         'icon' => null,
         'logo' => null,
         'back' => null,
-        'recommendedId' => null,
-        'recommended' => null,
-        'latestId' => null,
-        'latest' => null,
         'slug' => null,
         'name' => null,
         'website' => null,
         'public' => null,
         'createdAt' => 'date-time',
-        'updatedAt' => 'date-time',
-        'builds' => null,
-        'users' => null,
-        'teams' => null
+        'updatedAt' => 'date-time'
     ];
 
     /**
@@ -115,19 +101,12 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
         'icon' => false,
         'logo' => false,
         'back' => false,
-        'recommendedId' => true,
-        'recommended' => false,
-        'latestId' => true,
-        'latest' => false,
         'slug' => true,
         'name' => true,
         'website' => true,
         'public' => true,
         'createdAt' => false,
-        'updatedAt' => false,
-        'builds' => true,
-        'users' => true,
-        'teams' => true
+        'updatedAt' => false
     ];
 
     /**
@@ -220,19 +199,12 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
         'icon' => 'icon',
         'logo' => 'logo',
         'back' => 'back',
-        'recommendedId' => 'recommended_id',
-        'recommended' => 'recommended',
-        'latestId' => 'latest_id',
-        'latest' => 'latest',
         'slug' => 'slug',
         'name' => 'name',
         'website' => 'website',
         'public' => 'public',
         'createdAt' => 'created_at',
-        'updatedAt' => 'updated_at',
-        'builds' => 'builds',
-        'users' => 'users',
-        'teams' => 'teams'
+        'updatedAt' => 'updated_at'
     ];
 
     /**
@@ -245,19 +217,12 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
         'icon' => 'setIcon',
         'logo' => 'setLogo',
         'back' => 'setBack',
-        'recommendedId' => 'setRecommendedId',
-        'recommended' => 'setRecommended',
-        'latestId' => 'setLatestId',
-        'latest' => 'setLatest',
         'slug' => 'setSlug',
         'name' => 'setName',
         'website' => 'setWebsite',
         'public' => 'setPublic',
         'createdAt' => 'setCreatedAt',
-        'updatedAt' => 'setUpdatedAt',
-        'builds' => 'setBuilds',
-        'users' => 'setUsers',
-        'teams' => 'setTeams'
+        'updatedAt' => 'setUpdatedAt'
     ];
 
     /**
@@ -270,19 +235,12 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
         'icon' => 'getIcon',
         'logo' => 'getLogo',
         'back' => 'getBack',
-        'recommendedId' => 'getRecommendedId',
-        'recommended' => 'getRecommended',
-        'latestId' => 'getLatestId',
-        'latest' => 'getLatest',
         'slug' => 'getSlug',
         'name' => 'getName',
         'website' => 'getWebsite',
         'public' => 'getPublic',
         'createdAt' => 'getCreatedAt',
-        'updatedAt' => 'getUpdatedAt',
-        'builds' => 'getBuilds',
-        'users' => 'getUsers',
-        'teams' => 'getTeams'
+        'updatedAt' => 'getUpdatedAt'
     ];
 
     /**
@@ -346,19 +304,12 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('icon', $data ?? [], null);
         $this->setIfExists('logo', $data ?? [], null);
         $this->setIfExists('back', $data ?? [], null);
-        $this->setIfExists('recommendedId', $data ?? [], null);
-        $this->setIfExists('recommended', $data ?? [], null);
-        $this->setIfExists('latestId', $data ?? [], null);
-        $this->setIfExists('latest', $data ?? [], null);
         $this->setIfExists('slug', $data ?? [], null);
         $this->setIfExists('name', $data ?? [], null);
         $this->setIfExists('website', $data ?? [], null);
         $this->setIfExists('public', $data ?? [], null);
         $this->setIfExists('createdAt', $data ?? [], null);
         $this->setIfExists('updatedAt', $data ?? [], null);
-        $this->setIfExists('builds', $data ?? [], null);
-        $this->setIfExists('users', $data ?? [], null);
-        $this->setIfExists('teams', $data ?? [], null);
     }
 
     /**
@@ -507,128 +458,6 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable back cannot be null');
         }
         $this->container['back'] = $back;
-
-        return $this;
-    }
-
-    /**
-     * Gets recommendedId
-     *
-     * @return string|null
-     */
-    public function getRecommendedId()
-    {
-        return $this->container['recommendedId'];
-    }
-
-    /**
-     * Sets recommendedId
-     *
-     * @param string|null $recommendedId recommendedId
-     *
-     * @return self
-     */
-    public function setRecommendedId($recommendedId)
-    {
-        if (is_null($recommendedId)) {
-            array_push($this->openAPINullablesSetToNull, 'recommendedId');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('recommendedId', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['recommendedId'] = $recommendedId;
-
-        return $this;
-    }
-
-    /**
-     * Gets recommended
-     *
-     * @return \Kleister\Model\Build|null
-     */
-    public function getRecommended()
-    {
-        return $this->container['recommended'];
-    }
-
-    /**
-     * Sets recommended
-     *
-     * @param \Kleister\Model\Build|null $recommended recommended
-     *
-     * @return self
-     */
-    public function setRecommended($recommended)
-    {
-        if (is_null($recommended)) {
-            throw new \InvalidArgumentException('non-nullable recommended cannot be null');
-        }
-        $this->container['recommended'] = $recommended;
-
-        return $this;
-    }
-
-    /**
-     * Gets latestId
-     *
-     * @return string|null
-     */
-    public function getLatestId()
-    {
-        return $this->container['latestId'];
-    }
-
-    /**
-     * Sets latestId
-     *
-     * @param string|null $latestId latestId
-     *
-     * @return self
-     */
-    public function setLatestId($latestId)
-    {
-        if (is_null($latestId)) {
-            array_push($this->openAPINullablesSetToNull, 'latestId');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('latestId', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['latestId'] = $latestId;
-
-        return $this;
-    }
-
-    /**
-     * Gets latest
-     *
-     * @return \Kleister\Model\Build|null
-     */
-    public function getLatest()
-    {
-        return $this->container['latest'];
-    }
-
-    /**
-     * Sets latest
-     *
-     * @param \Kleister\Model\Build|null $latest latest
-     *
-     * @return self
-     */
-    public function setLatest($latest)
-    {
-        if (is_null($latest)) {
-            throw new \InvalidArgumentException('non-nullable latest cannot be null');
-        }
-        $this->container['latest'] = $latest;
 
         return $this;
     }
@@ -819,108 +648,6 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable updatedAt cannot be null');
         }
         $this->container['updatedAt'] = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Gets builds
-     *
-     * @return \Kleister\Model\Build[]|null
-     */
-    public function getBuilds()
-    {
-        return $this->container['builds'];
-    }
-
-    /**
-     * Sets builds
-     *
-     * @param \Kleister\Model\Build[]|null $builds builds
-     *
-     * @return self
-     */
-    public function setBuilds($builds)
-    {
-        if (is_null($builds)) {
-            array_push($this->openAPINullablesSetToNull, 'builds');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('builds', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['builds'] = $builds;
-
-        return $this;
-    }
-
-    /**
-     * Gets users
-     *
-     * @return \Kleister\Model\UserPack[]|null
-     */
-    public function getUsers()
-    {
-        return $this->container['users'];
-    }
-
-    /**
-     * Sets users
-     *
-     * @param \Kleister\Model\UserPack[]|null $users users
-     *
-     * @return self
-     */
-    public function setUsers($users)
-    {
-        if (is_null($users)) {
-            array_push($this->openAPINullablesSetToNull, 'users');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('users', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['users'] = $users;
-
-        return $this;
-    }
-
-    /**
-     * Gets teams
-     *
-     * @return \Kleister\Model\TeamPack[]|null
-     */
-    public function getTeams()
-    {
-        return $this->container['teams'];
-    }
-
-    /**
-     * Sets teams
-     *
-     * @param \Kleister\Model\TeamPack[]|null $teams teams
-     *
-     * @return self
-     */
-    public function setTeams($teams)
-    {
-        if (is_null($teams)) {
-            array_push($this->openAPINullablesSetToNull, 'teams');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('teams', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['teams'] = $teams;
 
         return $this;
     }

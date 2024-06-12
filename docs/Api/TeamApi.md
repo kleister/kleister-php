@@ -661,7 +661,7 @@ $apiInstance = new Kleister\Api\TeamApi(
 );
 $teamId = 'teamId_example'; // string | A team identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'modname'; // string | Sorting column
+$sort = 'name'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -680,7 +680,7 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **teamId** | **string**| A team identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;modname&#39;] |
+| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
@@ -744,7 +744,7 @@ $apiInstance = new Kleister\Api\TeamApi(
 );
 $teamId = 'teamId_example'; // string | A team identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'packname'; // string | Sorting column
+$sort = 'name'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -763,7 +763,7 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **teamId** | **string**| A team identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;packname&#39;] |
+| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |

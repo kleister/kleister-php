@@ -60,8 +60,6 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPITypes = [
         'id' => 'string',
-        'versionId' => 'string',
-        'version' => '\Kleister\Model\Version',
         'slug' => 'string',
         'contentType' => 'string',
         'md5' => 'string',
@@ -81,8 +79,6 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPIFormats = [
         'id' => null,
-        'versionId' => null,
-        'version' => null,
         'slug' => null,
         'contentType' => null,
         'md5' => null,
@@ -100,8 +96,6 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static array $openAPINullables = [
         'id' => false,
-        'versionId' => false,
-        'version' => false,
         'slug' => true,
         'contentType' => true,
         'md5' => true,
@@ -199,8 +193,6 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $attributeMap = [
         'id' => 'id',
-        'versionId' => 'version_id',
-        'version' => 'version',
         'slug' => 'slug',
         'contentType' => 'content_type',
         'md5' => 'md5',
@@ -218,8 +210,6 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $setters = [
         'id' => 'setId',
-        'versionId' => 'setVersionId',
-        'version' => 'setVersion',
         'slug' => 'setSlug',
         'contentType' => 'setContentType',
         'md5' => 'setMd5',
@@ -237,8 +227,6 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $getters = [
         'id' => 'getId',
-        'versionId' => 'getVersionId',
-        'version' => 'getVersion',
         'slug' => 'getSlug',
         'contentType' => 'getContentType',
         'md5' => 'getMd5',
@@ -307,8 +295,6 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
     public function __construct(array $data = null)
     {
         $this->setIfExists('id', $data ?? [], null);
-        $this->setIfExists('versionId', $data ?? [], null);
-        $this->setIfExists('version', $data ?? [], null);
         $this->setIfExists('slug', $data ?? [], null);
         $this->setIfExists('contentType', $data ?? [], null);
         $this->setIfExists('md5', $data ?? [], null);
@@ -384,60 +370,6 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable id cannot be null');
         }
         $this->container['id'] = $id;
-
-        return $this;
-    }
-
-    /**
-     * Gets versionId
-     *
-     * @return string|null
-     */
-    public function getVersionId()
-    {
-        return $this->container['versionId'];
-    }
-
-    /**
-     * Sets versionId
-     *
-     * @param string|null $versionId versionId
-     *
-     * @return self
-     */
-    public function setVersionId($versionId)
-    {
-        if (is_null($versionId)) {
-            throw new \InvalidArgumentException('non-nullable versionId cannot be null');
-        }
-        $this->container['versionId'] = $versionId;
-
-        return $this;
-    }
-
-    /**
-     * Gets version
-     *
-     * @return \Kleister\Model\Version|null
-     */
-    public function getVersion()
-    {
-        return $this->container['version'];
-    }
-
-    /**
-     * Sets version
-     *
-     * @param \Kleister\Model\Version|null $version version
-     *
-     * @return self
-     */
-    public function setVersion($version)
-    {
-        if (is_null($version)) {
-            throw new \InvalidArgumentException('non-nullable version cannot be null');
-        }
-        $this->container['version'] = $version;
 
         return $this;
     }

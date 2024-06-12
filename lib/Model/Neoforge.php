@@ -61,7 +61,6 @@ class Neoforge implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $openAPITypes = [
         'id' => 'string',
         'name' => 'string',
-        'minecraft' => 'string',
         'createdAt' => '\DateTime',
         'updatedAt' => '\DateTime'
     ];
@@ -76,7 +75,6 @@ class Neoforge implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $openAPIFormats = [
         'id' => null,
         'name' => null,
-        'minecraft' => null,
         'createdAt' => 'date-time',
         'updatedAt' => 'date-time'
     ];
@@ -89,7 +87,6 @@ class Neoforge implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static array $openAPINullables = [
         'id' => false,
         'name' => true,
-        'minecraft' => true,
         'createdAt' => false,
         'updatedAt' => false
     ];
@@ -182,7 +179,6 @@ class Neoforge implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $attributeMap = [
         'id' => 'id',
         'name' => 'name',
-        'minecraft' => 'minecraft',
         'createdAt' => 'created_at',
         'updatedAt' => 'updated_at'
     ];
@@ -195,7 +191,6 @@ class Neoforge implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $setters = [
         'id' => 'setId',
         'name' => 'setName',
-        'minecraft' => 'setMinecraft',
         'createdAt' => 'setCreatedAt',
         'updatedAt' => 'setUpdatedAt'
     ];
@@ -208,7 +203,6 @@ class Neoforge implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $getters = [
         'id' => 'getId',
         'name' => 'getName',
-        'minecraft' => 'getMinecraft',
         'createdAt' => 'getCreatedAt',
         'updatedAt' => 'getUpdatedAt'
     ];
@@ -272,7 +266,6 @@ class Neoforge implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $this->setIfExists('id', $data ?? [], null);
         $this->setIfExists('name', $data ?? [], null);
-        $this->setIfExists('minecraft', $data ?? [], null);
         $this->setIfExists('createdAt', $data ?? [], null);
         $this->setIfExists('updatedAt', $data ?? [], null);
     }
@@ -376,40 +369,6 @@ class Neoforge implements ModelInterface, ArrayAccess, \JsonSerializable
             }
         }
         $this->container['name'] = $name;
-
-        return $this;
-    }
-
-    /**
-     * Gets minecraft
-     *
-     * @return string|null
-     */
-    public function getMinecraft()
-    {
-        return $this->container['minecraft'];
-    }
-
-    /**
-     * Sets minecraft
-     *
-     * @param string|null $minecraft minecraft
-     *
-     * @return self
-     */
-    public function setMinecraft($minecraft)
-    {
-        if (is_null($minecraft)) {
-            array_push($this->openAPINullablesSetToNull, 'minecraft');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('minecraft', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['minecraft'] = $minecraft;
 
         return $this;
     }

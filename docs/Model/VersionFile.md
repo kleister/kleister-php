@@ -5,8 +5,6 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **string** |  | [optional] [readonly]
-**versionId** | **string** |  | [optional]
-**version** | [**\Kleister\Model\Version**](Version.md) |  | [optional]
 **slug** | **string** |  | [optional]
 **contentType** | **string** |  | [optional]
 **md5** | **string** |  | [optional]

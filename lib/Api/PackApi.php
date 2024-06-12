@@ -5461,7 +5461,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\UserTeams|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\BuildVersions|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function listBuildVersions($packId, $buildId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuildVersions'][0])
     {
@@ -5485,7 +5485,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\UserTeams|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\BuildVersions|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function listBuildVersionsWithHttpInfo($packId, $buildId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuildVersions'][0])
     {
@@ -5528,11 +5528,11 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\UserTeams' === '\SplFileObject') {
+                    if ('\Kleister\Model\BuildVersions' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\UserTeams' !== 'string') {
+                        if ('\Kleister\Model\BuildVersions' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -5550,7 +5550,7 @@ class PackApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\UserTeams', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\BuildVersions', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -5664,7 +5664,7 @@ class PackApi
                     ];
             }
 
-            $returnType = '\Kleister\Model\UserTeams';
+            $returnType = '\Kleister\Model\BuildVersions';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -5697,7 +5697,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\UserTeams',
+                        '\Kleister\Model\BuildVersions',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5785,7 +5785,7 @@ class PackApi
      */
     public function listBuildVersionsAsyncWithHttpInfo($packId, $buildId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuildVersions'][0])
     {
-        $returnType = '\Kleister\Model\UserTeams';
+        $returnType = '\Kleister\Model\BuildVersions';
         $request = $this->listBuildVersionsRequest($packId, $buildId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client

@@ -4361,7 +4361,7 @@ class TeamApi
      *
      * @param  string $teamId A team identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'modname')
+     * @param  string $sort Sorting column (optional, default to 'name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -4371,7 +4371,7 @@ class TeamApi
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\TeamMods|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listTeamMods($teamId, $search = null, $sort = 'modname', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamMods'][0])
+    public function listTeamMods($teamId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamMods'][0])
     {
         list($response) = $this->listTeamModsWithHttpInfo($teamId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -4384,7 +4384,7 @@ class TeamApi
      *
      * @param  string $teamId A team identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'modname')
+     * @param  string $sort Sorting column (optional, default to 'name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -4394,7 +4394,7 @@ class TeamApi
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\TeamMods|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listTeamModsWithHttpInfo($teamId, $search = null, $sort = 'modname', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamMods'][0])
+    public function listTeamModsWithHttpInfo($teamId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamMods'][0])
     {
         $request = $this->listTeamModsRequest($teamId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -4653,7 +4653,7 @@ class TeamApi
      *
      * @param  string $teamId A team identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'modname')
+     * @param  string $sort Sorting column (optional, default to 'name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -4662,7 +4662,7 @@ class TeamApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listTeamModsAsync($teamId, $search = null, $sort = 'modname', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamMods'][0])
+    public function listTeamModsAsync($teamId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamMods'][0])
     {
         return $this->listTeamModsAsyncWithHttpInfo($teamId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -4679,7 +4679,7 @@ class TeamApi
      *
      * @param  string $teamId A team identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'modname')
+     * @param  string $sort Sorting column (optional, default to 'name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -4688,7 +4688,7 @@ class TeamApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listTeamModsAsyncWithHttpInfo($teamId, $search = null, $sort = 'modname', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamMods'][0])
+    public function listTeamModsAsyncWithHttpInfo($teamId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamMods'][0])
     {
         $returnType = '\Kleister\Model\TeamMods';
         $request = $this->listTeamModsRequest($teamId, $search, $sort, $order, $limit, $offset, $contentType);
@@ -4734,7 +4734,7 @@ class TeamApi
      *
      * @param  string $teamId A team identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'modname')
+     * @param  string $sort Sorting column (optional, default to 'name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -4743,7 +4743,7 @@ class TeamApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listTeamModsRequest($teamId, $search = null, $sort = 'modname', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamMods'][0])
+    public function listTeamModsRequest($teamId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamMods'][0])
     {
 
         // verify the required parameter 'teamId' is set
@@ -4901,7 +4901,7 @@ class TeamApi
      *
      * @param  string $teamId A team identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'packname')
+     * @param  string $sort Sorting column (optional, default to 'name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -4911,7 +4911,7 @@ class TeamApi
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\TeamPacks|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listTeamPacks($teamId, $search = null, $sort = 'packname', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamPacks'][0])
+    public function listTeamPacks($teamId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamPacks'][0])
     {
         list($response) = $this->listTeamPacksWithHttpInfo($teamId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -4924,7 +4924,7 @@ class TeamApi
      *
      * @param  string $teamId A team identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'packname')
+     * @param  string $sort Sorting column (optional, default to 'name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -4934,7 +4934,7 @@ class TeamApi
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\TeamPacks|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listTeamPacksWithHttpInfo($teamId, $search = null, $sort = 'packname', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamPacks'][0])
+    public function listTeamPacksWithHttpInfo($teamId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamPacks'][0])
     {
         $request = $this->listTeamPacksRequest($teamId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -5193,7 +5193,7 @@ class TeamApi
      *
      * @param  string $teamId A team identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'packname')
+     * @param  string $sort Sorting column (optional, default to 'name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -5202,7 +5202,7 @@ class TeamApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listTeamPacksAsync($teamId, $search = null, $sort = 'packname', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamPacks'][0])
+    public function listTeamPacksAsync($teamId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamPacks'][0])
     {
         return $this->listTeamPacksAsyncWithHttpInfo($teamId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -5219,7 +5219,7 @@ class TeamApi
      *
      * @param  string $teamId A team identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'packname')
+     * @param  string $sort Sorting column (optional, default to 'name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -5228,7 +5228,7 @@ class TeamApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listTeamPacksAsyncWithHttpInfo($teamId, $search = null, $sort = 'packname', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamPacks'][0])
+    public function listTeamPacksAsyncWithHttpInfo($teamId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamPacks'][0])
     {
         $returnType = '\Kleister\Model\TeamPacks';
         $request = $this->listTeamPacksRequest($teamId, $search, $sort, $order, $limit, $offset, $contentType);
@@ -5274,7 +5274,7 @@ class TeamApi
      *
      * @param  string $teamId A team identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'packname')
+     * @param  string $sort Sorting column (optional, default to 'name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -5283,7 +5283,7 @@ class TeamApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listTeamPacksRequest($teamId, $search = null, $sort = 'packname', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamPacks'][0])
+    public function listTeamPacksRequest($teamId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listTeamPacks'][0])
     {
 
         // verify the required parameter 'teamId' is set

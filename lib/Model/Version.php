@@ -61,14 +61,12 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $openAPITypes = [
         'id' => 'string',
         'file' => '\Kleister\Model\VersionFile',
-        'modId' => 'string',
         'mod' => '\Kleister\Model\Mod',
         'slug' => 'string',
         'name' => 'string',
         'public' => 'bool',
         'createdAt' => '\DateTime',
-        'updatedAt' => '\DateTime',
-        'builds' => '\Kleister\Model\BuildVersion[]'
+        'updatedAt' => '\DateTime'
     ];
 
     /**
@@ -81,14 +79,12 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $openAPIFormats = [
         'id' => null,
         'file' => null,
-        'modId' => null,
         'mod' => null,
         'slug' => null,
         'name' => null,
         'public' => null,
         'createdAt' => 'date-time',
-        'updatedAt' => 'date-time',
-        'builds' => null
+        'updatedAt' => 'date-time'
     ];
 
     /**
@@ -99,14 +95,12 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static array $openAPINullables = [
         'id' => false,
         'file' => false,
-        'modId' => false,
         'mod' => false,
         'slug' => true,
         'name' => true,
         'public' => true,
         'createdAt' => false,
-        'updatedAt' => false,
-        'builds' => true
+        'updatedAt' => false
     ];
 
     /**
@@ -197,14 +191,12 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $attributeMap = [
         'id' => 'id',
         'file' => 'file',
-        'modId' => 'mod_id',
         'mod' => 'mod',
         'slug' => 'slug',
         'name' => 'name',
         'public' => 'public',
         'createdAt' => 'created_at',
-        'updatedAt' => 'updated_at',
-        'builds' => 'builds'
+        'updatedAt' => 'updated_at'
     ];
 
     /**
@@ -215,14 +207,12 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $setters = [
         'id' => 'setId',
         'file' => 'setFile',
-        'modId' => 'setModId',
         'mod' => 'setMod',
         'slug' => 'setSlug',
         'name' => 'setName',
         'public' => 'setPublic',
         'createdAt' => 'setCreatedAt',
-        'updatedAt' => 'setUpdatedAt',
-        'builds' => 'setBuilds'
+        'updatedAt' => 'setUpdatedAt'
     ];
 
     /**
@@ -233,14 +223,12 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
     protected static $getters = [
         'id' => 'getId',
         'file' => 'getFile',
-        'modId' => 'getModId',
         'mod' => 'getMod',
         'slug' => 'getSlug',
         'name' => 'getName',
         'public' => 'getPublic',
         'createdAt' => 'getCreatedAt',
-        'updatedAt' => 'getUpdatedAt',
-        'builds' => 'getBuilds'
+        'updatedAt' => 'getUpdatedAt'
     ];
 
     /**
@@ -302,14 +290,12 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
     {
         $this->setIfExists('id', $data ?? [], null);
         $this->setIfExists('file', $data ?? [], null);
-        $this->setIfExists('modId', $data ?? [], null);
         $this->setIfExists('mod', $data ?? [], null);
         $this->setIfExists('slug', $data ?? [], null);
         $this->setIfExists('name', $data ?? [], null);
         $this->setIfExists('public', $data ?? [], null);
         $this->setIfExists('createdAt', $data ?? [], null);
         $this->setIfExists('updatedAt', $data ?? [], null);
-        $this->setIfExists('builds', $data ?? [], null);
     }
 
     /**
@@ -404,33 +390,6 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable file cannot be null');
         }
         $this->container['file'] = $file;
-
-        return $this;
-    }
-
-    /**
-     * Gets modId
-     *
-     * @return string|null
-     */
-    public function getModId()
-    {
-        return $this->container['modId'];
-    }
-
-    /**
-     * Sets modId
-     *
-     * @param string|null $modId modId
-     *
-     * @return self
-     */
-    public function setModId($modId)
-    {
-        if (is_null($modId)) {
-            throw new \InvalidArgumentException('non-nullable modId cannot be null');
-        }
-        $this->container['modId'] = $modId;
 
         return $this;
     }
@@ -614,40 +573,6 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable updatedAt cannot be null');
         }
         $this->container['updatedAt'] = $updatedAt;
-
-        return $this;
-    }
-
-    /**
-     * Gets builds
-     *
-     * @return \Kleister\Model\BuildVersion[]|null
-     */
-    public function getBuilds()
-    {
-        return $this->container['builds'];
-    }
-
-    /**
-     * Sets builds
-     *
-     * @param \Kleister\Model\BuildVersion[]|null $builds builds
-     *
-     * @return self
-     */
-    public function setBuilds($builds)
-    {
-        if (is_null($builds)) {
-            array_push($this->openAPINullablesSetToNull, 'builds');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('builds', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['builds'] = $builds;
 
         return $this;
     }

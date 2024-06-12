@@ -5,7 +5,6 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **string** |  | [optional] [readonly]
-**packId** | **string** |  | [optional]
 **pack** | [**\Kleister\Model\Pack**](Pack.md) |  | [optional]
 **minecraftId** | **string** |  | [optional]
 **minecraft** | [**\Kleister\Model\Minecraft**](Minecraft.md) |  | [optional]
@@ -21,9 +20,10 @@ Name | Type | Description | Notes
 **name** | **string** |  | [optional]
 **java** | **string** |  | [optional]
 **memory** | **string** |  | [optional]
+**latest** | **bool** |  | [optional]
+**recommended** | **bool** |  | [optional]
 **public** | **bool** |  | [optional]
 **createdAt** | **\DateTime** |  | [optional] [readonly]
 **updatedAt** | **\DateTime** |  | [optional] [readonly]
-**versions** | [**\Kleister\Model\BuildVersion[]**](BuildVersion.md) |  | [optional] [readonly]
 
 [[Back to Model list]](../../README.md#models) [[Back to API list]](../../README.md#endpoints) [[Back to README]](../../README.md)

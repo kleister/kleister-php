@@ -1215,7 +1215,7 @@ class NeoforgeApi
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional, default to 'build_name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1225,7 +1225,7 @@ class NeoforgeApi
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\NeoforgeBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listNeoforgeBuilds($neoforgeId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
+    public function listNeoforgeBuilds($neoforgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
     {
         list($response) = $this->listNeoforgeBuildsWithHttpInfo($neoforgeId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -1238,7 +1238,7 @@ class NeoforgeApi
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional, default to 'build_name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1248,7 +1248,7 @@ class NeoforgeApi
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\NeoforgeBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listNeoforgeBuildsWithHttpInfo($neoforgeId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
+    public function listNeoforgeBuildsWithHttpInfo($neoforgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
     {
         $request = $this->listNeoforgeBuildsRequest($neoforgeId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -1507,7 +1507,7 @@ class NeoforgeApi
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional, default to 'build_name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1516,7 +1516,7 @@ class NeoforgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listNeoforgeBuildsAsync($neoforgeId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
+    public function listNeoforgeBuildsAsync($neoforgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
     {
         return $this->listNeoforgeBuildsAsyncWithHttpInfo($neoforgeId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -1533,7 +1533,7 @@ class NeoforgeApi
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional, default to 'build_name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1542,7 +1542,7 @@ class NeoforgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listNeoforgeBuildsAsyncWithHttpInfo($neoforgeId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
+    public function listNeoforgeBuildsAsyncWithHttpInfo($neoforgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
     {
         $returnType = '\Kleister\Model\NeoforgeBuilds';
         $request = $this->listNeoforgeBuildsRequest($neoforgeId, $search, $sort, $order, $limit, $offset, $contentType);
@@ -1588,7 +1588,7 @@ class NeoforgeApi
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional, default to 'build_name')
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1597,7 +1597,7 @@ class NeoforgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listNeoforgeBuildsRequest($neoforgeId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
+    public function listNeoforgeBuildsRequest($neoforgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
     {
 
         // verify the required parameter 'neoforgeId' is set

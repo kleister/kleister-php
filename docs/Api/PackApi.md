@@ -780,7 +780,7 @@ try {
 ## `listBuildVersions()`
 
 ```php
-listBuildVersions($packId, $buildId, $search, $sort, $order, $limit, $offset): \Kleister\Model\UserTeams
+listBuildVersions($packId, $buildId, $search, $sort, $order, $limit, $offset): \Kleister\Model\BuildVersions
 ```
 
 Fetch all versions attached to build
@@ -847,7 +847,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\UserTeams**](../Model/UserTeams.md)
+[**\Kleister\Model\BuildVersions**](../Model/BuildVersions.md)
 
 ### Authorization
 

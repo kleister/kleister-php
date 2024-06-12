@@ -203,7 +203,7 @@ $apiInstance = new Kleister\Api\ForgeApi(
 );
 $forgeId = 'forgeId_example'; // string | A forge identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
+$sort = 'build_name'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -222,7 +222,7 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **forgeId** | **string**| A forge identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
+| **sort** | **string**| Sorting column | [optional] [default to &#39;build_name&#39;] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
