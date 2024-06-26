@@ -266,7 +266,7 @@ class TeamPack implements ModelInterface, ArrayAccess, \JsonSerializable
         return self::$openAPIModelName;
     }
 
-    public const PERM_TEAM = 'team';
+    public const PERM_USER = 'user';
     public const PERM_ADMIN = 'admin';
     public const PERM_OWNER = 'owner';
 
@@ -278,7 +278,7 @@ class TeamPack implements ModelInterface, ArrayAccess, \JsonSerializable
     public function getPermAllowableValues()
     {
         return [
-            self::PERM_TEAM,
+            self::PERM_USER,
             self::PERM_ADMIN,
             self::PERM_OWNER,
         ];
