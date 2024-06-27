@@ -303,7 +303,7 @@ class TeamPack implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('team', $data ?? [], null);
         $this->setIfExists('packId', $data ?? [], null);
         $this->setIfExists('pack', $data ?? [], null);
-        $this->setIfExists('perm', $data ?? [], 'team');
+        $this->setIfExists('perm', $data ?? [], 'user');
         $this->setIfExists('createdAt', $data ?? [], null);
         $this->setIfExists('updatedAt', $data ?? [], null);
     }

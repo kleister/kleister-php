@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **team** | [**\Kleister\Model\Team**](Team.md) |  | [optional]
 **packId** | **string** |  |
 **pack** | [**\Kleister\Model\Pack**](Pack.md) |  | [optional]
-**perm** | **string** |  | [optional] [default to 'team']
+**perm** | **string** |  | [optional] [default to 'user']
 **createdAt** | **\DateTime** |  | [optional] [readonly]
 **updatedAt** | **\DateTime** |  | [optional] [readonly]
 

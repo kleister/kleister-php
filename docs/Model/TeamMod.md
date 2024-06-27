@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **team** | [**\Kleister\Model\Team**](Team.md) |  | [optional]
 **modId** | **string** |  |
 **mod** | [**\Kleister\Model\Mod**](Mod.md) |  | [optional]
-**perm** | **string** |  | [optional] [default to 'team']
+**perm** | **string** |  | [optional] [default to 'user']
 **createdAt** | **\DateTime** |  | [optional] [readonly]
 **updatedAt** | **\DateTime** |  | [optional] [readonly]
 
