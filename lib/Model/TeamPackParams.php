@@ -270,7 +270,7 @@ class TeamPackParams implements ModelInterface, ArrayAccess, \JsonSerializable
     public function __construct(array $data = null)
     {
         $this->setIfExists('pack', $data ?? [], null);
-        $this->setIfExists('perm', $data ?? [], 'team');
+        $this->setIfExists('perm', $data ?? [], 'user');
     }
 
     /**
