@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/kleister/kleister-php/compare/v1.1.0...v1.2.0) (2024-07-01)
+
+
+### Features
+
+* automated openapi client update ([54b013c](https://github.com/kleister/kleister-php/commit/54b013c50b660fa2621b34eed08831ce9f948b02))
+
+
+### Bugfixes
+
+* use right values for perm enum ([93cd5de](https://github.com/kleister/kleister-php/commit/93cd5dedbe096ab49baa8bea0039322d338407bd))
+
 ## [1.1.0](https://github.com/kleister/kleister-php/compare/v1.0.0...v1.1.0) (2024-06-17)
 
 
