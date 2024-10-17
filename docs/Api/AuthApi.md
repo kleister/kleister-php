@@ -6,6 +6,7 @@ All URIs are relative to https://try.kleister.eu/api/v1, except if the operation
 | ------------- | ------------- | ------------- |
 | [**externalCallback()**](AuthApi.md#externalCallback) | **GET** /auth/{provider}/callback | Callback for external authentication |
 | [**externalInitialize()**](AuthApi.md#externalInitialize) | **GET** /auth/{provider}/initialize | Initialize the external authentication |
+| [**externalProviders()**](AuthApi.md#externalProviders) | **GET** /auth/providers | Fetch the available auth providers |
 | [**loginAuth()**](AuthApi.md#loginAuth) | **POST** /auth/login | Authenticate an user by credentials |
 | [**refreshAuth()**](AuthApi.md#refreshAuth) | **GET** /auth/refresh | Refresh an auth token before it expires |
 | [**verifyAuth()**](AuthApi.md#verifyAuth) | **GET** /auth/verify | Verify validity for an authentication token |
@@ -111,6 +112,57 @@ try {
 ### Return type
 
 [**\Kleister\Model\Notification**](../Model/Notification.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `externalProviders()`
+
+```php
+externalProviders(): \Kleister\Model\Providers
+```
+
+Fetch the available auth providers
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+
+$apiInstance = new Kleister\Api\AuthApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client()
+);
+
+try {
+    $result = $apiInstance->externalProviders();
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling AuthApi->externalProviders: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+This endpoint does not need any parameter.
+
+### Return type
+
+[**\Kleister\Model\Providers**](../Model/Providers.md)
 
 ### Authorization
 

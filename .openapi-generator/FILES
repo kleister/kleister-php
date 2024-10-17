@@ -53,6 +53,8 @@ docs/Model/PackUserParams.md
 docs/Model/PackUsers.md
 docs/Model/Packs.md
 docs/Model/Profile.md
+docs/Model/Provider.md
+docs/Model/Providers.md
 docs/Model/Quilt.md
 docs/Model/QuiltBuildParams.md
 docs/Model/QuiltBuilds.md
@@ -141,6 +143,8 @@ lib/Model/PackUserParams.php
 lib/Model/PackUsers.php
 lib/Model/Packs.php
 lib/Model/Profile.php
+lib/Model/Provider.php
+lib/Model/Providers.php
 lib/Model/Quilt.php
 lib/Model/QuiltBuildParams.php
 lib/Model/QuiltBuilds.php
@@ -175,3 +179,5 @@ lib/Model/VersionFile.php
 lib/Model/Versions.php
 lib/ObjectSerializer.php
 phpunit.xml.dist
+test/Model/ProviderTest.php
+test/Model/ProvidersTest.php
