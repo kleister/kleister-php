@@ -179,5 +179,3 @@ lib/Model/VersionFile.php
 lib/Model/Versions.php
 lib/ObjectSerializer.php
 phpunit.xml.dist
-test/Model/ProviderTest.php
-test/Model/ProvidersTest.php
