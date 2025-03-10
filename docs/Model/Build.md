@@ -16,7 +16,6 @@ Name | Type | Description | Notes
 **quilt** | [**\Kleister\Model\Quilt**](Quilt.md) |  | [optional]
 **fabricId** | **string** |  | [optional]
 **fabric** | [**\Kleister\Model\Fabric**](Fabric.md) |  | [optional]
-**slug** | **string** |  | [optional]
 **name** | **string** |  | [optional]
 **java** | **string** |  | [optional]
 **memory** | **string** |  | [optional]

@@ -4,22 +4,26 @@ All URIs are relative to https://try.kleister.eu/api/v1, except if the operation
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
-| [**attachModToTeam()**](ModApi.md#attachModToTeam) | **POST** /mods/{mod_id}/teams | Attach a team to mod |
+| [**attachModToGroup()**](ModApi.md#attachModToGroup) | **POST** /mods/{mod_id}/groups | Attach a group to mod |
 | [**attachModToUser()**](ModApi.md#attachModToUser) | **POST** /mods/{mod_id}/users | Attach a user to mod |
 | [**attachVersionToBuild()**](ModApi.md#attachVersionToBuild) | **POST** /mods/{mod_id}/versions/{version_id}/builds | Attach a build to a version |
 | [**createMod()**](ModApi.md#createMod) | **POST** /mods | Create a new mod |
+| [**createModAvatar()**](ModApi.md#createModAvatar) | **POST** /mods/{mod_id}/avatar | Upload an avatar for the defined mod |
+| [**createPackAvatar()**](ModApi.md#createPackAvatar) | **POST** /packs/{pack_id}/avatar | Upload an avatar for the defined pack |
 | [**createVersion()**](ModApi.md#createVersion) | **POST** /mods/{mod_id}/versions | Create a new version for a mod |
 | [**deleteMod()**](ModApi.md#deleteMod) | **DELETE** /mods/{mod_id} | Delete a specific mod |
-| [**deleteModFromTeam()**](ModApi.md#deleteModFromTeam) | **DELETE** /mods/{mod_id}/teams | Unlink a team from mod |
+| [**deleteModAvatar()**](ModApi.md#deleteModAvatar) | **DELETE** /mods/{mod_id}/avatar | Delete the avatar for the defined mod |
+| [**deleteModFromGroup()**](ModApi.md#deleteModFromGroup) | **DELETE** /mods/{mod_id}/groups | Unlink a group from mod |
 | [**deleteModFromUser()**](ModApi.md#deleteModFromUser) | **DELETE** /mods/{mod_id}/users | Unlink a user from mod |
+| [**deletePackAvatar()**](ModApi.md#deletePackAvatar) | **DELETE** /packs/{pack_id}/avatar | Delete the avatar for the defined pack |
 | [**deleteVersion()**](ModApi.md#deleteVersion) | **DELETE** /mods/{mod_id}/versions/{version_id} | Delete a specific version for a mod |
 | [**deleteVersionFromBuild()**](ModApi.md#deleteVersionFromBuild) | **DELETE** /mods/{mod_id}/versions/{version_id}/builds | Unlink a build from a version |
-| [**listModTeams()**](ModApi.md#listModTeams) | **GET** /mods/{mod_id}/teams | Fetch all teams attached to mod |
+| [**listModGroups()**](ModApi.md#listModGroups) | **GET** /mods/{mod_id}/groups | Fetch all groups attached to mod |
 | [**listModUsers()**](ModApi.md#listModUsers) | **GET** /mods/{mod_id}/users | Fetch all users attached to mod |
 | [**listMods()**](ModApi.md#listMods) | **GET** /mods | Fetch all available mods |
 | [**listVersionBuilds()**](ModApi.md#listVersionBuilds) | **GET** /mods/{mod_id}/versions/{version_id}/builds | Fetch all builds attached to version |
 | [**listVersions()**](ModApi.md#listVersions) | **GET** /mods/{mod_id}/versions | Fetch all available versions for a mod |
-| [**permitModTeam()**](ModApi.md#permitModTeam) | **PUT** /mods/{mod_id}/teams | Update team perms for mod |
+| [**permitModGroup()**](ModApi.md#permitModGroup) | **PUT** /mods/{mod_id}/groups | Update group perms for mod |
 | [**permitModUser()**](ModApi.md#permitModUser) | **PUT** /mods/{mod_id}/users | Update user perms for mod |
 | [**showMod()**](ModApi.md#showMod) | **GET** /mods/{mod_id} | Fetch a specific mod |
 | [**showVersion()**](ModApi.md#showVersion) | **GET** /mods/{mod_id}/versions/{version_id} | Fetch a specific version for a mod |
@@ -27,13 +31,13 @@ All URIs are relative to https://try.kleister.eu/api/v1, except if the operation
 | [**updateVersion()**](ModApi.md#updateVersion) | **PUT** /mods/{mod_id}/versions/{version_id} | Update a specific version for a mod |
 
 
-## `attachModToTeam()`
+## `attachModToGroup()`
 
 ```php
-attachModToTeam($modId, $modTeamParams): \Kleister\Model\Notification
+attachModToGroup($modId, $permitPackGroupRequest): \Kleister\Model\Notification
 ```
 
-Attach a team to mod
+Attach a group to mod
 
 ### Example
 
@@ -41,11 +45,6 @@ Attach a team to mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -68,13 +67,13 @@ $apiInstance = new Kleister\Api\ModApi(
     $config
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
-$modTeamParams = new \Kleister\Model\ModTeamParams(); // \Kleister\Model\ModTeamParams | The team data to attach
+$permitPackGroupRequest = new \Kleister\Model\PermitPackGroupRequest(); // \Kleister\Model\PermitPackGroupRequest | The mod group data to permit
 
 try {
-    $result = $apiInstance->attachModToTeam($modId, $modTeamParams);
+    $result = $apiInstance->attachModToGroup($modId, $permitPackGroupRequest);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling ModApi->attachModToTeam: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling ModApi->attachModToGroup: ', $e->getMessage(), PHP_EOL;
 }
 ```
 
@@ -83,7 +82,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
-| **modTeamParams** | [**\Kleister\Model\ModTeamParams**](../Model/ModTeamParams.md)| The team data to attach | |
+| **permitPackGroupRequest** | [**\Kleister\Model\PermitPackGroupRequest**](../Model/PermitPackGroupRequest.md)| The mod group data to permit | |
 
 ### Return type
 
@@ -91,7 +90,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -105,7 +104,7 @@ try {
 ## `attachModToUser()`
 
 ```php
-attachModToUser($modId, $modUserParams): \Kleister\Model\Notification
+attachModToUser($modId, $permitPackUserRequest): \Kleister\Model\Notification
 ```
 
 Attach a user to mod
@@ -116,11 +115,6 @@ Attach a user to mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -143,10 +137,10 @@ $apiInstance = new Kleister\Api\ModApi(
     $config
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
-$modUserParams = new \Kleister\Model\ModUserParams(); // \Kleister\Model\ModUserParams | The user data to attach
+$permitPackUserRequest = new \Kleister\Model\PermitPackUserRequest(); // \Kleister\Model\PermitPackUserRequest | The mod user data to permit
 
 try {
-    $result = $apiInstance->attachModToUser($modId, $modUserParams);
+    $result = $apiInstance->attachModToUser($modId, $permitPackUserRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->attachModToUser: ', $e->getMessage(), PHP_EOL;
@@ -158,7 +152,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
-| **modUserParams** | [**\Kleister\Model\ModUserParams**](../Model/ModUserParams.md)| The user data to attach | |
+| **permitPackUserRequest** | [**\Kleister\Model\PermitPackUserRequest**](../Model/PermitPackUserRequest.md)| The mod user data to permit | |
 
 ### Return type
 
@@ -166,7 +160,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -180,7 +174,7 @@ try {
 ## `attachVersionToBuild()`
 
 ```php
-attachVersionToBuild($modId, $versionId, $versionBuildParams): \Kleister\Model\Notification
+attachVersionToBuild($modId, $versionId, $attachMinecraftToBuildRequest): \Kleister\Model\Notification
 ```
 
 Attach a build to a version
@@ -191,11 +185,6 @@ Attach a build to a version
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -219,10 +208,10 @@ $apiInstance = new Kleister\Api\ModApi(
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
 $versionId = 'versionId_example'; // string | A version identifier or slug
-$versionBuildParams = new \Kleister\Model\VersionBuildParams(); // \Kleister\Model\VersionBuildParams | The version build data to attach
+$attachMinecraftToBuildRequest = new \Kleister\Model\AttachMinecraftToBuildRequest(); // \Kleister\Model\AttachMinecraftToBuildRequest | The version build data to create or delete
 
 try {
-    $result = $apiInstance->attachVersionToBuild($modId, $versionId, $versionBuildParams);
+    $result = $apiInstance->attachVersionToBuild($modId, $versionId, $attachMinecraftToBuildRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->attachVersionToBuild: ', $e->getMessage(), PHP_EOL;
@@ -235,7 +224,7 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
 | **versionId** | **string**| A version identifier or slug | |
-| **versionBuildParams** | [**\Kleister\Model\VersionBuildParams**](../Model/VersionBuildParams.md)| The version build data to attach | |
+| **attachMinecraftToBuildRequest** | [**\Kleister\Model\AttachMinecraftToBuildRequest**](../Model/AttachMinecraftToBuildRequest.md)| The version build data to create or delete | |
 
 ### Return type
 
@@ -243,7 +232,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -257,7 +246,7 @@ try {
 ## `createMod()`
 
 ```php
-createMod($mod): \Kleister\Model\Mod
+createMod($createModRequest): \Kleister\Model\Mod
 ```
 
 Create a new mod
@@ -268,11 +257,6 @@ Create a new mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -294,10 +278,10 @@ $apiInstance = new Kleister\Api\ModApi(
     new GuzzleHttp\Client(),
     $config
 );
-$mod = new \Kleister\Model\Mod(); // \Kleister\Model\Mod | The mod data to create
+$createModRequest = new \Kleister\Model\CreateModRequest(); // \Kleister\Model\CreateModRequest | The mod data to create
 
 try {
-    $result = $apiInstance->createMod($mod);
+    $result = $apiInstance->createMod($createModRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->createMod: ', $e->getMessage(), PHP_EOL;
@@ -308,7 +292,7 @@ try {
 
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **mod** | [**\Kleister\Model\Mod**](../Model/Mod.md)| The mod data to create | |
+| **createModRequest** | [**\Kleister\Model\CreateModRequest**](../Model/CreateModRequest.md)| The mod data to create | |
 
 ### Return type
 
@@ -316,7 +300,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -327,13 +311,13 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
-## `createVersion()`
+## `createModAvatar()`
 
 ```php
-createVersion($modId, $version): \Kleister\Model\Version
+createModAvatar($modId, $file): \Kleister\Model\ModAvatar
 ```
 
-Create a new version for a mod
+Upload an avatar for the defined mod
 
 ### Example
 
@@ -341,11 +325,6 @@ Create a new version for a mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -368,10 +347,150 @@ $apiInstance = new Kleister\Api\ModApi(
     $config
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
-$version = new \Kleister\Model\Version(); // \Kleister\Model\Version | The version data to create
+$file = "/path/to/file.txt"; // \SplFileObject
 
 try {
-    $result = $apiInstance->createVersion($modId, $version);
+    $result = $apiInstance->createModAvatar($modId, $file);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ModApi->createModAvatar: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **modId** | **string**| A mod identifier or slug | |
+| **file** | **\SplFileObject****\SplFileObject**|  | [optional] |
+
+### Return type
+
+[**\Kleister\Model\ModAvatar**](../Model/ModAvatar.md)
+
+### Authorization
+
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: `multipart/form-data`
+- **Accept**: `application/json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `createPackAvatar()`
+
+```php
+createPackAvatar($packId, $file): \Kleister\Model\PackAvatar
+```
+
+Upload an avatar for the defined pack
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+// Configure HTTP basic authorization: Basic
+$config = Kleister\Configuration::getDefaultConfiguration()
+              ->setUsername('YOUR_USERNAME')
+              ->setPassword('YOUR_PASSWORD');
+
+// Configure API key authorization: Header
+$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
+
+// Configure Bearer authorization: Bearer
+$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+
+$apiInstance = new Kleister\Api\ModApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$packId = 'packId_example'; // string | A pack identifier or slug
+$file = "/path/to/file.txt"; // \SplFileObject
+
+try {
+    $result = $apiInstance->createPackAvatar($packId, $file);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ModApi->createPackAvatar: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **packId** | **string**| A pack identifier or slug | |
+| **file** | **\SplFileObject****\SplFileObject**|  | [optional] |
+
+### Return type
+
+[**\Kleister\Model\PackAvatar**](../Model/PackAvatar.md)
+
+### Authorization
+
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: `multipart/form-data`
+- **Accept**: `application/json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `createVersion()`
+
+```php
+createVersion($modId, $createVersionRequest): \Kleister\Model\Version
+```
+
+Create a new version for a mod
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+// Configure HTTP basic authorization: Basic
+$config = Kleister\Configuration::getDefaultConfiguration()
+              ->setUsername('YOUR_USERNAME')
+              ->setPassword('YOUR_PASSWORD');
+
+// Configure API key authorization: Header
+$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
+
+// Configure Bearer authorization: Bearer
+$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+
+$apiInstance = new Kleister\Api\ModApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$modId = 'modId_example'; // string | A mod identifier or slug
+$createVersionRequest = new \Kleister\Model\CreateVersionRequest(); // \Kleister\Model\CreateVersionRequest | The version data to create
+
+try {
+    $result = $apiInstance->createVersion($modId, $createVersionRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->createVersion: ', $e->getMessage(), PHP_EOL;
@@ -383,7 +502,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
-| **version** | [**\Kleister\Model\Version**](../Model/Version.md)| The version data to create | |
+| **createVersionRequest** | [**\Kleister\Model\CreateVersionRequest**](../Model/CreateVersionRequest.md)| The version data to create | |
 
 ### Return type
 
@@ -391,7 +510,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -416,11 +535,6 @@ Delete a specific mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -464,7 +578,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -475,13 +589,13 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
-## `deleteModFromTeam()`
+## `deleteModAvatar()`
 
 ```php
-deleteModFromTeam($modId, $modTeamParams): \Kleister\Model\Notification
+deleteModAvatar($modId): \Kleister\Model\ModAvatar
 ```
 
-Unlink a team from mod
+Delete the avatar for the defined mod
 
 ### Example
 
@@ -489,11 +603,6 @@ Unlink a team from mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -516,13 +625,12 @@ $apiInstance = new Kleister\Api\ModApi(
     $config
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
-$modTeamParams = new \Kleister\Model\ModTeamParams(); // \Kleister\Model\ModTeamParams | The mod team data to unlink
 
 try {
-    $result = $apiInstance->deleteModFromTeam($modId, $modTeamParams);
+    $result = $apiInstance->deleteModAvatar($modId);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling ModApi->deleteModFromTeam: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling ModApi->deleteModAvatar: ', $e->getMessage(), PHP_EOL;
 }
 ```
 
@@ -531,7 +639,76 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
-| **modTeamParams** | [**\Kleister\Model\ModTeamParams**](../Model/ModTeamParams.md)| The mod team data to unlink | |
+
+### Return type
+
+[**\Kleister\Model\ModAvatar**](../Model/ModAvatar.md)
+
+### Authorization
+
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `deleteModFromGroup()`
+
+```php
+deleteModFromGroup($modId, $deletePackFromGroupRequest): \Kleister\Model\Notification
+```
+
+Unlink a group from mod
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+// Configure HTTP basic authorization: Basic
+$config = Kleister\Configuration::getDefaultConfiguration()
+              ->setUsername('YOUR_USERNAME')
+              ->setPassword('YOUR_PASSWORD');
+
+// Configure API key authorization: Header
+$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
+
+// Configure Bearer authorization: Bearer
+$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+
+$apiInstance = new Kleister\Api\ModApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$modId = 'modId_example'; // string | A mod identifier or slug
+$deletePackFromGroupRequest = new \Kleister\Model\DeletePackFromGroupRequest(); // \Kleister\Model\DeletePackFromGroupRequest | The mod group data to unlink
+
+try {
+    $result = $apiInstance->deleteModFromGroup($modId, $deletePackFromGroupRequest);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ModApi->deleteModFromGroup: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **modId** | **string**| A mod identifier or slug | |
+| **deletePackFromGroupRequest** | [**\Kleister\Model\DeletePackFromGroupRequest**](../Model/DeletePackFromGroupRequest.md)| The mod group data to unlink | |
 
 ### Return type
 
@@ -539,7 +716,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -553,7 +730,7 @@ try {
 ## `deleteModFromUser()`
 
 ```php
-deleteModFromUser($modId, $modUserParams): \Kleister\Model\Notification
+deleteModFromUser($modId, $deletePackFromUserRequest): \Kleister\Model\Notification
 ```
 
 Unlink a user from mod
@@ -564,11 +741,6 @@ Unlink a user from mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -591,10 +763,10 @@ $apiInstance = new Kleister\Api\ModApi(
     $config
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
-$modUserParams = new \Kleister\Model\ModUserParams(); // \Kleister\Model\ModUserParams | The mod user data to unlink
+$deletePackFromUserRequest = new \Kleister\Model\DeletePackFromUserRequest(); // \Kleister\Model\DeletePackFromUserRequest | The mod user data to unlink
 
 try {
-    $result = $apiInstance->deleteModFromUser($modId, $modUserParams);
+    $result = $apiInstance->deleteModFromUser($modId, $deletePackFromUserRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->deleteModFromUser: ', $e->getMessage(), PHP_EOL;
@@ -606,7 +778,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
-| **modUserParams** | [**\Kleister\Model\ModUserParams**](../Model/ModUserParams.md)| The mod user data to unlink | |
+| **deletePackFromUserRequest** | [**\Kleister\Model\DeletePackFromUserRequest**](../Model/DeletePackFromUserRequest.md)| The mod user data to unlink | |
 
 ### Return type
 
@@ -614,11 +786,79 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
 - **Content-Type**: `application/json`
+- **Accept**: `application/json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `deletePackAvatar()`
+
+```php
+deletePackAvatar($packId): \Kleister\Model\PackAvatar
+```
+
+Delete the avatar for the defined pack
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+// Configure HTTP basic authorization: Basic
+$config = Kleister\Configuration::getDefaultConfiguration()
+              ->setUsername('YOUR_USERNAME')
+              ->setPassword('YOUR_PASSWORD');
+
+// Configure API key authorization: Header
+$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
+
+// Configure Bearer authorization: Bearer
+$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+
+$apiInstance = new Kleister\Api\ModApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$packId = 'packId_example'; // string | A pack identifier or slug
+
+try {
+    $result = $apiInstance->deletePackAvatar($packId);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling ModApi->deletePackAvatar: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **packId** | **string**| A pack identifier or slug | |
+
+### Return type
+
+[**\Kleister\Model\PackAvatar**](../Model/PackAvatar.md)
+
+### Authorization
+
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
 - **Accept**: `application/json`
 
 [[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
@@ -639,11 +879,6 @@ Delete a specific version for a mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -689,7 +924,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -703,7 +938,7 @@ try {
 ## `deleteVersionFromBuild()`
 
 ```php
-deleteVersionFromBuild($modId, $versionId, $versionBuildParams): \Kleister\Model\Notification
+deleteVersionFromBuild($modId, $versionId, $attachMinecraftToBuildRequest): \Kleister\Model\Notification
 ```
 
 Unlink a build from a version
@@ -714,11 +949,6 @@ Unlink a build from a version
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -742,10 +972,10 @@ $apiInstance = new Kleister\Api\ModApi(
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
 $versionId = 'versionId_example'; // string | A version identifier or slug
-$versionBuildParams = new \Kleister\Model\VersionBuildParams(); // \Kleister\Model\VersionBuildParams | The version build data to unlink
+$attachMinecraftToBuildRequest = new \Kleister\Model\AttachMinecraftToBuildRequest(); // \Kleister\Model\AttachMinecraftToBuildRequest | The version build data to create or delete
 
 try {
-    $result = $apiInstance->deleteVersionFromBuild($modId, $versionId, $versionBuildParams);
+    $result = $apiInstance->deleteVersionFromBuild($modId, $versionId, $attachMinecraftToBuildRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->deleteVersionFromBuild: ', $e->getMessage(), PHP_EOL;
@@ -758,7 +988,7 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
 | **versionId** | **string**| A version identifier or slug | |
-| **versionBuildParams** | [**\Kleister\Model\VersionBuildParams**](../Model/VersionBuildParams.md)| The version build data to unlink | |
+| **attachMinecraftToBuildRequest** | [**\Kleister\Model\AttachMinecraftToBuildRequest**](../Model/AttachMinecraftToBuildRequest.md)| The version build data to create or delete | |
 
 ### Return type
 
@@ -766,7 +996,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -777,13 +1007,13 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
-## `listModTeams()`
+## `listModGroups()`
 
 ```php
-listModTeams($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ModTeams
+listModGroups($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListModGroups200Response
 ```
 
-Fetch all teams attached to mod
+Fetch all groups attached to mod
 
 ### Example
 
@@ -791,11 +1021,6 @@ Fetch all teams attached to mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -819,16 +1044,16 @@ $apiInstance = new Kleister\Api\ModApi(
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
 
 try {
-    $result = $apiInstance->listModTeams($modId, $search, $sort, $order, $limit, $offset);
+    $result = $apiInstance->listModGroups($modId, $search, $sort, $order, $limit, $offset);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling ModApi->listModTeams: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling ModApi->listModGroups: ', $e->getMessage(), PHP_EOL;
 }
 ```
 
@@ -838,18 +1063,18 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\ModTeams**](../Model/ModTeams.md)
+[**\Kleister\Model\ListModGroups200Response**](../Model/ListModGroups200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -863,7 +1088,7 @@ try {
 ## `listModUsers()`
 
 ```php
-listModUsers($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ModUsers
+listModUsers($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListModUsers200Response
 ```
 
 Fetch all users attached to mod
@@ -874,11 +1099,6 @@ Fetch all users attached to mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -902,7 +1122,7 @@ $apiInstance = new Kleister\Api\ModApi(
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'username'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -921,18 +1141,18 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;username&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\ModUsers**](../Model/ModUsers.md)
+[**\Kleister\Model\ListModUsers200Response**](../Model/ListModUsers200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -946,7 +1166,7 @@ try {
 ## `listMods()`
 
 ```php
-listMods($search, $sort, $order, $limit, $offset): \Kleister\Model\Mods
+listMods($search, $sort, $order, $limit, $offset): \Kleister\Model\ListMods200Response
 ```
 
 Fetch all available mods
@@ -957,11 +1177,6 @@ Fetch all available mods
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -984,7 +1199,7 @@ $apiInstance = new Kleister\Api\ModApi(
     $config
 );
 $search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -1002,18 +1217,18 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\Mods**](../Model/Mods.md)
+[**\Kleister\Model\ListMods200Response**](../Model/ListMods200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1027,7 +1242,7 @@ try {
 ## `listVersionBuilds()`
 
 ```php
-listVersionBuilds($modId, $versionId, $search, $sort, $order, $limit, $offset): \Kleister\Model\VersionBuilds
+listVersionBuilds($modId, $versionId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListVersionBuilds200Response
 ```
 
 Fetch all builds attached to version
@@ -1038,11 +1253,6 @@ Fetch all builds attached to version
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1067,7 +1277,7 @@ $apiInstance = new Kleister\Api\ModApi(
 $modId = 'modId_example'; // string | A mod identifier or slug
 $versionId = 'versionId_example'; // string | A version identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -1087,18 +1297,18 @@ try {
 | **modId** | **string**| A mod identifier or slug | |
 | **versionId** | **string**| A version identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\VersionBuilds**](../Model/VersionBuilds.md)
+[**\Kleister\Model\ListVersionBuilds200Response**](../Model/ListVersionBuilds200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1112,7 +1322,7 @@ try {
 ## `listVersions()`
 
 ```php
-listVersions($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\Versions
+listVersions($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListVersions200Response
 ```
 
 Fetch all available versions for a mod
@@ -1123,11 +1333,6 @@ Fetch all available versions for a mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1151,7 +1356,7 @@ $apiInstance = new Kleister\Api\ModApi(
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -1170,18 +1375,18 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\Versions**](../Model/Versions.md)
+[**\Kleister\Model\ListVersions200Response**](../Model/ListVersions200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1192,13 +1397,13 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
-## `permitModTeam()`
+## `permitModGroup()`
 
 ```php
-permitModTeam($modId, $modTeamParams): \Kleister\Model\Notification
+permitModGroup($modId, $permitPackGroupRequest): \Kleister\Model\Notification
 ```
 
-Update team perms for mod
+Update group perms for mod
 
 ### Example
 
@@ -1206,11 +1411,6 @@ Update team perms for mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1233,13 +1433,13 @@ $apiInstance = new Kleister\Api\ModApi(
     $config
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
-$modTeamParams = new \Kleister\Model\ModTeamParams(); // \Kleister\Model\ModTeamParams | The team data to update
+$permitPackGroupRequest = new \Kleister\Model\PermitPackGroupRequest(); // \Kleister\Model\PermitPackGroupRequest | The mod group data to permit
 
 try {
-    $result = $apiInstance->permitModTeam($modId, $modTeamParams);
+    $result = $apiInstance->permitModGroup($modId, $permitPackGroupRequest);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling ModApi->permitModTeam: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling ModApi->permitModGroup: ', $e->getMessage(), PHP_EOL;
 }
 ```
 
@@ -1248,7 +1448,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
-| **modTeamParams** | [**\Kleister\Model\ModTeamParams**](../Model/ModTeamParams.md)| The team data to update | |
+| **permitPackGroupRequest** | [**\Kleister\Model\PermitPackGroupRequest**](../Model/PermitPackGroupRequest.md)| The mod group data to permit | |
 
 ### Return type
 
@@ -1256,7 +1456,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1270,7 +1470,7 @@ try {
 ## `permitModUser()`
 
 ```php
-permitModUser($modId, $modUserParams): \Kleister\Model\Notification
+permitModUser($modId, $permitPackUserRequest): \Kleister\Model\Notification
 ```
 
 Update user perms for mod
@@ -1281,11 +1481,6 @@ Update user perms for mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1308,10 +1503,10 @@ $apiInstance = new Kleister\Api\ModApi(
     $config
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
-$modUserParams = new \Kleister\Model\ModUserParams(); // \Kleister\Model\ModUserParams | The user data to update
+$permitPackUserRequest = new \Kleister\Model\PermitPackUserRequest(); // \Kleister\Model\PermitPackUserRequest | The mod user data to permit
 
 try {
-    $result = $apiInstance->permitModUser($modId, $modUserParams);
+    $result = $apiInstance->permitModUser($modId, $permitPackUserRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->permitModUser: ', $e->getMessage(), PHP_EOL;
@@ -1323,7 +1518,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
-| **modUserParams** | [**\Kleister\Model\ModUserParams**](../Model/ModUserParams.md)| The user data to update | |
+| **permitPackUserRequest** | [**\Kleister\Model\PermitPackUserRequest**](../Model/PermitPackUserRequest.md)| The mod user data to permit | |
 
 ### Return type
 
@@ -1331,7 +1526,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1356,11 +1551,6 @@ Fetch a specific mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1404,7 +1594,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1429,11 +1619,6 @@ Fetch a specific version for a mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1479,7 +1664,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1493,7 +1678,7 @@ try {
 ## `updateMod()`
 
 ```php
-updateMod($modId, $mod): \Kleister\Model\Mod
+updateMod($modId, $createModRequest): \Kleister\Model\Mod
 ```
 
 Update a specific mod
@@ -1504,11 +1689,6 @@ Update a specific mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1531,10 +1711,10 @@ $apiInstance = new Kleister\Api\ModApi(
     $config
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
-$mod = new \Kleister\Model\Mod(); // \Kleister\Model\Mod | The mod data to update
+$createModRequest = new \Kleister\Model\CreateModRequest(); // \Kleister\Model\CreateModRequest | The mod data to update
 
 try {
-    $result = $apiInstance->updateMod($modId, $mod);
+    $result = $apiInstance->updateMod($modId, $createModRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->updateMod: ', $e->getMessage(), PHP_EOL;
@@ -1546,7 +1726,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
-| **mod** | [**\Kleister\Model\Mod**](../Model/Mod.md)| The mod data to update | |
+| **createModRequest** | [**\Kleister\Model\CreateModRequest**](../Model/CreateModRequest.md)| The mod data to update | |
 
 ### Return type
 
@@ -1554,7 +1734,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1568,7 +1748,7 @@ try {
 ## `updateVersion()`
 
 ```php
-updateVersion($modId, $versionId, $version): \Kleister\Model\Version
+updateVersion($modId, $versionId, $createVersionRequest): \Kleister\Model\Version
 ```
 
 Update a specific version for a mod
@@ -1579,11 +1759,6 @@ Update a specific version for a mod
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1607,10 +1782,10 @@ $apiInstance = new Kleister\Api\ModApi(
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
 $versionId = 'versionId_example'; // string | A version identifier or slug
-$version = new \Kleister\Model\Version(); // \Kleister\Model\Version | The version data to update
+$createVersionRequest = new \Kleister\Model\CreateVersionRequest(); // \Kleister\Model\CreateVersionRequest | The version data to update
 
 try {
-    $result = $apiInstance->updateVersion($modId, $versionId, $version);
+    $result = $apiInstance->updateVersion($modId, $versionId, $createVersionRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ModApi->updateVersion: ', $e->getMessage(), PHP_EOL;
@@ -1623,7 +1798,7 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **modId** | **string**| A mod identifier or slug | |
 | **versionId** | **string**| A version identifier or slug | |
-| **version** | [**\Kleister\Model\Version**](../Model/Version.md)| The version data to update | |
+| **createVersionRequest** | [**\Kleister\Model\CreateVersionRequest**](../Model/CreateVersionRequest.md)| The version data to update | |
 
 ### Return type
 
@@ -1631,7 +1806,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 

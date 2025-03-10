@@ -141,16 +141,16 @@ class NeoforgeApi
      * Attach a build to a Neoforge version
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
-     * @param  \Kleister\Model\NeoforgeBuildParams $neoforgeBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The neoforge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachNeoforgeToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachNeoforgeToBuild($neoforgeId, $neoforgeBuildParams, string $contentType = self::contentTypes['attachNeoforgeToBuild'][0])
+    public function attachNeoforgeToBuild($neoforgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachNeoforgeToBuild'][0])
     {
-        list($response) = $this->attachNeoforgeToBuildWithHttpInfo($neoforgeId, $neoforgeBuildParams, $contentType);
+        list($response) = $this->attachNeoforgeToBuildWithHttpInfo($neoforgeId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -160,16 +160,16 @@ class NeoforgeApi
      * Attach a build to a Neoforge version
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
-     * @param  \Kleister\Model\NeoforgeBuildParams $neoforgeBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The neoforge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachNeoforgeToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachNeoforgeToBuildWithHttpInfo($neoforgeId, $neoforgeBuildParams, string $contentType = self::contentTypes['attachNeoforgeToBuild'][0])
+    public function attachNeoforgeToBuildWithHttpInfo($neoforgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachNeoforgeToBuild'][0])
     {
-        $request = $this->attachNeoforgeToBuildRequest($neoforgeId, $neoforgeBuildParams, $contentType);
+        $request = $this->attachNeoforgeToBuildRequest($neoforgeId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -208,6 +208,33 @@ class NeoforgeApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -343,33 +370,6 @@ class NeoforgeApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -436,6 +436,14 @@ class NeoforgeApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -476,14 +484,6 @@ class NeoforgeApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -495,15 +495,15 @@ class NeoforgeApi
      * Attach a build to a Neoforge version
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
-     * @param  \Kleister\Model\NeoforgeBuildParams $neoforgeBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The neoforge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachNeoforgeToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachNeoforgeToBuildAsync($neoforgeId, $neoforgeBuildParams, string $contentType = self::contentTypes['attachNeoforgeToBuild'][0])
+    public function attachNeoforgeToBuildAsync($neoforgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachNeoforgeToBuild'][0])
     {
-        return $this->attachNeoforgeToBuildAsyncWithHttpInfo($neoforgeId, $neoforgeBuildParams, $contentType)
+        return $this->attachNeoforgeToBuildAsyncWithHttpInfo($neoforgeId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -517,16 +517,16 @@ class NeoforgeApi
      * Attach a build to a Neoforge version
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
-     * @param  \Kleister\Model\NeoforgeBuildParams $neoforgeBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The neoforge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachNeoforgeToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachNeoforgeToBuildAsyncWithHttpInfo($neoforgeId, $neoforgeBuildParams, string $contentType = self::contentTypes['attachNeoforgeToBuild'][0])
+    public function attachNeoforgeToBuildAsyncWithHttpInfo($neoforgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachNeoforgeToBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachNeoforgeToBuildRequest($neoforgeId, $neoforgeBuildParams, $contentType);
+        $request = $this->attachNeoforgeToBuildRequest($neoforgeId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -568,13 +568,13 @@ class NeoforgeApi
      * Create request for operation 'attachNeoforgeToBuild'
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
-     * @param  \Kleister\Model\NeoforgeBuildParams $neoforgeBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The neoforge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachNeoforgeToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachNeoforgeToBuildRequest($neoforgeId, $neoforgeBuildParams, string $contentType = self::contentTypes['attachNeoforgeToBuild'][0])
+    public function attachNeoforgeToBuildRequest($neoforgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachNeoforgeToBuild'][0])
     {
 
         // verify the required parameter 'neoforgeId' is set
@@ -584,10 +584,10 @@ class NeoforgeApi
             );
         }
 
-        // verify the required parameter 'neoforgeBuildParams' is set
-        if ($neoforgeBuildParams === null || (is_array($neoforgeBuildParams) && count($neoforgeBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $neoforgeBuildParams when calling attachNeoforgeToBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling attachNeoforgeToBuild'
             );
         }
 
@@ -618,12 +618,12 @@ class NeoforgeApi
         );
 
         // for model (json/xml)
-        if (isset($neoforgeBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($neoforgeBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $neoforgeBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -649,11 +649,6 @@ class NeoforgeApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -695,16 +690,16 @@ class NeoforgeApi
      * Unlink a build from a Neoforge version
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
-     * @param  \Kleister\Model\NeoforgeBuildParams $neoforgeBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The neoforge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteNeoforgeFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteNeoforgeFromBuild($neoforgeId, $neoforgeBuildParams, string $contentType = self::contentTypes['deleteNeoforgeFromBuild'][0])
+    public function deleteNeoforgeFromBuild($neoforgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteNeoforgeFromBuild'][0])
     {
-        list($response) = $this->deleteNeoforgeFromBuildWithHttpInfo($neoforgeId, $neoforgeBuildParams, $contentType);
+        list($response) = $this->deleteNeoforgeFromBuildWithHttpInfo($neoforgeId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -714,16 +709,16 @@ class NeoforgeApi
      * Unlink a build from a Neoforge version
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
-     * @param  \Kleister\Model\NeoforgeBuildParams $neoforgeBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The neoforge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteNeoforgeFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteNeoforgeFromBuildWithHttpInfo($neoforgeId, $neoforgeBuildParams, string $contentType = self::contentTypes['deleteNeoforgeFromBuild'][0])
+    public function deleteNeoforgeFromBuildWithHttpInfo($neoforgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteNeoforgeFromBuild'][0])
     {
-        $request = $this->deleteNeoforgeFromBuildRequest($neoforgeId, $neoforgeBuildParams, $contentType);
+        $request = $this->deleteNeoforgeFromBuildRequest($neoforgeId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -762,6 +757,33 @@ class NeoforgeApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -870,33 +892,6 @@ class NeoforgeApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -963,6 +958,14 @@ class NeoforgeApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -995,14 +998,6 @@ class NeoforgeApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1014,15 +1009,15 @@ class NeoforgeApi
      * Unlink a build from a Neoforge version
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
-     * @param  \Kleister\Model\NeoforgeBuildParams $neoforgeBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The neoforge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteNeoforgeFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteNeoforgeFromBuildAsync($neoforgeId, $neoforgeBuildParams, string $contentType = self::contentTypes['deleteNeoforgeFromBuild'][0])
+    public function deleteNeoforgeFromBuildAsync($neoforgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteNeoforgeFromBuild'][0])
     {
-        return $this->deleteNeoforgeFromBuildAsyncWithHttpInfo($neoforgeId, $neoforgeBuildParams, $contentType)
+        return $this->deleteNeoforgeFromBuildAsyncWithHttpInfo($neoforgeId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1036,16 +1031,16 @@ class NeoforgeApi
      * Unlink a build from a Neoforge version
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
-     * @param  \Kleister\Model\NeoforgeBuildParams $neoforgeBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The neoforge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteNeoforgeFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteNeoforgeFromBuildAsyncWithHttpInfo($neoforgeId, $neoforgeBuildParams, string $contentType = self::contentTypes['deleteNeoforgeFromBuild'][0])
+    public function deleteNeoforgeFromBuildAsyncWithHttpInfo($neoforgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteNeoforgeFromBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteNeoforgeFromBuildRequest($neoforgeId, $neoforgeBuildParams, $contentType);
+        $request = $this->deleteNeoforgeFromBuildRequest($neoforgeId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1087,13 +1082,13 @@ class NeoforgeApi
      * Create request for operation 'deleteNeoforgeFromBuild'
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
-     * @param  \Kleister\Model\NeoforgeBuildParams $neoforgeBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The neoforge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteNeoforgeFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteNeoforgeFromBuildRequest($neoforgeId, $neoforgeBuildParams, string $contentType = self::contentTypes['deleteNeoforgeFromBuild'][0])
+    public function deleteNeoforgeFromBuildRequest($neoforgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteNeoforgeFromBuild'][0])
     {
 
         // verify the required parameter 'neoforgeId' is set
@@ -1103,10 +1098,10 @@ class NeoforgeApi
             );
         }
 
-        // verify the required parameter 'neoforgeBuildParams' is set
-        if ($neoforgeBuildParams === null || (is_array($neoforgeBuildParams) && count($neoforgeBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $neoforgeBuildParams when calling deleteNeoforgeFromBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling deleteNeoforgeFromBuild'
             );
         }
 
@@ -1137,12 +1132,12 @@ class NeoforgeApi
         );
 
         // for model (json/xml)
-        if (isset($neoforgeBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($neoforgeBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $neoforgeBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -1168,11 +1163,6 @@ class NeoforgeApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1215,7 +1205,7 @@ class NeoforgeApi
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1223,9 +1213,9 @@ class NeoforgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\NeoforgeBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListNeoforgeBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listNeoforgeBuilds($neoforgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
+    public function listNeoforgeBuilds($neoforgeId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
     {
         list($response) = $this->listNeoforgeBuildsWithHttpInfo($neoforgeId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -1238,7 +1228,7 @@ class NeoforgeApi
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1246,9 +1236,9 @@ class NeoforgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\NeoforgeBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListNeoforgeBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listNeoforgeBuildsWithHttpInfo($neoforgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
+    public function listNeoforgeBuildsWithHttpInfo($neoforgeId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
     {
         $request = $this->listNeoforgeBuildsRequest($neoforgeId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -1289,11 +1279,11 @@ class NeoforgeApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\NeoforgeBuilds' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListNeoforgeBuilds200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\NeoforgeBuilds' !== 'string') {
+                        if ('\Kleister\Model\ListNeoforgeBuilds200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -1311,7 +1301,7 @@ class NeoforgeApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\NeoforgeBuilds', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListNeoforgeBuilds200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1396,36 +1386,9 @@ class NeoforgeApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\NeoforgeBuilds';
+            $returnType = '\Kleister\Model\ListNeoforgeBuilds200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -1458,7 +1421,7 @@ class NeoforgeApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\NeoforgeBuilds',
+                        '\Kleister\Model\ListNeoforgeBuilds200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1487,14 +1450,6 @@ class NeoforgeApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1507,7 +1462,7 @@ class NeoforgeApi
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1516,7 +1471,7 @@ class NeoforgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listNeoforgeBuildsAsync($neoforgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
+    public function listNeoforgeBuildsAsync($neoforgeId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
     {
         return $this->listNeoforgeBuildsAsyncWithHttpInfo($neoforgeId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -1533,7 +1488,7 @@ class NeoforgeApi
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1542,9 +1497,9 @@ class NeoforgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listNeoforgeBuildsAsyncWithHttpInfo($neoforgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
+    public function listNeoforgeBuildsAsyncWithHttpInfo($neoforgeId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
     {
-        $returnType = '\Kleister\Model\NeoforgeBuilds';
+        $returnType = '\Kleister\Model\ListNeoforgeBuilds200Response';
         $request = $this->listNeoforgeBuildsRequest($neoforgeId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -1588,7 +1543,7 @@ class NeoforgeApi
      *
      * @param  string $neoforgeId A neoforge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1597,7 +1552,7 @@ class NeoforgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listNeoforgeBuildsRequest($neoforgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
+    public function listNeoforgeBuildsRequest($neoforgeId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listNeoforgeBuilds'][0])
     {
 
         // verify the required parameter 'neoforgeId' is set
@@ -1708,11 +1663,6 @@ class NeoforgeApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1758,7 +1708,7 @@ class NeoforgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Neoforges|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListNeoforges200Response|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function listNeoforges($search = null, string $contentType = self::contentTypes['listNeoforges'][0])
     {
@@ -1776,7 +1726,7 @@ class NeoforgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Neoforges|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListNeoforges200Response|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function listNeoforgesWithHttpInfo($search = null, string $contentType = self::contentTypes['listNeoforges'][0])
     {
@@ -1819,11 +1769,11 @@ class NeoforgeApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Neoforges' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListNeoforges200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Neoforges' !== 'string') {
+                        if ('\Kleister\Model\ListNeoforges200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -1841,7 +1791,7 @@ class NeoforgeApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Neoforges', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListNeoforges200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1899,36 +1849,9 @@ class NeoforgeApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\Neoforges';
+            $returnType = '\Kleister\Model\ListNeoforges200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -1961,7 +1884,7 @@ class NeoforgeApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\Neoforges',
+                        '\Kleister\Model\ListNeoforges200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1975,14 +1898,6 @@ class NeoforgeApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -2029,7 +1944,7 @@ class NeoforgeApi
      */
     public function listNeoforgesAsyncWithHttpInfo($search = null, string $contentType = self::contentTypes['listNeoforges'][0])
     {
-        $returnType = '\Kleister\Model\Neoforges';
+        $returnType = '\Kleister\Model\ListNeoforges200Response';
         $request = $this->listNeoforgesRequest($search, $contentType);
 
         return $this->client
@@ -2133,11 +2048,6 @@ class NeoforgeApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -2182,7 +2092,7 @@ class NeoforgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function updateNeoforge(string $contentType = self::contentTypes['updateNeoforge'][0])
     {
@@ -2199,7 +2109,7 @@ class NeoforgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function updateNeoforgeWithHttpInfo(string $contentType = self::contentTypes['updateNeoforge'][0])
     {
@@ -2349,33 +2259,6 @@ class NeoforgeApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Notification';
@@ -2433,14 +2316,6 @@ class NeoforgeApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -2578,11 +2453,6 @@ class NeoforgeApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());

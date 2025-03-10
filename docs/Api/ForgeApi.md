@@ -14,7 +14,7 @@ All URIs are relative to https://try.kleister.eu/api/v1, except if the operation
 ## `attachForgeToBuild()`
 
 ```php
-attachForgeToBuild($forgeId, $forgeBuildParams): \Kleister\Model\Notification
+attachForgeToBuild($forgeId, $attachMinecraftToBuildRequest): \Kleister\Model\Notification
 ```
 
 Attach a build to a Forge version
@@ -25,11 +25,6 @@ Attach a build to a Forge version
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -52,10 +47,10 @@ $apiInstance = new Kleister\Api\ForgeApi(
     $config
 );
 $forgeId = 'forgeId_example'; // string | A forge identifier or slug
-$forgeBuildParams = new \Kleister\Model\ForgeBuildParams(); // \Kleister\Model\ForgeBuildParams | The build data to attach
+$attachMinecraftToBuildRequest = new \Kleister\Model\AttachMinecraftToBuildRequest(); // \Kleister\Model\AttachMinecraftToBuildRequest | The forge build data to create or update
 
 try {
-    $result = $apiInstance->attachForgeToBuild($forgeId, $forgeBuildParams);
+    $result = $apiInstance->attachForgeToBuild($forgeId, $attachMinecraftToBuildRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ForgeApi->attachForgeToBuild: ', $e->getMessage(), PHP_EOL;
@@ -67,7 +62,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **forgeId** | **string**| A forge identifier or slug | |
-| **forgeBuildParams** | [**\Kleister\Model\ForgeBuildParams**](../Model/ForgeBuildParams.md)| The build data to attach | |
+| **attachMinecraftToBuildRequest** | [**\Kleister\Model\AttachMinecraftToBuildRequest**](../Model/AttachMinecraftToBuildRequest.md)| The forge build data to create or update | |
 
 ### Return type
 
@@ -75,7 +70,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -89,7 +84,7 @@ try {
 ## `deleteForgeFromBuild()`
 
 ```php
-deleteForgeFromBuild($forgeId, $forgeBuildParams): \Kleister\Model\Notification
+deleteForgeFromBuild($forgeId, $attachMinecraftToBuildRequest): \Kleister\Model\Notification
 ```
 
 Unlink a build from a Forge version
@@ -100,11 +95,6 @@ Unlink a build from a Forge version
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -127,10 +117,10 @@ $apiInstance = new Kleister\Api\ForgeApi(
     $config
 );
 $forgeId = 'forgeId_example'; // string | A forge identifier or slug
-$forgeBuildParams = new \Kleister\Model\ForgeBuildParams(); // \Kleister\Model\ForgeBuildParams | The build data to unlink
+$attachMinecraftToBuildRequest = new \Kleister\Model\AttachMinecraftToBuildRequest(); // \Kleister\Model\AttachMinecraftToBuildRequest | The forge build data to create or update
 
 try {
-    $result = $apiInstance->deleteForgeFromBuild($forgeId, $forgeBuildParams);
+    $result = $apiInstance->deleteForgeFromBuild($forgeId, $attachMinecraftToBuildRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ForgeApi->deleteForgeFromBuild: ', $e->getMessage(), PHP_EOL;
@@ -142,7 +132,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **forgeId** | **string**| A forge identifier or slug | |
-| **forgeBuildParams** | [**\Kleister\Model\ForgeBuildParams**](../Model/ForgeBuildParams.md)| The build data to unlink | |
+| **attachMinecraftToBuildRequest** | [**\Kleister\Model\AttachMinecraftToBuildRequest**](../Model/AttachMinecraftToBuildRequest.md)| The forge build data to create or update | |
 
 ### Return type
 
@@ -150,7 +140,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -164,7 +154,7 @@ try {
 ## `listForgeBuilds()`
 
 ```php
-listForgeBuilds($forgeId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ForgeBuilds
+listForgeBuilds($forgeId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListForgeBuilds200Response
 ```
 
 Fetch the builds attached to a Forge version
@@ -175,11 +165,6 @@ Fetch the builds attached to a Forge version
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -203,7 +188,7 @@ $apiInstance = new Kleister\Api\ForgeApi(
 );
 $forgeId = 'forgeId_example'; // string | A forge identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'build_name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -222,18 +207,18 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **forgeId** | **string**| A forge identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;build_name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\ForgeBuilds**](../Model/ForgeBuilds.md)
+[**\Kleister\Model\ListForgeBuilds200Response**](../Model/ListForgeBuilds200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -247,7 +232,7 @@ try {
 ## `listForges()`
 
 ```php
-listForges($search): \Kleister\Model\Forges
+listForges($search): \Kleister\Model\ListForges200Response
 ```
 
 Fetch the available Forge versions
@@ -258,11 +243,6 @@ Fetch the available Forge versions
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -302,11 +282,11 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\Forges**](../Model/Forges.md)
+[**\Kleister\Model\ListForges200Response**](../Model/ListForges200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -331,11 +311,6 @@ Update the available Forge versions
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -376,7 +351,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 

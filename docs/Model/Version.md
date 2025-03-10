@@ -7,7 +7,6 @@ Name | Type | Description | Notes
 **id** | **string** |  | [optional] [readonly]
 **file** | [**\Kleister\Model\VersionFile**](VersionFile.md) |  | [optional]
 **mod** | [**\Kleister\Model\Mod**](Mod.md) |  | [optional]
-**slug** | **string** |  | [optional]
 **name** | **string** |  | [optional]
 **public** | **bool** |  | [optional]
 **createdAt** | **\DateTime** |  | [optional] [readonly]

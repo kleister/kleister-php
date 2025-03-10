@@ -5,9 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **string** |  | [optional] [readonly]
-**icon** | [**\Kleister\Model\PackIcon**](PackIcon.md) |  | [optional]
-**logo** | [**\Kleister\Model\PackLogo**](PackLogo.md) |  | [optional]
-**back** | [**\Kleister\Model\PackBack**](PackBack.md) |  | [optional]
+**avatar** | [**\Kleister\Model\PackAvatar**](PackAvatar.md) |  | [optional]
 **slug** | **string** |  | [optional]
 **name** | **string** |  | [optional]
 **website** | **string** |  | [optional]

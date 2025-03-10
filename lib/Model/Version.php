@@ -51,7 +51,7 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'version';
+    protected static $openAPIModelName = 'Version';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -62,7 +62,6 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
         'id' => 'string',
         'file' => '\Kleister\Model\VersionFile',
         'mod' => '\Kleister\Model\Mod',
-        'slug' => 'string',
         'name' => 'string',
         'public' => 'bool',
         'createdAt' => '\DateTime',
@@ -80,7 +79,6 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
         'id' => null,
         'file' => null,
         'mod' => null,
-        'slug' => null,
         'name' => null,
         'public' => null,
         'createdAt' => 'date-time',
@@ -96,7 +94,6 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
         'id' => false,
         'file' => false,
         'mod' => false,
-        'slug' => true,
         'name' => true,
         'public' => true,
         'createdAt' => false,
@@ -192,7 +189,6 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
         'id' => 'id',
         'file' => 'file',
         'mod' => 'mod',
-        'slug' => 'slug',
         'name' => 'name',
         'public' => 'public',
         'createdAt' => 'created_at',
@@ -208,7 +204,6 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
         'id' => 'setId',
         'file' => 'setFile',
         'mod' => 'setMod',
-        'slug' => 'setSlug',
         'name' => 'setName',
         'public' => 'setPublic',
         'createdAt' => 'setCreatedAt',
@@ -224,7 +219,6 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
         'id' => 'getId',
         'file' => 'getFile',
         'mod' => 'getMod',
-        'slug' => 'getSlug',
         'name' => 'getName',
         'public' => 'getPublic',
         'createdAt' => 'getCreatedAt',
@@ -291,7 +285,6 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('id', $data ?? [], null);
         $this->setIfExists('file', $data ?? [], null);
         $this->setIfExists('mod', $data ?? [], null);
-        $this->setIfExists('slug', $data ?? [], null);
         $this->setIfExists('name', $data ?? [], null);
         $this->setIfExists('public', $data ?? [], null);
         $this->setIfExists('createdAt', $data ?? [], null);
@@ -417,40 +410,6 @@ class Version implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable mod cannot be null');
         }
         $this->container['mod'] = $mod;
-
-        return $this;
-    }
-
-    /**
-     * Gets slug
-     *
-     * @return string|null
-     */
-    public function getSlug()
-    {
-        return $this->container['slug'];
-    }
-
-    /**
-     * Sets slug
-     *
-     * @param string|null $slug slug
-     *
-     * @return self
-     */
-    public function setSlug($slug)
-    {
-        if (is_null($slug)) {
-            array_push($this->openAPINullablesSetToNull, 'slug');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('slug', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['slug'] = $slug;
 
         return $this;
     }

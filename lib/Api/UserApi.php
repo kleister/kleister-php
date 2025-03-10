@@ -72,13 +72,13 @@ class UserApi
 
     /** @var string[] $contentTypes **/
     public const contentTypes = [
+        'attachUserToGroup' => [
+            'application/json',
+        ],
         'attachUserToMod' => [
             'application/json',
         ],
         'attachUserToPack' => [
-            'application/json',
-        ],
-        'attachUserToTeam' => [
             'application/json',
         ],
         'createUser' => [
@@ -87,13 +87,16 @@ class UserApi
         'deleteUser' => [
             'application/json',
         ],
+        'deleteUserFromGroup' => [
+            'application/json',
+        ],
         'deleteUserFromMod' => [
             'application/json',
         ],
         'deleteUserFromPack' => [
             'application/json',
         ],
-        'deleteUserFromTeam' => [
+        'listUserGroups' => [
             'application/json',
         ],
         'listUserMods' => [
@@ -102,19 +105,16 @@ class UserApi
         'listUserPacks' => [
             'application/json',
         ],
-        'listUserTeams' => [
+        'listUsers' => [
             'application/json',
         ],
-        'listUsers' => [
+        'permitUserGroup' => [
             'application/json',
         ],
         'permitUserMod' => [
             'application/json',
         ],
         'permitUserPack' => [
-            'application/json',
-        ],
-        'permitUserTeam' => [
             'application/json',
         ],
         'showUser' => [
@@ -172,40 +172,40 @@ class UserApi
     }
 
     /**
-     * Operation attachUserToMod
+     * Operation attachUserToGroup
      *
-     * Attach a mod to user
+     * Attach a group to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToMod'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The user group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachUserToMod($userId, $userModParams, string $contentType = self::contentTypes['attachUserToMod'][0])
+    public function attachUserToGroup($userId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachUserToGroup'][0])
     {
-        list($response) = $this->attachUserToModWithHttpInfo($userId, $userModParams, $contentType);
+        list($response) = $this->attachUserToGroupWithHttpInfo($userId, $permitPackGroupRequest, $contentType);
         return $response;
     }
 
     /**
-     * Operation attachUserToModWithHttpInfo
+     * Operation attachUserToGroupWithHttpInfo
      *
-     * Attach a mod to user
+     * Attach a group to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToMod'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The user group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachUserToModWithHttpInfo($userId, $userModParams, string $contentType = self::contentTypes['attachUserToMod'][0])
+    public function attachUserToGroupWithHttpInfo($userId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachUserToGroup'][0])
     {
-        $request = $this->attachUserToModRequest($userId, $userModParams, $contentType);
+        $request = $this->attachUserToGroupRequest($userId, $permitPackGroupRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -244,6 +244,33 @@ class UserApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -379,33 +406,6 @@ class UserApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -472,6 +472,14 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -512,7 +520,548 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation attachUserToGroupAsync
+     *
+     * Attach a group to user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The user group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToGroup'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function attachUserToGroupAsync($userId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachUserToGroup'][0])
+    {
+        return $this->attachUserToGroupAsyncWithHttpInfo($userId, $permitPackGroupRequest, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation attachUserToGroupAsyncWithHttpInfo
+     *
+     * Attach a group to user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The user group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToGroup'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function attachUserToGroupAsyncWithHttpInfo($userId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachUserToGroup'][0])
+    {
+        $returnType = '\Kleister\Model\Notification';
+        $request = $this->attachUserToGroupRequest($userId, $permitPackGroupRequest, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    if ($returnType === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'attachUserToGroup'
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The user group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToGroup'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function attachUserToGroupRequest($userId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachUserToGroup'][0])
+    {
+
+        // verify the required parameter 'userId' is set
+        if ($userId === null || (is_array($userId) && count($userId) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $userId when calling attachUserToGroup'
+            );
+        }
+
+        // verify the required parameter 'permitPackGroupRequest' is set
+        if ($permitPackGroupRequest === null || (is_array($permitPackGroupRequest) && count($permitPackGroupRequest) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $permitPackGroupRequest when calling attachUserToGroup'
+            );
+        }
+
+
+        $resourcePath = '/users/{user_id}/groups';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+        // path params
+        if ($userId !== null) {
+            $resourcePath = str_replace(
+                '{' . 'user_id' . '}',
+                ObjectSerializer::toPathValue($userId),
+                $resourcePath
+            );
+        }
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (isset($permitPackGroupRequest)) {
+            if (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the body
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitPackGroupRequest));
+            } else {
+                $httpBody = $permitPackGroupRequest;
+            }
+        } elseif (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
+        }
+        // this endpoint requires API key authentication
+        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
+        if ($apiKey !== null) {
+            $headers['X-API-Key'] = $apiKey;
+        }
+        // this endpoint requires Bearer authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'POST',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation attachUserToMod
+     *
+     * Attach a mod to user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\PermitGroupModRequest $permitGroupModRequest The user mod data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToMod'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     */
+    public function attachUserToMod($userId, $permitGroupModRequest, string $contentType = self::contentTypes['attachUserToMod'][0])
+    {
+        list($response) = $this->attachUserToModWithHttpInfo($userId, $permitGroupModRequest, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation attachUserToModWithHttpInfo
+     *
+     * Attach a mod to user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\PermitGroupModRequest $permitGroupModRequest The user mod data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToMod'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function attachUserToModWithHttpInfo($userId, $permitGroupModRequest, string $contentType = self::contentTypes['attachUserToMod'][0])
+    {
+        $request = $this->attachUserToModRequest($userId, $permitGroupModRequest, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            switch($statusCode) {
+                case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 403:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 404:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 412:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 422:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 500:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+            }
+
+            $returnType = '\Kleister\Model\Notification';
+            if ($returnType === '\SplFileObject') {
+                $content = $response->getBody(); //stream goes to serializer
+            } else {
+                $content = (string) $response->getBody();
+                if ($returnType !== 'string') {
+                    try {
+                        $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $exception) {
+                        throw new ApiException(
+                            sprintf(
+                                'Error JSON decoding server response (%s)',
+                                $request->getUri()
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $content
+                        );
+                    }
+                }
+            }
+
+            return [
+                ObjectSerializer::deserialize($content, $returnType, []),
+                $response->getStatusCode(),
+                $response->getHeaders()
+            ];
+
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 403:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 404:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 412:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 422:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 500:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -531,15 +1080,15 @@ class UserApi
      * Attach a mod to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to attach (required)
+     * @param  \Kleister\Model\PermitGroupModRequest $permitGroupModRequest The user mod data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachUserToModAsync($userId, $userModParams, string $contentType = self::contentTypes['attachUserToMod'][0])
+    public function attachUserToModAsync($userId, $permitGroupModRequest, string $contentType = self::contentTypes['attachUserToMod'][0])
     {
-        return $this->attachUserToModAsyncWithHttpInfo($userId, $userModParams, $contentType)
+        return $this->attachUserToModAsyncWithHttpInfo($userId, $permitGroupModRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -553,16 +1102,16 @@ class UserApi
      * Attach a mod to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to attach (required)
+     * @param  \Kleister\Model\PermitGroupModRequest $permitGroupModRequest The user mod data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachUserToModAsyncWithHttpInfo($userId, $userModParams, string $contentType = self::contentTypes['attachUserToMod'][0])
+    public function attachUserToModAsyncWithHttpInfo($userId, $permitGroupModRequest, string $contentType = self::contentTypes['attachUserToMod'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachUserToModRequest($userId, $userModParams, $contentType);
+        $request = $this->attachUserToModRequest($userId, $permitGroupModRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -604,13 +1153,13 @@ class UserApi
      * Create request for operation 'attachUserToMod'
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to attach (required)
+     * @param  \Kleister\Model\PermitGroupModRequest $permitGroupModRequest The user mod data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachUserToModRequest($userId, $userModParams, string $contentType = self::contentTypes['attachUserToMod'][0])
+    public function attachUserToModRequest($userId, $permitGroupModRequest, string $contentType = self::contentTypes['attachUserToMod'][0])
     {
 
         // verify the required parameter 'userId' is set
@@ -620,10 +1169,10 @@ class UserApi
             );
         }
 
-        // verify the required parameter 'userModParams' is set
-        if ($userModParams === null || (is_array($userModParams) && count($userModParams) === 0)) {
+        // verify the required parameter 'permitGroupModRequest' is set
+        if ($permitGroupModRequest === null || (is_array($permitGroupModRequest) && count($permitGroupModRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $userModParams when calling attachUserToMod'
+                'Missing the required parameter $permitGroupModRequest when calling attachUserToMod'
             );
         }
 
@@ -654,12 +1203,12 @@ class UserApi
         );
 
         // for model (json/xml)
-        if (isset($userModParams)) {
+        if (isset($permitGroupModRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($userModParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitGroupModRequest));
             } else {
-                $httpBody = $userModParams;
+                $httpBody = $permitGroupModRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -685,11 +1234,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -731,16 +1275,16 @@ class UserApi
      * Attach a pack to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to attach (required)
+     * @param  \Kleister\Model\PermitGroupPackRequest $permitGroupPackRequest The user pack data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToPack'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachUserToPack($userId, $userPackParams, string $contentType = self::contentTypes['attachUserToPack'][0])
+    public function attachUserToPack($userId, $permitGroupPackRequest, string $contentType = self::contentTypes['attachUserToPack'][0])
     {
-        list($response) = $this->attachUserToPackWithHttpInfo($userId, $userPackParams, $contentType);
+        list($response) = $this->attachUserToPackWithHttpInfo($userId, $permitGroupPackRequest, $contentType);
         return $response;
     }
 
@@ -750,16 +1294,16 @@ class UserApi
      * Attach a pack to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to attach (required)
+     * @param  \Kleister\Model\PermitGroupPackRequest $permitGroupPackRequest The user pack data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToPack'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachUserToPackWithHttpInfo($userId, $userPackParams, string $contentType = self::contentTypes['attachUserToPack'][0])
+    public function attachUserToPackWithHttpInfo($userId, $permitGroupPackRequest, string $contentType = self::contentTypes['attachUserToPack'][0])
     {
-        $request = $this->attachUserToPackRequest($userId, $userPackParams, $contentType);
+        $request = $this->attachUserToPackRequest($userId, $permitGroupPackRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -798,6 +1342,33 @@ class UserApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -933,33 +1504,6 @@ class UserApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -1026,6 +1570,14 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -1066,14 +1618,6 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1085,15 +1629,15 @@ class UserApi
      * Attach a pack to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to attach (required)
+     * @param  \Kleister\Model\PermitGroupPackRequest $permitGroupPackRequest The user pack data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachUserToPackAsync($userId, $userPackParams, string $contentType = self::contentTypes['attachUserToPack'][0])
+    public function attachUserToPackAsync($userId, $permitGroupPackRequest, string $contentType = self::contentTypes['attachUserToPack'][0])
     {
-        return $this->attachUserToPackAsyncWithHttpInfo($userId, $userPackParams, $contentType)
+        return $this->attachUserToPackAsyncWithHttpInfo($userId, $permitGroupPackRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1107,16 +1651,16 @@ class UserApi
      * Attach a pack to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to attach (required)
+     * @param  \Kleister\Model\PermitGroupPackRequest $permitGroupPackRequest The user pack data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachUserToPackAsyncWithHttpInfo($userId, $userPackParams, string $contentType = self::contentTypes['attachUserToPack'][0])
+    public function attachUserToPackAsyncWithHttpInfo($userId, $permitGroupPackRequest, string $contentType = self::contentTypes['attachUserToPack'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachUserToPackRequest($userId, $userPackParams, $contentType);
+        $request = $this->attachUserToPackRequest($userId, $permitGroupPackRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1158,13 +1702,13 @@ class UserApi
      * Create request for operation 'attachUserToPack'
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to attach (required)
+     * @param  \Kleister\Model\PermitGroupPackRequest $permitGroupPackRequest The user pack data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachUserToPackRequest($userId, $userPackParams, string $contentType = self::contentTypes['attachUserToPack'][0])
+    public function attachUserToPackRequest($userId, $permitGroupPackRequest, string $contentType = self::contentTypes['attachUserToPack'][0])
     {
 
         // verify the required parameter 'userId' is set
@@ -1174,10 +1718,10 @@ class UserApi
             );
         }
 
-        // verify the required parameter 'userPackParams' is set
-        if ($userPackParams === null || (is_array($userPackParams) && count($userPackParams) === 0)) {
+        // verify the required parameter 'permitGroupPackRequest' is set
+        if ($permitGroupPackRequest === null || (is_array($permitGroupPackRequest) && count($permitGroupPackRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $userPackParams when calling attachUserToPack'
+                'Missing the required parameter $permitGroupPackRequest when calling attachUserToPack'
             );
         }
 
@@ -1208,12 +1752,12 @@ class UserApi
         );
 
         // for model (json/xml)
-        if (isset($userPackParams)) {
+        if (isset($permitGroupPackRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($userPackParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitGroupPackRequest));
             } else {
-                $httpBody = $userPackParams;
+                $httpBody = $permitGroupPackRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -1239,565 +1783,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
-        // this endpoint requires HTTP basic authentication
-        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
-        if ($apiKey !== null) {
-            $headers['X-API-Key'] = $apiKey;
-        }
-        // this endpoint requires Bearer authentication (access token)
-        if (!empty($this->config->getAccessToken())) {
-            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
-        }
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
-        return new Request(
-            'POST',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation attachUserToTeam
-     *
-     * Attach a team to user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToTeam'] to see the possible values for this operation
-     *
-     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
-     * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
-     */
-    public function attachUserToTeam($userId, $userTeamParams, string $contentType = self::contentTypes['attachUserToTeam'][0])
-    {
-        list($response) = $this->attachUserToTeamWithHttpInfo($userId, $userTeamParams, $contentType);
-        return $response;
-    }
-
-    /**
-     * Operation attachUserToTeamWithHttpInfo
-     *
-     * Attach a team to user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToTeam'] to see the possible values for this operation
-     *
-     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
-     * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
-     */
-    public function attachUserToTeamWithHttpInfo($userId, $userTeamParams, string $contentType = self::contentTypes['attachUserToTeam'][0])
-    {
-        $request = $this->attachUserToTeamRequest($userId, $userTeamParams, $contentType);
-
-        try {
-            $options = $this->createHttpClientOption();
-            try {
-                $response = $this->client->send($request, $options);
-            } catch (RequestException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    (int) $e->getCode(),
-                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
-                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
-                );
-            } catch (ConnectException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    (int) $e->getCode(),
-                    null,
-                    null
-                );
-            }
-
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        (string) $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    (string) $response->getBody()
-                );
-            }
-
-            switch($statusCode) {
-                case 200:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 403:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 404:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 412:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 422:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-            }
-
-            $returnType = '\Kleister\Model\Notification';
-            if ($returnType === '\SplFileObject') {
-                $content = $response->getBody(); //stream goes to serializer
-            } else {
-                $content = (string) $response->getBody();
-                if ($returnType !== 'string') {
-                    try {
-                        $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                    } catch (\JsonException $exception) {
-                        throw new ApiException(
-                            sprintf(
-                                'Error JSON decoding server response (%s)',
-                                $request->getUri()
-                            ),
-                            $statusCode,
-                            $response->getHeaders(),
-                            $content
-                        );
-                    }
-                }
-            }
-
-            return [
-                ObjectSerializer::deserialize($content, $returnType, []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
-
-        } catch (ApiException $e) {
-            switch ($e->getCode()) {
-                case 200:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 403:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 404:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 412:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 422:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Operation attachUserToTeamAsync
-     *
-     * Attach a team to user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToTeam'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function attachUserToTeamAsync($userId, $userTeamParams, string $contentType = self::contentTypes['attachUserToTeam'][0])
-    {
-        return $this->attachUserToTeamAsyncWithHttpInfo($userId, $userTeamParams, $contentType)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Operation attachUserToTeamAsyncWithHttpInfo
-     *
-     * Attach a team to user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToTeam'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function attachUserToTeamAsyncWithHttpInfo($userId, $userTeamParams, string $contentType = self::contentTypes['attachUserToTeam'][0])
-    {
-        $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachUserToTeamRequest($userId, $userTeamParams, $contentType);
-
-        return $this->client
-            ->sendAsync($request, $this->createHttpClientOption())
-            ->then(
-                function ($response) use ($returnType) {
-                    if ($returnType === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                },
-                function ($exception) {
-                    $response = $exception->getResponse();
-                    $statusCode = $response->getStatusCode();
-                    throw new ApiException(
-                        sprintf(
-                            '[%d] Error connecting to the API (%s)',
-                            $statusCode,
-                            $exception->getRequest()->getUri()
-                        ),
-                        $statusCode,
-                        $response->getHeaders(),
-                        (string) $response->getBody()
-                    );
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'attachUserToTeam'
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachUserToTeam'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    public function attachUserToTeamRequest($userId, $userTeamParams, string $contentType = self::contentTypes['attachUserToTeam'][0])
-    {
-
-        // verify the required parameter 'userId' is set
-        if ($userId === null || (is_array($userId) && count($userId) === 0)) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $userId when calling attachUserToTeam'
-            );
-        }
-
-        // verify the required parameter 'userTeamParams' is set
-        if ($userTeamParams === null || (is_array($userTeamParams) && count($userTeamParams) === 0)) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $userTeamParams when calling attachUserToTeam'
-            );
-        }
-
-
-        $resourcePath = '/users/{user_id}/teams';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-
-
-        // path params
-        if ($userId !== null) {
-            $resourcePath = str_replace(
-                '{' . 'user_id' . '}',
-                ObjectSerializer::toPathValue($userId),
-                $resourcePath
-            );
-        }
-
-
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        // for model (json/xml)
-        if (isset($userTeamParams)) {
-            if (stripos($headers['Content-Type'], 'application/json') !== false) {
-                # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($userTeamParams));
-            } else {
-                $httpBody = $userTeamParams;
-            }
-        } elseif (count($formParams) > 0) {
-            if ($multipart) {
-                $multipartContents = [];
-                foreach ($formParams as $formParamName => $formParamValue) {
-                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
-                    foreach ($formParamValueItems as $formParamValueItem) {
-                        $multipartContents[] = [
-                            'name' => $formParamName,
-                            'contents' => $formParamValueItem
-                        ];
-                    }
-                }
-                // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
-
-            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
-                # if Content-Type contains "application/json", json_encode the form parameters
-                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
-            } else {
-                // for HTTP post (form)
-                $httpBody = ObjectSerializer::buildQuery($formParams);
-            }
-        }
-
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1838,16 +1823,16 @@ class UserApi
      *
      * Create a new user
      *
-     * @param  \Kleister\Model\User $user The user data to create (required)
+     * @param  \Kleister\Model\CreateUserRequest $createUserRequest The user data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\User|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function createUser($user, string $contentType = self::contentTypes['createUser'][0])
+    public function createUser($createUserRequest, string $contentType = self::contentTypes['createUser'][0])
     {
-        list($response) = $this->createUserWithHttpInfo($user, $contentType);
+        list($response) = $this->createUserWithHttpInfo($createUserRequest, $contentType);
         return $response;
     }
 
@@ -1856,16 +1841,16 @@ class UserApi
      *
      * Create a new user
      *
-     * @param  \Kleister\Model\User $user The user data to create (required)
+     * @param  \Kleister\Model\CreateUserRequest $createUserRequest The user data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\User|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createUserWithHttpInfo($user, string $contentType = self::contentTypes['createUser'][0])
+    public function createUserWithHttpInfo($createUserRequest, string $contentType = self::contentTypes['createUser'][0])
     {
-        $request = $this->createUserRequest($user, $contentType);
+        $request = $this->createUserRequest($createUserRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1930,6 +1915,33 @@ class UserApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
                 case 403:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
@@ -1985,33 +1997,6 @@ class UserApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -2078,6 +2063,14 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -2102,14 +2095,6 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -2120,15 +2105,15 @@ class UserApi
      *
      * Create a new user
      *
-     * @param  \Kleister\Model\User $user The user data to create (required)
+     * @param  \Kleister\Model\CreateUserRequest $createUserRequest The user data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createUserAsync($user, string $contentType = self::contentTypes['createUser'][0])
+    public function createUserAsync($createUserRequest, string $contentType = self::contentTypes['createUser'][0])
     {
-        return $this->createUserAsyncWithHttpInfo($user, $contentType)
+        return $this->createUserAsyncWithHttpInfo($createUserRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2141,16 +2126,16 @@ class UserApi
      *
      * Create a new user
      *
-     * @param  \Kleister\Model\User $user The user data to create (required)
+     * @param  \Kleister\Model\CreateUserRequest $createUserRequest The user data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createUserAsyncWithHttpInfo($user, string $contentType = self::contentTypes['createUser'][0])
+    public function createUserAsyncWithHttpInfo($createUserRequest, string $contentType = self::contentTypes['createUser'][0])
     {
         $returnType = '\Kleister\Model\User';
-        $request = $this->createUserRequest($user, $contentType);
+        $request = $this->createUserRequest($createUserRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2191,19 +2176,19 @@ class UserApi
     /**
      * Create request for operation 'createUser'
      *
-     * @param  \Kleister\Model\User $user The user data to create (required)
+     * @param  \Kleister\Model\CreateUserRequest $createUserRequest The user data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createUserRequest($user, string $contentType = self::contentTypes['createUser'][0])
+    public function createUserRequest($createUserRequest, string $contentType = self::contentTypes['createUser'][0])
     {
 
-        // verify the required parameter 'user' is set
-        if ($user === null || (is_array($user) && count($user) === 0)) {
+        // verify the required parameter 'createUserRequest' is set
+        if ($createUserRequest === null || (is_array($createUserRequest) && count($createUserRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $user when calling createUser'
+                'Missing the required parameter $createUserRequest when calling createUser'
             );
         }
 
@@ -2226,12 +2211,12 @@ class UserApi
         );
 
         // for model (json/xml)
-        if (isset($user)) {
+        if (isset($createUserRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($user));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($createUserRequest));
             } else {
-                $httpBody = $user;
+                $httpBody = $createUserRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -2257,11 +2242,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -2307,7 +2287,7 @@ class UserApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function deleteUser($userId, string $contentType = self::contentTypes['deleteUser'][0])
     {
@@ -2325,7 +2305,7 @@ class UserApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function deleteUserWithHttpInfo($userId, string $contentType = self::contentTypes['deleteUser'][0])
     {
@@ -2502,33 +2482,6 @@ class UserApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Notification';
@@ -2594,14 +2547,6 @@ class UserApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -2757,11 +2702,520 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
         }
+        // this endpoint requires API key authentication
+        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
+        if ($apiKey !== null) {
+            $headers['X-API-Key'] = $apiKey;
+        }
+        // this endpoint requires Bearer authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'DELETE',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation deleteUserFromGroup
+     *
+     * Unlink a group from user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The user group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromGroup'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     */
+    public function deleteUserFromGroup($userId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deleteUserFromGroup'][0])
+    {
+        list($response) = $this->deleteUserFromGroupWithHttpInfo($userId, $deletePackFromGroupRequest, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation deleteUserFromGroupWithHttpInfo
+     *
+     * Unlink a group from user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The user group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromGroup'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function deleteUserFromGroupWithHttpInfo($userId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deleteUserFromGroup'][0])
+    {
+        $request = $this->deleteUserFromGroupRequest($userId, $deletePackFromGroupRequest, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            switch($statusCode) {
+                case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 403:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 404:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 412:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 500:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+            }
+
+            $returnType = '\Kleister\Model\Notification';
+            if ($returnType === '\SplFileObject') {
+                $content = $response->getBody(); //stream goes to serializer
+            } else {
+                $content = (string) $response->getBody();
+                if ($returnType !== 'string') {
+                    try {
+                        $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $exception) {
+                        throw new ApiException(
+                            sprintf(
+                                'Error JSON decoding server response (%s)',
+                                $request->getUri()
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $content
+                        );
+                    }
+                }
+            }
+
+            return [
+                ObjectSerializer::deserialize($content, $returnType, []),
+                $response->getStatusCode(),
+                $response->getHeaders()
+            ];
+
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 403:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 404:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 412:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 500:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation deleteUserFromGroupAsync
+     *
+     * Unlink a group from user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The user group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromGroup'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function deleteUserFromGroupAsync($userId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deleteUserFromGroup'][0])
+    {
+        return $this->deleteUserFromGroupAsyncWithHttpInfo($userId, $deletePackFromGroupRequest, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation deleteUserFromGroupAsyncWithHttpInfo
+     *
+     * Unlink a group from user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The user group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromGroup'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function deleteUserFromGroupAsyncWithHttpInfo($userId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deleteUserFromGroup'][0])
+    {
+        $returnType = '\Kleister\Model\Notification';
+        $request = $this->deleteUserFromGroupRequest($userId, $deletePackFromGroupRequest, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    if ($returnType === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'deleteUserFromGroup'
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The user group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromGroup'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function deleteUserFromGroupRequest($userId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deleteUserFromGroup'][0])
+    {
+
+        // verify the required parameter 'userId' is set
+        if ($userId === null || (is_array($userId) && count($userId) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $userId when calling deleteUserFromGroup'
+            );
+        }
+
+        // verify the required parameter 'deletePackFromGroupRequest' is set
+        if ($deletePackFromGroupRequest === null || (is_array($deletePackFromGroupRequest) && count($deletePackFromGroupRequest) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $deletePackFromGroupRequest when calling deleteUserFromGroup'
+            );
+        }
+
+
+        $resourcePath = '/users/{user_id}/groups';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+        // path params
+        if ($userId !== null) {
+            $resourcePath = str_replace(
+                '{' . 'user_id' . '}',
+                ObjectSerializer::toPathValue($userId),
+                $resourcePath
+            );
+        }
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (isset($deletePackFromGroupRequest)) {
+            if (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the body
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($deletePackFromGroupRequest));
+            } else {
+                $httpBody = $deletePackFromGroupRequest;
+            }
+        } elseif (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -2803,16 +3257,16 @@ class UserApi
      * Unlink a mod from user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to unlink (required)
+     * @param  \Kleister\Model\DeleteGroupFromModRequest $deleteGroupFromModRequest The user mod data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromMod'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteUserFromMod($userId, $userModParams, string $contentType = self::contentTypes['deleteUserFromMod'][0])
+    public function deleteUserFromMod($userId, $deleteGroupFromModRequest, string $contentType = self::contentTypes['deleteUserFromMod'][0])
     {
-        list($response) = $this->deleteUserFromModWithHttpInfo($userId, $userModParams, $contentType);
+        list($response) = $this->deleteUserFromModWithHttpInfo($userId, $deleteGroupFromModRequest, $contentType);
         return $response;
     }
 
@@ -2822,16 +3276,16 @@ class UserApi
      * Unlink a mod from user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to unlink (required)
+     * @param  \Kleister\Model\DeleteGroupFromModRequest $deleteGroupFromModRequest The user mod data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromMod'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteUserFromModWithHttpInfo($userId, $userModParams, string $contentType = self::contentTypes['deleteUserFromMod'][0])
+    public function deleteUserFromModWithHttpInfo($userId, $deleteGroupFromModRequest, string $contentType = self::contentTypes['deleteUserFromMod'][0])
     {
-        $request = $this->deleteUserFromModRequest($userId, $userModParams, $contentType);
+        $request = $this->deleteUserFromModRequest($userId, $deleteGroupFromModRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2870,6 +3324,33 @@ class UserApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -2978,33 +3459,6 @@ class UserApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -3071,6 +3525,14 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -3103,14 +3565,6 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -3122,15 +3576,15 @@ class UserApi
      * Unlink a mod from user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to unlink (required)
+     * @param  \Kleister\Model\DeleteGroupFromModRequest $deleteGroupFromModRequest The user mod data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromModAsync($userId, $userModParams, string $contentType = self::contentTypes['deleteUserFromMod'][0])
+    public function deleteUserFromModAsync($userId, $deleteGroupFromModRequest, string $contentType = self::contentTypes['deleteUserFromMod'][0])
     {
-        return $this->deleteUserFromModAsyncWithHttpInfo($userId, $userModParams, $contentType)
+        return $this->deleteUserFromModAsyncWithHttpInfo($userId, $deleteGroupFromModRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -3144,16 +3598,16 @@ class UserApi
      * Unlink a mod from user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to unlink (required)
+     * @param  \Kleister\Model\DeleteGroupFromModRequest $deleteGroupFromModRequest The user mod data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromModAsyncWithHttpInfo($userId, $userModParams, string $contentType = self::contentTypes['deleteUserFromMod'][0])
+    public function deleteUserFromModAsyncWithHttpInfo($userId, $deleteGroupFromModRequest, string $contentType = self::contentTypes['deleteUserFromMod'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteUserFromModRequest($userId, $userModParams, $contentType);
+        $request = $this->deleteUserFromModRequest($userId, $deleteGroupFromModRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -3195,13 +3649,13 @@ class UserApi
      * Create request for operation 'deleteUserFromMod'
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to unlink (required)
+     * @param  \Kleister\Model\DeleteGroupFromModRequest $deleteGroupFromModRequest The user mod data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteUserFromModRequest($userId, $userModParams, string $contentType = self::contentTypes['deleteUserFromMod'][0])
+    public function deleteUserFromModRequest($userId, $deleteGroupFromModRequest, string $contentType = self::contentTypes['deleteUserFromMod'][0])
     {
 
         // verify the required parameter 'userId' is set
@@ -3211,10 +3665,10 @@ class UserApi
             );
         }
 
-        // verify the required parameter 'userModParams' is set
-        if ($userModParams === null || (is_array($userModParams) && count($userModParams) === 0)) {
+        // verify the required parameter 'deleteGroupFromModRequest' is set
+        if ($deleteGroupFromModRequest === null || (is_array($deleteGroupFromModRequest) && count($deleteGroupFromModRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $userModParams when calling deleteUserFromMod'
+                'Missing the required parameter $deleteGroupFromModRequest when calling deleteUserFromMod'
             );
         }
 
@@ -3245,12 +3699,12 @@ class UserApi
         );
 
         // for model (json/xml)
-        if (isset($userModParams)) {
+        if (isset($deleteGroupFromModRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($userModParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($deleteGroupFromModRequest));
             } else {
-                $httpBody = $userModParams;
+                $httpBody = $deleteGroupFromModRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -3276,11 +3730,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -3322,16 +3771,16 @@ class UserApi
      * Unlink a pack from user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to unlink (required)
+     * @param  \Kleister\Model\DeleteGroupFromPackRequest $deleteGroupFromPackRequest The user pack data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromPack'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteUserFromPack($userId, $userPackParams, string $contentType = self::contentTypes['deleteUserFromPack'][0])
+    public function deleteUserFromPack($userId, $deleteGroupFromPackRequest, string $contentType = self::contentTypes['deleteUserFromPack'][0])
     {
-        list($response) = $this->deleteUserFromPackWithHttpInfo($userId, $userPackParams, $contentType);
+        list($response) = $this->deleteUserFromPackWithHttpInfo($userId, $deleteGroupFromPackRequest, $contentType);
         return $response;
     }
 
@@ -3341,16 +3790,16 @@ class UserApi
      * Unlink a pack from user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to unlink (required)
+     * @param  \Kleister\Model\DeleteGroupFromPackRequest $deleteGroupFromPackRequest The user pack data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromPack'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteUserFromPackWithHttpInfo($userId, $userPackParams, string $contentType = self::contentTypes['deleteUserFromPack'][0])
+    public function deleteUserFromPackWithHttpInfo($userId, $deleteGroupFromPackRequest, string $contentType = self::contentTypes['deleteUserFromPack'][0])
     {
-        $request = $this->deleteUserFromPackRequest($userId, $userPackParams, $contentType);
+        $request = $this->deleteUserFromPackRequest($userId, $deleteGroupFromPackRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -3389,6 +3838,33 @@ class UserApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -3497,33 +3973,6 @@ class UserApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -3590,6 +4039,14 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -3622,14 +4079,6 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -3641,15 +4090,15 @@ class UserApi
      * Unlink a pack from user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to unlink (required)
+     * @param  \Kleister\Model\DeleteGroupFromPackRequest $deleteGroupFromPackRequest The user pack data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromPackAsync($userId, $userPackParams, string $contentType = self::contentTypes['deleteUserFromPack'][0])
+    public function deleteUserFromPackAsync($userId, $deleteGroupFromPackRequest, string $contentType = self::contentTypes['deleteUserFromPack'][0])
     {
-        return $this->deleteUserFromPackAsyncWithHttpInfo($userId, $userPackParams, $contentType)
+        return $this->deleteUserFromPackAsyncWithHttpInfo($userId, $deleteGroupFromPackRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -3663,16 +4112,16 @@ class UserApi
      * Unlink a pack from user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to unlink (required)
+     * @param  \Kleister\Model\DeleteGroupFromPackRequest $deleteGroupFromPackRequest The user pack data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromPackAsyncWithHttpInfo($userId, $userPackParams, string $contentType = self::contentTypes['deleteUserFromPack'][0])
+    public function deleteUserFromPackAsyncWithHttpInfo($userId, $deleteGroupFromPackRequest, string $contentType = self::contentTypes['deleteUserFromPack'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteUserFromPackRequest($userId, $userPackParams, $contentType);
+        $request = $this->deleteUserFromPackRequest($userId, $deleteGroupFromPackRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -3714,13 +4163,13 @@ class UserApi
      * Create request for operation 'deleteUserFromPack'
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to unlink (required)
+     * @param  \Kleister\Model\DeleteGroupFromPackRequest $deleteGroupFromPackRequest The user pack data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteUserFromPackRequest($userId, $userPackParams, string $contentType = self::contentTypes['deleteUserFromPack'][0])
+    public function deleteUserFromPackRequest($userId, $deleteGroupFromPackRequest, string $contentType = self::contentTypes['deleteUserFromPack'][0])
     {
 
         // verify the required parameter 'userId' is set
@@ -3730,10 +4179,10 @@ class UserApi
             );
         }
 
-        // verify the required parameter 'userPackParams' is set
-        if ($userPackParams === null || (is_array($userPackParams) && count($userPackParams) === 0)) {
+        // verify the required parameter 'deleteGroupFromPackRequest' is set
+        if ($deleteGroupFromPackRequest === null || (is_array($deleteGroupFromPackRequest) && count($deleteGroupFromPackRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $userPackParams when calling deleteUserFromPack'
+                'Missing the required parameter $deleteGroupFromPackRequest when calling deleteUserFromPack'
             );
         }
 
@@ -3764,12 +4213,12 @@ class UserApi
         );
 
         // for model (json/xml)
-        if (isset($userPackParams)) {
+        if (isset($deleteGroupFromPackRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($userPackParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($deleteGroupFromPackRequest));
             } else {
-                $httpBody = $userPackParams;
+                $httpBody = $deleteGroupFromPackRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -3795,11 +4244,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -3836,40 +4280,48 @@ class UserApi
     }
 
     /**
-     * Operation deleteUserFromTeam
+     * Operation listUserGroups
      *
-     * Unlink a team from user
+     * Fetch all groups attached to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromTeam'] to see the possible values for this operation
+     * @param  string $search Search query (optional)
+     * @param  string $sort Sorting column (optional)
+     * @param  string $order Sorting order (optional, default to 'asc')
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserGroups'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListUserGroups200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteUserFromTeam($userId, $userTeamParams, string $contentType = self::contentTypes['deleteUserFromTeam'][0])
+    public function listUserGroups($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserGroups'][0])
     {
-        list($response) = $this->deleteUserFromTeamWithHttpInfo($userId, $userTeamParams, $contentType);
+        list($response) = $this->listUserGroupsWithHttpInfo($userId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
     }
 
     /**
-     * Operation deleteUserFromTeamWithHttpInfo
+     * Operation listUserGroupsWithHttpInfo
      *
-     * Unlink a team from user
+     * Fetch all groups attached to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromTeam'] to see the possible values for this operation
+     * @param  string $search Search query (optional)
+     * @param  string $sort Sorting column (optional)
+     * @param  string $order Sorting order (optional, default to 'asc')
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserGroups'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListUserGroups200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteUserFromTeamWithHttpInfo($userId, $userTeamParams, string $contentType = self::contentTypes['deleteUserFromTeam'][0])
+    public function listUserGroupsWithHttpInfo($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserGroups'][0])
     {
-        $request = $this->deleteUserFromTeamRequest($userId, $userTeamParams, $contentType);
+        $request = $this->listUserGroupsRequest($userId, $search, $sort, $order, $limit, $offset, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -3908,11 +4360,11 @@ class UserApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListUserGroups200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
+                        if ('\Kleister\Model\ListUserGroups200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -3930,7 +4382,7 @@ class UserApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListUserGroups200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -3988,61 +4440,7 @@ class UserApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                case 412:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -4071,7 +4469,7 @@ class UserApi
                     ];
             }
 
-            $returnType = '\Kleister\Model\Notification';
+            $returnType = '\Kleister\Model\ListUserGroups200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -4104,7 +4502,7 @@ class UserApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
+                        '\Kleister\Model\ListUserGroups200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4125,23 +4523,7 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                case 412:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -4155,20 +4537,24 @@ class UserApi
     }
 
     /**
-     * Operation deleteUserFromTeamAsync
+     * Operation listUserGroupsAsync
      *
-     * Unlink a team from user
+     * Fetch all groups attached to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromTeam'] to see the possible values for this operation
+     * @param  string $search Search query (optional)
+     * @param  string $sort Sorting column (optional)
+     * @param  string $order Sorting order (optional, default to 'asc')
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserGroups'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromTeamAsync($userId, $userTeamParams, string $contentType = self::contentTypes['deleteUserFromTeam'][0])
+    public function listUserGroupsAsync($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserGroups'][0])
     {
-        return $this->deleteUserFromTeamAsyncWithHttpInfo($userId, $userTeamParams, $contentType)
+        return $this->listUserGroupsAsyncWithHttpInfo($userId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -4177,21 +4563,25 @@ class UserApi
     }
 
     /**
-     * Operation deleteUserFromTeamAsyncWithHttpInfo
+     * Operation listUserGroupsAsyncWithHttpInfo
      *
-     * Unlink a team from user
+     * Fetch all groups attached to user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromTeam'] to see the possible values for this operation
+     * @param  string $search Search query (optional)
+     * @param  string $sort Sorting column (optional)
+     * @param  string $order Sorting order (optional, default to 'asc')
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserGroups'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteUserFromTeamAsyncWithHttpInfo($userId, $userTeamParams, string $contentType = self::contentTypes['deleteUserFromTeam'][0])
+    public function listUserGroupsAsyncWithHttpInfo($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserGroups'][0])
     {
-        $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteUserFromTeamRequest($userId, $userTeamParams, $contentType);
+        $returnType = '\Kleister\Model\ListUserGroups200Response';
+        $request = $this->listUserGroupsRequest($userId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -4230,40 +4620,87 @@ class UserApi
     }
 
     /**
-     * Create request for operation 'deleteUserFromTeam'
+     * Create request for operation 'listUserGroups'
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteUserFromTeam'] to see the possible values for this operation
+     * @param  string $search Search query (optional)
+     * @param  string $sort Sorting column (optional)
+     * @param  string $order Sorting order (optional, default to 'asc')
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserGroups'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteUserFromTeamRequest($userId, $userTeamParams, string $contentType = self::contentTypes['deleteUserFromTeam'][0])
+    public function listUserGroupsRequest($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserGroups'][0])
     {
 
         // verify the required parameter 'userId' is set
         if ($userId === null || (is_array($userId) && count($userId) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $userId when calling deleteUserFromTeam'
-            );
-        }
-
-        // verify the required parameter 'userTeamParams' is set
-        if ($userTeamParams === null || (is_array($userTeamParams) && count($userTeamParams) === 0)) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $userTeamParams when calling deleteUserFromTeam'
+                'Missing the required parameter $userId when calling listUserGroups'
             );
         }
 
 
-        $resourcePath = '/users/{user_id}/teams';
+
+
+
+
+
+        $resourcePath = '/users/{user_id}/groups';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
         $httpBody = '';
         $multipart = false;
 
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $search,
+            'search', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $sort,
+            'sort', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $order,
+            'order', // param base name
+            'string', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $limit,
+            'limit', // param base name
+            'integer', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
+        // query params
+        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
+            $offset,
+            'offset', // param base name
+            'integer', // openApiType
+            'form', // style
+            true, // explode
+            false // required
+        ) ?? []);
 
 
         // path params
@@ -4283,14 +4720,7 @@ class UserApi
         );
 
         // for model (json/xml)
-        if (isset($userTeamParams)) {
-            if (stripos($headers['Content-Type'], 'application/json') !== false) {
-                # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($userTeamParams));
-            } else {
-                $httpBody = $userTeamParams;
-            }
-        } elseif (count($formParams) > 0) {
+        if (count($formParams) > 0) {
             if ($multipart) {
                 $multipartContents = [];
                 foreach ($formParams as $formParamName => $formParamValue) {
@@ -4314,11 +4744,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -4347,7 +4772,7 @@ class UserApi
         $operationHost = $this->config->getHost();
         $query = ObjectSerializer::buildQuery($queryParams);
         return new Request(
-            'DELETE',
+            'GET',
             $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
             $headers,
             $httpBody
@@ -4361,17 +4786,17 @@ class UserApi
      *
      * @param  string $userId A user identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserMods'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\UserMods|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListUserMods200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listUserMods($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserMods'][0])
+    public function listUserMods($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserMods'][0])
     {
         list($response) = $this->listUserModsWithHttpInfo($userId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -4384,17 +4809,17 @@ class UserApi
      *
      * @param  string $userId A user identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserMods'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\UserMods|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListUserMods200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listUserModsWithHttpInfo($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserMods'][0])
+    public function listUserModsWithHttpInfo($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserMods'][0])
     {
         $request = $this->listUserModsRequest($userId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -4435,11 +4860,11 @@ class UserApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\UserMods' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListUserMods200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\UserMods' !== 'string') {
+                        if ('\Kleister\Model\ListUserMods200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -4457,7 +4882,7 @@ class UserApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\UserMods', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListUserMods200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -4542,36 +4967,9 @@ class UserApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\UserMods';
+            $returnType = '\Kleister\Model\ListUserMods200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -4604,7 +5002,7 @@ class UserApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\UserMods',
+                        '\Kleister\Model\ListUserMods200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -4633,14 +5031,6 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -4653,16 +5043,16 @@ class UserApi
      *
      * @param  string $userId A user identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserMods'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listUserModsAsync($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserMods'][0])
+    public function listUserModsAsync($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserMods'][0])
     {
         return $this->listUserModsAsyncWithHttpInfo($userId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -4679,18 +5069,18 @@ class UserApi
      *
      * @param  string $userId A user identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserMods'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listUserModsAsyncWithHttpInfo($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserMods'][0])
+    public function listUserModsAsyncWithHttpInfo($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserMods'][0])
     {
-        $returnType = '\Kleister\Model\UserMods';
+        $returnType = '\Kleister\Model\ListUserMods200Response';
         $request = $this->listUserModsRequest($userId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -4734,16 +5124,16 @@ class UserApi
      *
      * @param  string $userId A user identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserMods'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listUserModsRequest($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserMods'][0])
+    public function listUserModsRequest($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserMods'][0])
     {
 
         // verify the required parameter 'userId' is set
@@ -4854,11 +5244,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -4901,17 +5286,17 @@ class UserApi
      *
      * @param  string $userId A user identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserPacks'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\UserPacks|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListUserPacks200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listUserPacks($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserPacks'][0])
+    public function listUserPacks($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserPacks'][0])
     {
         list($response) = $this->listUserPacksWithHttpInfo($userId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -4924,17 +5309,17 @@ class UserApi
      *
      * @param  string $userId A user identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserPacks'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\UserPacks|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListUserPacks200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listUserPacksWithHttpInfo($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserPacks'][0])
+    public function listUserPacksWithHttpInfo($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserPacks'][0])
     {
         $request = $this->listUserPacksRequest($userId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -4975,11 +5360,11 @@ class UserApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\UserPacks' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListUserPacks200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\UserPacks' !== 'string') {
+                        if ('\Kleister\Model\ListUserPacks200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -4997,7 +5382,7 @@ class UserApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\UserPacks', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListUserPacks200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -5082,36 +5467,9 @@ class UserApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\UserPacks';
+            $returnType = '\Kleister\Model\ListUserPacks200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -5144,7 +5502,7 @@ class UserApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\UserPacks',
+                        '\Kleister\Model\ListUserPacks200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5173,14 +5531,6 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -5193,16 +5543,16 @@ class UserApi
      *
      * @param  string $userId A user identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserPacks'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listUserPacksAsync($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserPacks'][0])
+    public function listUserPacksAsync($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserPacks'][0])
     {
         return $this->listUserPacksAsyncWithHttpInfo($userId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -5219,18 +5569,18 @@ class UserApi
      *
      * @param  string $userId A user identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserPacks'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listUserPacksAsyncWithHttpInfo($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserPacks'][0])
+    public function listUserPacksAsyncWithHttpInfo($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserPacks'][0])
     {
-        $returnType = '\Kleister\Model\UserPacks';
+        $returnType = '\Kleister\Model\ListUserPacks200Response';
         $request = $this->listUserPacksRequest($userId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -5274,16 +5624,16 @@ class UserApi
      *
      * @param  string $userId A user identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserPacks'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listUserPacksRequest($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserPacks'][0])
+    public function listUserPacksRequest($userId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUserPacks'][0])
     {
 
         // verify the required parameter 'userId' is set
@@ -5394,551 +5744,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
-        // this endpoint requires HTTP basic authentication
-        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
-        if ($apiKey !== null) {
-            $headers['X-API-Key'] = $apiKey;
-        }
-        // this endpoint requires Bearer authentication (access token)
-        if (!empty($this->config->getAccessToken())) {
-            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
-        }
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
-        return new Request(
-            'GET',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation listUserTeams
-     *
-     * Fetch all teams attached to user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
-     * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserTeams'] to see the possible values for this operation
-     *
-     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
-     * @throws \InvalidArgumentException
-     * @return \Kleister\Model\UserTeams|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
-     */
-    public function listUserTeams($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserTeams'][0])
-    {
-        list($response) = $this->listUserTeamsWithHttpInfo($userId, $search, $sort, $order, $limit, $offset, $contentType);
-        return $response;
-    }
-
-    /**
-     * Operation listUserTeamsWithHttpInfo
-     *
-     * Fetch all teams attached to user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
-     * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserTeams'] to see the possible values for this operation
-     *
-     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
-     * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\UserTeams|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
-     */
-    public function listUserTeamsWithHttpInfo($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserTeams'][0])
-    {
-        $request = $this->listUserTeamsRequest($userId, $search, $sort, $order, $limit, $offset, $contentType);
-
-        try {
-            $options = $this->createHttpClientOption();
-            try {
-                $response = $this->client->send($request, $options);
-            } catch (RequestException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    (int) $e->getCode(),
-                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
-                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
-                );
-            } catch (ConnectException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    (int) $e->getCode(),
-                    null,
-                    null
-                );
-            }
-
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        (string) $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    (string) $response->getBody()
-                );
-            }
-
-            switch($statusCode) {
-                case 200:
-                    if ('\Kleister\Model\UserTeams' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\UserTeams' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\UserTeams', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 403:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 404:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-            }
-
-            $returnType = '\Kleister\Model\UserTeams';
-            if ($returnType === '\SplFileObject') {
-                $content = $response->getBody(); //stream goes to serializer
-            } else {
-                $content = (string) $response->getBody();
-                if ($returnType !== 'string') {
-                    try {
-                        $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                    } catch (\JsonException $exception) {
-                        throw new ApiException(
-                            sprintf(
-                                'Error JSON decoding server response (%s)',
-                                $request->getUri()
-                            ),
-                            $statusCode,
-                            $response->getHeaders(),
-                            $content
-                        );
-                    }
-                }
-            }
-
-            return [
-                ObjectSerializer::deserialize($content, $returnType, []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
-
-        } catch (ApiException $e) {
-            switch ($e->getCode()) {
-                case 200:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\UserTeams',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 403:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 404:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Operation listUserTeamsAsync
-     *
-     * Fetch all teams attached to user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
-     * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserTeams'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function listUserTeamsAsync($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserTeams'][0])
-    {
-        return $this->listUserTeamsAsyncWithHttpInfo($userId, $search, $sort, $order, $limit, $offset, $contentType)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Operation listUserTeamsAsyncWithHttpInfo
-     *
-     * Fetch all teams attached to user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
-     * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserTeams'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function listUserTeamsAsyncWithHttpInfo($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserTeams'][0])
-    {
-        $returnType = '\Kleister\Model\UserTeams';
-        $request = $this->listUserTeamsRequest($userId, $search, $sort, $order, $limit, $offset, $contentType);
-
-        return $this->client
-            ->sendAsync($request, $this->createHttpClientOption())
-            ->then(
-                function ($response) use ($returnType) {
-                    if ($returnType === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                },
-                function ($exception) {
-                    $response = $exception->getResponse();
-                    $statusCode = $response->getStatusCode();
-                    throw new ApiException(
-                        sprintf(
-                            '[%d] Error connecting to the API (%s)',
-                            $statusCode,
-                            $exception->getRequest()->getUri()
-                        ),
-                        $statusCode,
-                        $response->getHeaders(),
-                        (string) $response->getBody()
-                    );
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'listUserTeams'
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
-     * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listUserTeams'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    public function listUserTeamsRequest($userId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listUserTeams'][0])
-    {
-
-        // verify the required parameter 'userId' is set
-        if ($userId === null || (is_array($userId) && count($userId) === 0)) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $userId when calling listUserTeams'
-            );
-        }
-
-
-
-
-
-
-
-        $resourcePath = '/users/{user_id}/teams';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $search,
-            'search', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $sort,
-            'sort', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $order,
-            'order', // param base name
-            'string', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $limit,
-            'limit', // param base name
-            'integer', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-        // query params
-        $queryParams = array_merge($queryParams, ObjectSerializer::toQueryValue(
-            $offset,
-            'offset', // param base name
-            'integer', // openApiType
-            'form', // style
-            true, // explode
-            false // required
-        ) ?? []);
-
-
-        // path params
-        if ($userId !== null) {
-            $resourcePath = str_replace(
-                '{' . 'user_id' . '}',
-                ObjectSerializer::toPathValue($userId),
-                $resourcePath
-            );
-        }
-
-
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        // for model (json/xml)
-        if (count($formParams) > 0) {
-            if ($multipart) {
-                $multipartContents = [];
-                foreach ($formParams as $formParamName => $formParamValue) {
-                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
-                    foreach ($formParamValueItems as $formParamValueItem) {
-                        $multipartContents[] = [
-                            'name' => $formParamName,
-                            'contents' => $formParamValueItem
-                        ];
-                    }
-                }
-                // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
-
-            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
-                # if Content-Type contains "application/json", json_encode the form parameters
-                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
-            } else {
-                // for HTTP post (form)
-                $httpBody = ObjectSerializer::buildQuery($formParams);
-            }
-        }
-
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -5980,7 +5785,7 @@ class UserApi
      * Fetch all available users
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -5988,9 +5793,9 @@ class UserApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Users|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListUsers200Response|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listUsers($search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUsers'][0])
+    public function listUsers($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUsers'][0])
     {
         list($response) = $this->listUsersWithHttpInfo($search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -6002,7 +5807,7 @@ class UserApi
      * Fetch all available users
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6010,9 +5815,9 @@ class UserApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Users|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListUsers200Response|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listUsersWithHttpInfo($search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUsers'][0])
+    public function listUsersWithHttpInfo($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUsers'][0])
     {
         $request = $this->listUsersRequest($search, $sort, $order, $limit, $offset, $contentType);
 
@@ -6053,11 +5858,11 @@ class UserApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Users' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListUsers200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Users' !== 'string') {
+                        if ('\Kleister\Model\ListUsers200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -6075,7 +5880,7 @@ class UserApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Users', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListUsers200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -6133,36 +5938,9 @@ class UserApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\Users';
+            $returnType = '\Kleister\Model\ListUsers200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -6195,7 +5973,7 @@ class UserApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\Users',
+                        '\Kleister\Model\ListUsers200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6216,14 +5994,6 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -6235,7 +6005,7 @@ class UserApi
      * Fetch all available users
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6244,7 +6014,7 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listUsersAsync($search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUsers'][0])
+    public function listUsersAsync($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUsers'][0])
     {
         return $this->listUsersAsyncWithHttpInfo($search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -6260,7 +6030,7 @@ class UserApi
      * Fetch all available users
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6269,9 +6039,9 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listUsersAsyncWithHttpInfo($search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUsers'][0])
+    public function listUsersAsyncWithHttpInfo($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUsers'][0])
     {
-        $returnType = '\Kleister\Model\Users';
+        $returnType = '\Kleister\Model\ListUsers200Response';
         $request = $this->listUsersRequest($search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -6314,7 +6084,7 @@ class UserApi
      * Create request for operation 'listUsers'
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6323,7 +6093,7 @@ class UserApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listUsersRequest($search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUsers'][0])
+    public function listUsersRequest($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listUsers'][0])
     {
 
 
@@ -6419,11 +6189,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -6460,40 +6225,40 @@ class UserApi
     }
 
     /**
-     * Operation permitUserMod
+     * Operation permitUserGroup
      *
-     * Update mod perms for user
+     * Update group perms for user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserMod'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The user group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function permitUserMod($userId, $userModParams, string $contentType = self::contentTypes['permitUserMod'][0])
+    public function permitUserGroup($userId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitUserGroup'][0])
     {
-        list($response) = $this->permitUserModWithHttpInfo($userId, $userModParams, $contentType);
+        list($response) = $this->permitUserGroupWithHttpInfo($userId, $permitPackGroupRequest, $contentType);
         return $response;
     }
 
     /**
-     * Operation permitUserModWithHttpInfo
+     * Operation permitUserGroupWithHttpInfo
      *
-     * Update mod perms for user
+     * Update group perms for user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserMod'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The user group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitUserModWithHttpInfo($userId, $userModParams, string $contentType = self::contentTypes['permitUserMod'][0])
+    public function permitUserGroupWithHttpInfo($userId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitUserGroup'][0])
     {
-        $request = $this->permitUserModRequest($userId, $userModParams, $contentType);
+        $request = $this->permitUserGroupRequest($userId, $permitPackGroupRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -6532,6 +6297,33 @@ class UserApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -6667,33 +6459,6 @@ class UserApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -6760,6 +6525,14 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -6800,7 +6573,548 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation permitUserGroupAsync
+     *
+     * Update group perms for user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The user group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserGroup'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function permitUserGroupAsync($userId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitUserGroup'][0])
+    {
+        return $this->permitUserGroupAsyncWithHttpInfo($userId, $permitPackGroupRequest, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation permitUserGroupAsyncWithHttpInfo
+     *
+     * Update group perms for user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The user group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserGroup'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function permitUserGroupAsyncWithHttpInfo($userId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitUserGroup'][0])
+    {
+        $returnType = '\Kleister\Model\Notification';
+        $request = $this->permitUserGroupRequest($userId, $permitPackGroupRequest, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    if ($returnType === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'permitUserGroup'
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The user group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserGroup'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function permitUserGroupRequest($userId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitUserGroup'][0])
+    {
+
+        // verify the required parameter 'userId' is set
+        if ($userId === null || (is_array($userId) && count($userId) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $userId when calling permitUserGroup'
+            );
+        }
+
+        // verify the required parameter 'permitPackGroupRequest' is set
+        if ($permitPackGroupRequest === null || (is_array($permitPackGroupRequest) && count($permitPackGroupRequest) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $permitPackGroupRequest when calling permitUserGroup'
+            );
+        }
+
+
+        $resourcePath = '/users/{user_id}/groups';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+        // path params
+        if ($userId !== null) {
+            $resourcePath = str_replace(
+                '{' . 'user_id' . '}',
+                ObjectSerializer::toPathValue($userId),
+                $resourcePath
+            );
+        }
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (isset($permitPackGroupRequest)) {
+            if (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the body
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitPackGroupRequest));
+            } else {
+                $httpBody = $permitPackGroupRequest;
+            }
+        } elseif (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
+        }
+        // this endpoint requires API key authentication
+        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
+        if ($apiKey !== null) {
+            $headers['X-API-Key'] = $apiKey;
+        }
+        // this endpoint requires Bearer authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'PUT',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation permitUserMod
+     *
+     * Update mod perms for user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\PermitGroupModRequest $permitGroupModRequest The user mod data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserMod'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     */
+    public function permitUserMod($userId, $permitGroupModRequest, string $contentType = self::contentTypes['permitUserMod'][0])
+    {
+        list($response) = $this->permitUserModWithHttpInfo($userId, $permitGroupModRequest, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation permitUserModWithHttpInfo
+     *
+     * Update mod perms for user
+     *
+     * @param  string $userId A user identifier or slug (required)
+     * @param  \Kleister\Model\PermitGroupModRequest $permitGroupModRequest The user mod data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserMod'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function permitUserModWithHttpInfo($userId, $permitGroupModRequest, string $contentType = self::contentTypes['permitUserMod'][0])
+    {
+        $request = $this->permitUserModRequest($userId, $permitGroupModRequest, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            switch($statusCode) {
+                case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 403:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 404:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 412:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 422:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 500:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+            }
+
+            $returnType = '\Kleister\Model\Notification';
+            if ($returnType === '\SplFileObject') {
+                $content = $response->getBody(); //stream goes to serializer
+            } else {
+                $content = (string) $response->getBody();
+                if ($returnType !== 'string') {
+                    try {
+                        $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $exception) {
+                        throw new ApiException(
+                            sprintf(
+                                'Error JSON decoding server response (%s)',
+                                $request->getUri()
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $content
+                        );
+                    }
+                }
+            }
+
+            return [
+                ObjectSerializer::deserialize($content, $returnType, []),
+                $response->getStatusCode(),
+                $response->getHeaders()
+            ];
+
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 403:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 404:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 412:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 422:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 500:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -6819,15 +7133,15 @@ class UserApi
      * Update mod perms for user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to update (required)
+     * @param  \Kleister\Model\PermitGroupModRequest $permitGroupModRequest The user mod data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitUserModAsync($userId, $userModParams, string $contentType = self::contentTypes['permitUserMod'][0])
+    public function permitUserModAsync($userId, $permitGroupModRequest, string $contentType = self::contentTypes['permitUserMod'][0])
     {
-        return $this->permitUserModAsyncWithHttpInfo($userId, $userModParams, $contentType)
+        return $this->permitUserModAsyncWithHttpInfo($userId, $permitGroupModRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -6841,16 +7155,16 @@ class UserApi
      * Update mod perms for user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to update (required)
+     * @param  \Kleister\Model\PermitGroupModRequest $permitGroupModRequest The user mod data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitUserModAsyncWithHttpInfo($userId, $userModParams, string $contentType = self::contentTypes['permitUserMod'][0])
+    public function permitUserModAsyncWithHttpInfo($userId, $permitGroupModRequest, string $contentType = self::contentTypes['permitUserMod'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->permitUserModRequest($userId, $userModParams, $contentType);
+        $request = $this->permitUserModRequest($userId, $permitGroupModRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -6892,13 +7206,13 @@ class UserApi
      * Create request for operation 'permitUserMod'
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserModParams $userModParams The user mod data to update (required)
+     * @param  \Kleister\Model\PermitGroupModRequest $permitGroupModRequest The user mod data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function permitUserModRequest($userId, $userModParams, string $contentType = self::contentTypes['permitUserMod'][0])
+    public function permitUserModRequest($userId, $permitGroupModRequest, string $contentType = self::contentTypes['permitUserMod'][0])
     {
 
         // verify the required parameter 'userId' is set
@@ -6908,10 +7222,10 @@ class UserApi
             );
         }
 
-        // verify the required parameter 'userModParams' is set
-        if ($userModParams === null || (is_array($userModParams) && count($userModParams) === 0)) {
+        // verify the required parameter 'permitGroupModRequest' is set
+        if ($permitGroupModRequest === null || (is_array($permitGroupModRequest) && count($permitGroupModRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $userModParams when calling permitUserMod'
+                'Missing the required parameter $permitGroupModRequest when calling permitUserMod'
             );
         }
 
@@ -6942,12 +7256,12 @@ class UserApi
         );
 
         // for model (json/xml)
-        if (isset($userModParams)) {
+        if (isset($permitGroupModRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($userModParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitGroupModRequest));
             } else {
-                $httpBody = $userModParams;
+                $httpBody = $permitGroupModRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -6973,11 +7287,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -7019,16 +7328,16 @@ class UserApi
      * Update pack perms for user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to update (required)
+     * @param  \Kleister\Model\PermitGroupPackRequest $permitGroupPackRequest The user pack data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserPack'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function permitUserPack($userId, $userPackParams, string $contentType = self::contentTypes['permitUserPack'][0])
+    public function permitUserPack($userId, $permitGroupPackRequest, string $contentType = self::contentTypes['permitUserPack'][0])
     {
-        list($response) = $this->permitUserPackWithHttpInfo($userId, $userPackParams, $contentType);
+        list($response) = $this->permitUserPackWithHttpInfo($userId, $permitGroupPackRequest, $contentType);
         return $response;
     }
 
@@ -7038,16 +7347,16 @@ class UserApi
      * Update pack perms for user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to update (required)
+     * @param  \Kleister\Model\PermitGroupPackRequest $permitGroupPackRequest The user pack data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserPack'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitUserPackWithHttpInfo($userId, $userPackParams, string $contentType = self::contentTypes['permitUserPack'][0])
+    public function permitUserPackWithHttpInfo($userId, $permitGroupPackRequest, string $contentType = self::contentTypes['permitUserPack'][0])
     {
-        $request = $this->permitUserPackRequest($userId, $userPackParams, $contentType);
+        $request = $this->permitUserPackRequest($userId, $permitGroupPackRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -7086,6 +7395,33 @@ class UserApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -7221,33 +7557,6 @@ class UserApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -7314,6 +7623,14 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -7354,14 +7671,6 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -7373,15 +7682,15 @@ class UserApi
      * Update pack perms for user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to update (required)
+     * @param  \Kleister\Model\PermitGroupPackRequest $permitGroupPackRequest The user pack data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitUserPackAsync($userId, $userPackParams, string $contentType = self::contentTypes['permitUserPack'][0])
+    public function permitUserPackAsync($userId, $permitGroupPackRequest, string $contentType = self::contentTypes['permitUserPack'][0])
     {
-        return $this->permitUserPackAsyncWithHttpInfo($userId, $userPackParams, $contentType)
+        return $this->permitUserPackAsyncWithHttpInfo($userId, $permitGroupPackRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -7395,16 +7704,16 @@ class UserApi
      * Update pack perms for user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to update (required)
+     * @param  \Kleister\Model\PermitGroupPackRequest $permitGroupPackRequest The user pack data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitUserPackAsyncWithHttpInfo($userId, $userPackParams, string $contentType = self::contentTypes['permitUserPack'][0])
+    public function permitUserPackAsyncWithHttpInfo($userId, $permitGroupPackRequest, string $contentType = self::contentTypes['permitUserPack'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->permitUserPackRequest($userId, $userPackParams, $contentType);
+        $request = $this->permitUserPackRequest($userId, $permitGroupPackRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -7446,13 +7755,13 @@ class UserApi
      * Create request for operation 'permitUserPack'
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserPackParams $userPackParams The user pack data to update (required)
+     * @param  \Kleister\Model\PermitGroupPackRequest $permitGroupPackRequest The user pack data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function permitUserPackRequest($userId, $userPackParams, string $contentType = self::contentTypes['permitUserPack'][0])
+    public function permitUserPackRequest($userId, $permitGroupPackRequest, string $contentType = self::contentTypes['permitUserPack'][0])
     {
 
         // verify the required parameter 'userId' is set
@@ -7462,10 +7771,10 @@ class UserApi
             );
         }
 
-        // verify the required parameter 'userPackParams' is set
-        if ($userPackParams === null || (is_array($userPackParams) && count($userPackParams) === 0)) {
+        // verify the required parameter 'permitGroupPackRequest' is set
+        if ($permitGroupPackRequest === null || (is_array($permitGroupPackRequest) && count($permitGroupPackRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $userPackParams when calling permitUserPack'
+                'Missing the required parameter $permitGroupPackRequest when calling permitUserPack'
             );
         }
 
@@ -7496,12 +7805,12 @@ class UserApi
         );
 
         // for model (json/xml)
-        if (isset($userPackParams)) {
+        if (isset($permitGroupPackRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($userPackParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitGroupPackRequest));
             } else {
-                $httpBody = $userPackParams;
+                $httpBody = $permitGroupPackRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -7527,565 +7836,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
-        // this endpoint requires HTTP basic authentication
-        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
-            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
-        }
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
-        if ($apiKey !== null) {
-            $headers['X-API-Key'] = $apiKey;
-        }
-        // this endpoint requires Bearer authentication (access token)
-        if (!empty($this->config->getAccessToken())) {
-            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
-        }
-
-        $defaultHeaders = [];
-        if ($this->config->getUserAgent()) {
-            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
-        }
-
-        $headers = array_merge(
-            $defaultHeaders,
-            $headerParams,
-            $headers
-        );
-
-        $operationHost = $this->config->getHost();
-        $query = ObjectSerializer::buildQuery($queryParams);
-        return new Request(
-            'PUT',
-            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
-            $headers,
-            $httpBody
-        );
-    }
-
-    /**
-     * Operation permitUserTeam
-     *
-     * Update team perms for user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserTeam'] to see the possible values for this operation
-     *
-     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
-     * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
-     */
-    public function permitUserTeam($userId, $userTeamParams, string $contentType = self::contentTypes['permitUserTeam'][0])
-    {
-        list($response) = $this->permitUserTeamWithHttpInfo($userId, $userTeamParams, $contentType);
-        return $response;
-    }
-
-    /**
-     * Operation permitUserTeamWithHttpInfo
-     *
-     * Update team perms for user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserTeam'] to see the possible values for this operation
-     *
-     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
-     * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
-     */
-    public function permitUserTeamWithHttpInfo($userId, $userTeamParams, string $contentType = self::contentTypes['permitUserTeam'][0])
-    {
-        $request = $this->permitUserTeamRequest($userId, $userTeamParams, $contentType);
-
-        try {
-            $options = $this->createHttpClientOption();
-            try {
-                $response = $this->client->send($request, $options);
-            } catch (RequestException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    (int) $e->getCode(),
-                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
-                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
-                );
-            } catch (ConnectException $e) {
-                throw new ApiException(
-                    "[{$e->getCode()}] {$e->getMessage()}",
-                    (int) $e->getCode(),
-                    null,
-                    null
-                );
-            }
-
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode < 200 || $statusCode > 299) {
-                throw new ApiException(
-                    sprintf(
-                        '[%d] Error connecting to the API (%s)',
-                        $statusCode,
-                        (string) $request->getUri()
-                    ),
-                    $statusCode,
-                    $response->getHeaders(),
-                    (string) $response->getBody()
-                );
-            }
-
-            switch($statusCode) {
-                case 200:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 403:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 404:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 412:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 422:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-            }
-
-            $returnType = '\Kleister\Model\Notification';
-            if ($returnType === '\SplFileObject') {
-                $content = $response->getBody(); //stream goes to serializer
-            } else {
-                $content = (string) $response->getBody();
-                if ($returnType !== 'string') {
-                    try {
-                        $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                    } catch (\JsonException $exception) {
-                        throw new ApiException(
-                            sprintf(
-                                'Error JSON decoding server response (%s)',
-                                $request->getUri()
-                            ),
-                            $statusCode,
-                            $response->getHeaders(),
-                            $content
-                        );
-                    }
-                }
-            }
-
-            return [
-                ObjectSerializer::deserialize($content, $returnType, []),
-                $response->getStatusCode(),
-                $response->getHeaders()
-            ];
-
-        } catch (ApiException $e) {
-            switch ($e->getCode()) {
-                case 200:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 403:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 404:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 412:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 422:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-            }
-            throw $e;
-        }
-    }
-
-    /**
-     * Operation permitUserTeamAsync
-     *
-     * Update team perms for user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserTeam'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function permitUserTeamAsync($userId, $userTeamParams, string $contentType = self::contentTypes['permitUserTeam'][0])
-    {
-        return $this->permitUserTeamAsyncWithHttpInfo($userId, $userTeamParams, $contentType)
-            ->then(
-                function ($response) {
-                    return $response[0];
-                }
-            );
-    }
-
-    /**
-     * Operation permitUserTeamAsyncWithHttpInfo
-     *
-     * Update team perms for user
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserTeam'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Promise\PromiseInterface
-     */
-    public function permitUserTeamAsyncWithHttpInfo($userId, $userTeamParams, string $contentType = self::contentTypes['permitUserTeam'][0])
-    {
-        $returnType = '\Kleister\Model\Notification';
-        $request = $this->permitUserTeamRequest($userId, $userTeamParams, $contentType);
-
-        return $this->client
-            ->sendAsync($request, $this->createHttpClientOption())
-            ->then(
-                function ($response) use ($returnType) {
-                    if ($returnType === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ($returnType !== 'string') {
-                            $content = json_decode($content);
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, $returnType, []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                },
-                function ($exception) {
-                    $response = $exception->getResponse();
-                    $statusCode = $response->getStatusCode();
-                    throw new ApiException(
-                        sprintf(
-                            '[%d] Error connecting to the API (%s)',
-                            $statusCode,
-                            $exception->getRequest()->getUri()
-                        ),
-                        $statusCode,
-                        $response->getHeaders(),
-                        (string) $response->getBody()
-                    );
-                }
-            );
-    }
-
-    /**
-     * Create request for operation 'permitUserTeam'
-     *
-     * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\UserTeamParams $userTeamParams The user team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitUserTeam'] to see the possible values for this operation
-     *
-     * @throws \InvalidArgumentException
-     * @return \GuzzleHttp\Psr7\Request
-     */
-    public function permitUserTeamRequest($userId, $userTeamParams, string $contentType = self::contentTypes['permitUserTeam'][0])
-    {
-
-        // verify the required parameter 'userId' is set
-        if ($userId === null || (is_array($userId) && count($userId) === 0)) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $userId when calling permitUserTeam'
-            );
-        }
-
-        // verify the required parameter 'userTeamParams' is set
-        if ($userTeamParams === null || (is_array($userTeamParams) && count($userTeamParams) === 0)) {
-            throw new \InvalidArgumentException(
-                'Missing the required parameter $userTeamParams when calling permitUserTeam'
-            );
-        }
-
-
-        $resourcePath = '/users/{user_id}/teams';
-        $formParams = [];
-        $queryParams = [];
-        $headerParams = [];
-        $httpBody = '';
-        $multipart = false;
-
-
-
-        // path params
-        if ($userId !== null) {
-            $resourcePath = str_replace(
-                '{' . 'user_id' . '}',
-                ObjectSerializer::toPathValue($userId),
-                $resourcePath
-            );
-        }
-
-
-        $headers = $this->headerSelector->selectHeaders(
-            ['application/json', ],
-            $contentType,
-            $multipart
-        );
-
-        // for model (json/xml)
-        if (isset($userTeamParams)) {
-            if (stripos($headers['Content-Type'], 'application/json') !== false) {
-                # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($userTeamParams));
-            } else {
-                $httpBody = $userTeamParams;
-            }
-        } elseif (count($formParams) > 0) {
-            if ($multipart) {
-                $multipartContents = [];
-                foreach ($formParams as $formParamName => $formParamValue) {
-                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
-                    foreach ($formParamValueItems as $formParamValueItem) {
-                        $multipartContents[] = [
-                            'name' => $formParamName,
-                            'contents' => $formParamValueItem
-                        ];
-                    }
-                }
-                // for HTTP post (form)
-                $httpBody = new MultipartStream($multipartContents);
-
-            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
-                # if Content-Type contains "application/json", json_encode the form parameters
-                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
-            } else {
-                // for HTTP post (form)
-                $httpBody = ObjectSerializer::buildQuery($formParams);
-            }
-        }
-
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -8131,7 +7881,7 @@ class UserApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\User|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\User|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function showUser($userId, string $contentType = self::contentTypes['showUser'][0])
     {
@@ -8149,7 +7899,7 @@ class UserApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\User|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\User|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function showUserWithHttpInfo($userId, string $contentType = self::contentTypes['showUser'][0])
     {
@@ -8299,33 +8049,6 @@ class UserApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\User';
@@ -8383,14 +8106,6 @@ class UserApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -8546,11 +8261,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -8592,16 +8302,16 @@ class UserApi
      * Update a specific user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\User $user The user data to update (required)
+     * @param  \Kleister\Model\UpdateUserRequest $updateUserRequest The user data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\User|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function updateUser($userId, $user, string $contentType = self::contentTypes['updateUser'][0])
+    public function updateUser($userId, $updateUserRequest, string $contentType = self::contentTypes['updateUser'][0])
     {
-        list($response) = $this->updateUserWithHttpInfo($userId, $user, $contentType);
+        list($response) = $this->updateUserWithHttpInfo($userId, $updateUserRequest, $contentType);
         return $response;
     }
 
@@ -8611,16 +8321,16 @@ class UserApi
      * Update a specific user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\User $user The user data to update (required)
+     * @param  \Kleister\Model\UpdateUserRequest $updateUserRequest The user data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\User|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updateUserWithHttpInfo($userId, $user, string $contentType = self::contentTypes['updateUser'][0])
+    public function updateUserWithHttpInfo($userId, $updateUserRequest, string $contentType = self::contentTypes['updateUser'][0])
     {
-        $request = $this->updateUserRequest($userId, $user, $contentType);
+        $request = $this->updateUserRequest($userId, $updateUserRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -8682,6 +8392,33 @@ class UserApi
 
                     return [
                         ObjectSerializer::deserialize($content, '\Kleister\Model\User', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -8767,33 +8504,6 @@ class UserApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -8860,6 +8570,14 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -8892,14 +8610,6 @@ class UserApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -8911,15 +8621,15 @@ class UserApi
      * Update a specific user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\User $user The user data to update (required)
+     * @param  \Kleister\Model\UpdateUserRequest $updateUserRequest The user data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateUserAsync($userId, $user, string $contentType = self::contentTypes['updateUser'][0])
+    public function updateUserAsync($userId, $updateUserRequest, string $contentType = self::contentTypes['updateUser'][0])
     {
-        return $this->updateUserAsyncWithHttpInfo($userId, $user, $contentType)
+        return $this->updateUserAsyncWithHttpInfo($userId, $updateUserRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -8933,16 +8643,16 @@ class UserApi
      * Update a specific user
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\User $user The user data to update (required)
+     * @param  \Kleister\Model\UpdateUserRequest $updateUserRequest The user data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateUserAsyncWithHttpInfo($userId, $user, string $contentType = self::contentTypes['updateUser'][0])
+    public function updateUserAsyncWithHttpInfo($userId, $updateUserRequest, string $contentType = self::contentTypes['updateUser'][0])
     {
         $returnType = '\Kleister\Model\User';
-        $request = $this->updateUserRequest($userId, $user, $contentType);
+        $request = $this->updateUserRequest($userId, $updateUserRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -8984,13 +8694,13 @@ class UserApi
      * Create request for operation 'updateUser'
      *
      * @param  string $userId A user identifier or slug (required)
-     * @param  \Kleister\Model\User $user The user data to update (required)
+     * @param  \Kleister\Model\UpdateUserRequest $updateUserRequest The user data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function updateUserRequest($userId, $user, string $contentType = self::contentTypes['updateUser'][0])
+    public function updateUserRequest($userId, $updateUserRequest, string $contentType = self::contentTypes['updateUser'][0])
     {
 
         // verify the required parameter 'userId' is set
@@ -9000,10 +8710,10 @@ class UserApi
             );
         }
 
-        // verify the required parameter 'user' is set
-        if ($user === null || (is_array($user) && count($user) === 0)) {
+        // verify the required parameter 'updateUserRequest' is set
+        if ($updateUserRequest === null || (is_array($updateUserRequest) && count($updateUserRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $user when calling updateUser'
+                'Missing the required parameter $updateUserRequest when calling updateUser'
             );
         }
 
@@ -9034,12 +8744,12 @@ class UserApi
         );
 
         // for model (json/xml)
-        if (isset($user)) {
+        if (isset($updateUserRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($user));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($updateUserRequest));
             } else {
-                $httpBody = $user;
+                $httpBody = $updateUserRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -9065,11 +8775,6 @@ class UserApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());

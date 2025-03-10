@@ -24,11 +24,6 @@ Fetch profile details of the personal account
 require_once(__DIR__ . '/vendor/autoload.php');
 
 
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
-
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
               ->setUsername('YOUR_USERNAME')
@@ -68,7 +63,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -93,11 +88,6 @@ Retrieve an unlimited auth token
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -138,7 +128,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -152,7 +142,7 @@ This endpoint does not need any parameter.
 ## `updateProfile()`
 
 ```php
-updateProfile($profile): \Kleister\Model\Profile
+updateProfile($updateProfileRequest): \Kleister\Model\Profile
 ```
 
 Update your own profile information
@@ -163,11 +153,6 @@ Update your own profile information
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -189,10 +174,10 @@ $apiInstance = new Kleister\Api\ProfileApi(
     new GuzzleHttp\Client(),
     $config
 );
-$profile = new \Kleister\Model\Profile(); // \Kleister\Model\Profile | The profile data to update
+$updateProfileRequest = new \Kleister\Model\UpdateProfileRequest(); // \Kleister\Model\UpdateProfileRequest | The profile data to update
 
 try {
-    $result = $apiInstance->updateProfile($profile);
+    $result = $apiInstance->updateProfile($updateProfileRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ProfileApi->updateProfile: ', $e->getMessage(), PHP_EOL;
@@ -203,7 +188,7 @@ try {
 
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **profile** | [**\Kleister\Model\Profile**](../Model/Profile.md)| The profile data to update | |
+| **updateProfileRequest** | [**\Kleister\Model\UpdateProfileRequest**](../Model/UpdateProfileRequest.md)| The profile data to update | |
 
 ### Return type
 
@@ -211,7 +196,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 

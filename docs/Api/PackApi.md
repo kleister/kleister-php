@@ -5,21 +5,21 @@ All URIs are relative to https://try.kleister.eu/api/v1, except if the operation
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
 | [**attachBuildToVersion()**](PackApi.md#attachBuildToVersion) | **POST** /packs/{pack_id}/builds/{build_id}/versions | Attach a version to a build |
-| [**attachPackToTeam()**](PackApi.md#attachPackToTeam) | **POST** /packs/{pack_id}/teams | Attach a team to pack |
+| [**attachPackToGroup()**](PackApi.md#attachPackToGroup) | **POST** /packs/{pack_id}/groups | Attach a group to pack |
 | [**attachPackToUser()**](PackApi.md#attachPackToUser) | **POST** /packs/{pack_id}/users | Attach a user to pack |
 | [**createBuild()**](PackApi.md#createBuild) | **POST** /packs/{pack_id}/builds | Create a new build for a pack |
 | [**createPack()**](PackApi.md#createPack) | **POST** /packs | Create a new pack |
 | [**deleteBuild()**](PackApi.md#deleteBuild) | **DELETE** /packs/{pack_id}/builds/{build_id} | Delete a specific build for a pack |
 | [**deleteBuildFromVersion()**](PackApi.md#deleteBuildFromVersion) | **DELETE** /packs/{pack_id}/builds/{build_id}/versions | Unlink a version from a build |
 | [**deletePack()**](PackApi.md#deletePack) | **DELETE** /packs/{pack_id} | Delete a specific pack |
-| [**deletePackFromTeam()**](PackApi.md#deletePackFromTeam) | **DELETE** /packs/{pack_id}/teams | Unlink a team from pack |
+| [**deletePackFromGroup()**](PackApi.md#deletePackFromGroup) | **DELETE** /packs/{pack_id}/groups | Unlink a group from pack |
 | [**deletePackFromUser()**](PackApi.md#deletePackFromUser) | **DELETE** /packs/{pack_id}/users | Unlink a user from pack |
 | [**listBuildVersions()**](PackApi.md#listBuildVersions) | **GET** /packs/{pack_id}/builds/{build_id}/versions | Fetch all versions attached to build |
 | [**listBuilds()**](PackApi.md#listBuilds) | **GET** /packs/{pack_id}/builds | Fetch all available builds for a pack |
-| [**listPackTeams()**](PackApi.md#listPackTeams) | **GET** /packs/{pack_id}/teams | Fetch all teams attached to pack |
+| [**listPackGroups()**](PackApi.md#listPackGroups) | **GET** /packs/{pack_id}/groups | Fetch all groups attached to pack |
 | [**listPackUsers()**](PackApi.md#listPackUsers) | **GET** /packs/{pack_id}/users | Fetch all users attached to pack |
 | [**listPacks()**](PackApi.md#listPacks) | **GET** /packs | Fetch all available packs |
-| [**permitPackTeam()**](PackApi.md#permitPackTeam) | **PUT** /packs/{pack_id}/teams | Update team perms for pack |
+| [**permitPackGroup()**](PackApi.md#permitPackGroup) | **PUT** /packs/{pack_id}/groups | Update group perms for pack |
 | [**permitPackUser()**](PackApi.md#permitPackUser) | **PUT** /packs/{pack_id}/users | Update user perms for pack |
 | [**showBuild()**](PackApi.md#showBuild) | **GET** /packs/{pack_id}/builds/{build_id} | Fetch a specific build for a pack |
 | [**showPack()**](PackApi.md#showPack) | **GET** /packs/{pack_id} | Fetch a specific pack |
@@ -30,7 +30,7 @@ All URIs are relative to https://try.kleister.eu/api/v1, except if the operation
 ## `attachBuildToVersion()`
 
 ```php
-attachBuildToVersion($packId, $buildId, $buildVersionParams): \Kleister\Model\Notification
+attachBuildToVersion($packId, $buildId, $attachBuildToVersionRequest): \Kleister\Model\Notification
 ```
 
 Attach a version to a build
@@ -41,11 +41,6 @@ Attach a version to a build
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -69,10 +64,10 @@ $apiInstance = new Kleister\Api\PackApi(
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
 $buildId = 'buildId_example'; // string | A build identifier or slug
-$buildVersionParams = new \Kleister\Model\BuildVersionParams(); // \Kleister\Model\BuildVersionParams | The build version data to attach
+$attachBuildToVersionRequest = new \Kleister\Model\AttachBuildToVersionRequest(); // \Kleister\Model\AttachBuildToVersionRequest | The build version data to create or delete
 
 try {
-    $result = $apiInstance->attachBuildToVersion($packId, $buildId, $buildVersionParams);
+    $result = $apiInstance->attachBuildToVersion($packId, $buildId, $attachBuildToVersionRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->attachBuildToVersion: ', $e->getMessage(), PHP_EOL;
@@ -85,7 +80,7 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
 | **buildId** | **string**| A build identifier or slug | |
-| **buildVersionParams** | [**\Kleister\Model\BuildVersionParams**](../Model/BuildVersionParams.md)| The build version data to attach | |
+| **attachBuildToVersionRequest** | [**\Kleister\Model\AttachBuildToVersionRequest**](../Model/AttachBuildToVersionRequest.md)| The build version data to create or delete | |
 
 ### Return type
 
@@ -93,7 +88,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -104,13 +99,13 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
-## `attachPackToTeam()`
+## `attachPackToGroup()`
 
 ```php
-attachPackToTeam($packId, $packTeamParams): \Kleister\Model\Notification
+attachPackToGroup($packId, $permitPackGroupRequest): \Kleister\Model\Notification
 ```
 
-Attach a team to pack
+Attach a group to pack
 
 ### Example
 
@@ -118,11 +113,6 @@ Attach a team to pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -145,13 +135,13 @@ $apiInstance = new Kleister\Api\PackApi(
     $config
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
-$packTeamParams = new \Kleister\Model\PackTeamParams(); // \Kleister\Model\PackTeamParams | The team data to attach
+$permitPackGroupRequest = new \Kleister\Model\PermitPackGroupRequest(); // \Kleister\Model\PermitPackGroupRequest | The pack group data to permit
 
 try {
-    $result = $apiInstance->attachPackToTeam($packId, $packTeamParams);
+    $result = $apiInstance->attachPackToGroup($packId, $permitPackGroupRequest);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling PackApi->attachPackToTeam: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling PackApi->attachPackToGroup: ', $e->getMessage(), PHP_EOL;
 }
 ```
 
@@ -160,7 +150,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
-| **packTeamParams** | [**\Kleister\Model\PackTeamParams**](../Model/PackTeamParams.md)| The team data to attach | |
+| **permitPackGroupRequest** | [**\Kleister\Model\PermitPackGroupRequest**](../Model/PermitPackGroupRequest.md)| The pack group data to permit | |
 
 ### Return type
 
@@ -168,7 +158,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -182,7 +172,7 @@ try {
 ## `attachPackToUser()`
 
 ```php
-attachPackToUser($packId, $packUserParams): \Kleister\Model\Notification
+attachPackToUser($packId, $permitPackUserRequest): \Kleister\Model\Notification
 ```
 
 Attach a user to pack
@@ -193,11 +183,6 @@ Attach a user to pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -220,10 +205,10 @@ $apiInstance = new Kleister\Api\PackApi(
     $config
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
-$packUserParams = new \Kleister\Model\PackUserParams(); // \Kleister\Model\PackUserParams | The user data to attach
+$permitPackUserRequest = new \Kleister\Model\PermitPackUserRequest(); // \Kleister\Model\PermitPackUserRequest | The pack user data to permit
 
 try {
-    $result = $apiInstance->attachPackToUser($packId, $packUserParams);
+    $result = $apiInstance->attachPackToUser($packId, $permitPackUserRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->attachPackToUser: ', $e->getMessage(), PHP_EOL;
@@ -235,7 +220,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
-| **packUserParams** | [**\Kleister\Model\PackUserParams**](../Model/PackUserParams.md)| The user data to attach | |
+| **permitPackUserRequest** | [**\Kleister\Model\PermitPackUserRequest**](../Model/PermitPackUserRequest.md)| The pack user data to permit | |
 
 ### Return type
 
@@ -243,7 +228,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -257,7 +242,7 @@ try {
 ## `createBuild()`
 
 ```php
-createBuild($packId, $build): \Kleister\Model\Build
+createBuild($packId, $createBuildRequest): \Kleister\Model\Build
 ```
 
 Create a new build for a pack
@@ -268,11 +253,6 @@ Create a new build for a pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -295,10 +275,10 @@ $apiInstance = new Kleister\Api\PackApi(
     $config
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
-$build = new \Kleister\Model\Build(); // \Kleister\Model\Build | The build data to create
+$createBuildRequest = new \Kleister\Model\CreateBuildRequest(); // \Kleister\Model\CreateBuildRequest | The build data to create
 
 try {
-    $result = $apiInstance->createBuild($packId, $build);
+    $result = $apiInstance->createBuild($packId, $createBuildRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->createBuild: ', $e->getMessage(), PHP_EOL;
@@ -310,7 +290,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
-| **build** | [**\Kleister\Model\Build**](../Model/Build.md)| The build data to create | |
+| **createBuildRequest** | [**\Kleister\Model\CreateBuildRequest**](../Model/CreateBuildRequest.md)| The build data to create | |
 
 ### Return type
 
@@ -318,7 +298,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -332,7 +312,7 @@ try {
 ## `createPack()`
 
 ```php
-createPack($pack): \Kleister\Model\Pack
+createPack($createPackRequest): \Kleister\Model\Pack
 ```
 
 Create a new pack
@@ -343,11 +323,6 @@ Create a new pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -369,10 +344,10 @@ $apiInstance = new Kleister\Api\PackApi(
     new GuzzleHttp\Client(),
     $config
 );
-$pack = new \Kleister\Model\Pack(); // \Kleister\Model\Pack | The pack data to create
+$createPackRequest = new \Kleister\Model\CreatePackRequest(); // \Kleister\Model\CreatePackRequest | The pack data to create
 
 try {
-    $result = $apiInstance->createPack($pack);
+    $result = $apiInstance->createPack($createPackRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->createPack: ', $e->getMessage(), PHP_EOL;
@@ -383,7 +358,7 @@ try {
 
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **pack** | [**\Kleister\Model\Pack**](../Model/Pack.md)| The pack data to create | |
+| **createPackRequest** | [**\Kleister\Model\CreatePackRequest**](../Model/CreatePackRequest.md)| The pack data to create | |
 
 ### Return type
 
@@ -391,7 +366,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -416,11 +391,6 @@ Delete a specific build for a pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -466,7 +436,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -480,7 +450,7 @@ try {
 ## `deleteBuildFromVersion()`
 
 ```php
-deleteBuildFromVersion($packId, $buildId, $buildVersionParams): \Kleister\Model\Notification
+deleteBuildFromVersion($packId, $buildId, $attachBuildToVersionRequest): \Kleister\Model\Notification
 ```
 
 Unlink a version from a build
@@ -491,11 +461,6 @@ Unlink a version from a build
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -519,10 +484,10 @@ $apiInstance = new Kleister\Api\PackApi(
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
 $buildId = 'buildId_example'; // string | A build identifier or slug
-$buildVersionParams = new \Kleister\Model\BuildVersionParams(); // \Kleister\Model\BuildVersionParams | The build version data to unlink
+$attachBuildToVersionRequest = new \Kleister\Model\AttachBuildToVersionRequest(); // \Kleister\Model\AttachBuildToVersionRequest | The build version data to create or delete
 
 try {
-    $result = $apiInstance->deleteBuildFromVersion($packId, $buildId, $buildVersionParams);
+    $result = $apiInstance->deleteBuildFromVersion($packId, $buildId, $attachBuildToVersionRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->deleteBuildFromVersion: ', $e->getMessage(), PHP_EOL;
@@ -535,7 +500,7 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
 | **buildId** | **string**| A build identifier or slug | |
-| **buildVersionParams** | [**\Kleister\Model\BuildVersionParams**](../Model/BuildVersionParams.md)| The build version data to unlink | |
+| **attachBuildToVersionRequest** | [**\Kleister\Model\AttachBuildToVersionRequest**](../Model/AttachBuildToVersionRequest.md)| The build version data to create or delete | |
 
 ### Return type
 
@@ -543,7 +508,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -568,11 +533,6 @@ Delete a specific pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -616,7 +576,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -627,13 +587,13 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
-## `deletePackFromTeam()`
+## `deletePackFromGroup()`
 
 ```php
-deletePackFromTeam($packId, $packTeamParams): \Kleister\Model\Notification
+deletePackFromGroup($packId, $deletePackFromGroupRequest): \Kleister\Model\Notification
 ```
 
-Unlink a team from pack
+Unlink a group from pack
 
 ### Example
 
@@ -641,11 +601,6 @@ Unlink a team from pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -668,13 +623,13 @@ $apiInstance = new Kleister\Api\PackApi(
     $config
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
-$packTeamParams = new \Kleister\Model\PackTeamParams(); // \Kleister\Model\PackTeamParams | The pack team data to unlink
+$deletePackFromGroupRequest = new \Kleister\Model\DeletePackFromGroupRequest(); // \Kleister\Model\DeletePackFromGroupRequest | The pack group data to unlink
 
 try {
-    $result = $apiInstance->deletePackFromTeam($packId, $packTeamParams);
+    $result = $apiInstance->deletePackFromGroup($packId, $deletePackFromGroupRequest);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling PackApi->deletePackFromTeam: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling PackApi->deletePackFromGroup: ', $e->getMessage(), PHP_EOL;
 }
 ```
 
@@ -683,7 +638,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
-| **packTeamParams** | [**\Kleister\Model\PackTeamParams**](../Model/PackTeamParams.md)| The pack team data to unlink | |
+| **deletePackFromGroupRequest** | [**\Kleister\Model\DeletePackFromGroupRequest**](../Model/DeletePackFromGroupRequest.md)| The pack group data to unlink | |
 
 ### Return type
 
@@ -691,7 +646,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -705,7 +660,7 @@ try {
 ## `deletePackFromUser()`
 
 ```php
-deletePackFromUser($packId, $packUserParams): \Kleister\Model\Notification
+deletePackFromUser($packId, $deletePackFromUserRequest): \Kleister\Model\Notification
 ```
 
 Unlink a user from pack
@@ -716,11 +671,6 @@ Unlink a user from pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -743,10 +693,10 @@ $apiInstance = new Kleister\Api\PackApi(
     $config
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
-$packUserParams = new \Kleister\Model\PackUserParams(); // \Kleister\Model\PackUserParams | The pack user data to unlink
+$deletePackFromUserRequest = new \Kleister\Model\DeletePackFromUserRequest(); // \Kleister\Model\DeletePackFromUserRequest | The pack user data to unlink
 
 try {
-    $result = $apiInstance->deletePackFromUser($packId, $packUserParams);
+    $result = $apiInstance->deletePackFromUser($packId, $deletePackFromUserRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->deletePackFromUser: ', $e->getMessage(), PHP_EOL;
@@ -758,7 +708,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
-| **packUserParams** | [**\Kleister\Model\PackUserParams**](../Model/PackUserParams.md)| The pack user data to unlink | |
+| **deletePackFromUserRequest** | [**\Kleister\Model\DeletePackFromUserRequest**](../Model/DeletePackFromUserRequest.md)| The pack user data to unlink | |
 
 ### Return type
 
@@ -766,7 +716,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -780,7 +730,7 @@ try {
 ## `listBuildVersions()`
 
 ```php
-listBuildVersions($packId, $buildId, $search, $sort, $order, $limit, $offset): \Kleister\Model\BuildVersions
+listBuildVersions($packId, $buildId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListBuildVersions200Response
 ```
 
 Fetch all versions attached to build
@@ -791,11 +741,6 @@ Fetch all versions attached to build
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -820,10 +765,10 @@ $apiInstance = new Kleister\Api\PackApi(
 $packId = 'packId_example'; // string | A pack identifier or slug
 $buildId = 'buildId_example'; // string | A build identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
-$limit = 56; // int | Paging limit
-$offset = 56; // int | Paging offset
+$limit = 100; // int | Paging limit
+$offset = 0; // int | Paging offset
 
 try {
     $result = $apiInstance->listBuildVersions($packId, $buildId, $search, $sort, $order, $limit, $offset);
@@ -840,18 +785,18 @@ try {
 | **packId** | **string**| A pack identifier or slug | |
 | **buildId** | **string**| A build identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
-| **limit** | **int**| Paging limit | [optional] |
-| **offset** | **int**| Paging offset | [optional] |
+| **limit** | **int**| Paging limit | [optional] [default to 100] |
+| **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\BuildVersions**](../Model/BuildVersions.md)
+[**\Kleister\Model\ListBuildVersions200Response**](../Model/ListBuildVersions200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -865,7 +810,7 @@ try {
 ## `listBuilds()`
 
 ```php
-listBuilds($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\Builds
+listBuilds($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListBuilds200Response
 ```
 
 Fetch all available builds for a pack
@@ -876,11 +821,6 @@ Fetch all available builds for a pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -904,10 +844,10 @@ $apiInstance = new Kleister\Api\PackApi(
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
-$limit = 56; // int | Paging limit
-$offset = 56; // int | Paging offset
+$limit = 100; // int | Paging limit
+$offset = 0; // int | Paging offset
 
 try {
     $result = $apiInstance->listBuilds($packId, $search, $sort, $order, $limit, $offset);
@@ -923,18 +863,18 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
-| **limit** | **int**| Paging limit | [optional] |
-| **offset** | **int**| Paging offset | [optional] |
+| **limit** | **int**| Paging limit | [optional] [default to 100] |
+| **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\Builds**](../Model/Builds.md)
+[**\Kleister\Model\ListBuilds200Response**](../Model/ListBuilds200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -945,13 +885,13 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
-## `listPackTeams()`
+## `listPackGroups()`
 
 ```php
-listPackTeams($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\PackTeams
+listPackGroups($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListPackGroups200Response
 ```
 
-Fetch all teams attached to pack
+Fetch all groups attached to pack
 
 ### Example
 
@@ -959,11 +899,6 @@ Fetch all teams attached to pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -987,16 +922,16 @@ $apiInstance = new Kleister\Api\PackApi(
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
 
 try {
-    $result = $apiInstance->listPackTeams($packId, $search, $sort, $order, $limit, $offset);
+    $result = $apiInstance->listPackGroups($packId, $search, $sort, $order, $limit, $offset);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling PackApi->listPackTeams: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling PackApi->listPackGroups: ', $e->getMessage(), PHP_EOL;
 }
 ```
 
@@ -1006,18 +941,18 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\PackTeams**](../Model/PackTeams.md)
+[**\Kleister\Model\ListPackGroups200Response**](../Model/ListPackGroups200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1031,7 +966,7 @@ try {
 ## `listPackUsers()`
 
 ```php
-listPackUsers($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\PackUsers
+listPackUsers($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListPackUsers200Response
 ```
 
 Fetch all users attached to pack
@@ -1042,11 +977,6 @@ Fetch all users attached to pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1070,7 +1000,7 @@ $apiInstance = new Kleister\Api\PackApi(
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'username'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -1089,18 +1019,18 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;username&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\PackUsers**](../Model/PackUsers.md)
+[**\Kleister\Model\ListPackUsers200Response**](../Model/ListPackUsers200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1114,7 +1044,7 @@ try {
 ## `listPacks()`
 
 ```php
-listPacks($search, $sort, $order, $limit, $offset): \Kleister\Model\Packs
+listPacks($search, $sort, $order, $limit, $offset): \Kleister\Model\ListPacks200Response
 ```
 
 Fetch all available packs
@@ -1125,11 +1055,6 @@ Fetch all available packs
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1152,7 +1077,7 @@ $apiInstance = new Kleister\Api\PackApi(
     $config
 );
 $search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -1170,18 +1095,18 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\Packs**](../Model/Packs.md)
+[**\Kleister\Model\ListPacks200Response**](../Model/ListPacks200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1192,13 +1117,13 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
-## `permitPackTeam()`
+## `permitPackGroup()`
 
 ```php
-permitPackTeam($packId, $packTeamParams): \Kleister\Model\Notification
+permitPackGroup($packId, $permitPackGroupRequest): \Kleister\Model\Notification
 ```
 
-Update team perms for pack
+Update group perms for pack
 
 ### Example
 
@@ -1206,11 +1131,6 @@ Update team perms for pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1233,13 +1153,13 @@ $apiInstance = new Kleister\Api\PackApi(
     $config
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
-$packTeamParams = new \Kleister\Model\PackTeamParams(); // \Kleister\Model\PackTeamParams | The team data to update
+$permitPackGroupRequest = new \Kleister\Model\PermitPackGroupRequest(); // \Kleister\Model\PermitPackGroupRequest | The pack group data to permit
 
 try {
-    $result = $apiInstance->permitPackTeam($packId, $packTeamParams);
+    $result = $apiInstance->permitPackGroup($packId, $permitPackGroupRequest);
     print_r($result);
 } catch (Exception $e) {
-    echo 'Exception when calling PackApi->permitPackTeam: ', $e->getMessage(), PHP_EOL;
+    echo 'Exception when calling PackApi->permitPackGroup: ', $e->getMessage(), PHP_EOL;
 }
 ```
 
@@ -1248,7 +1168,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
-| **packTeamParams** | [**\Kleister\Model\PackTeamParams**](../Model/PackTeamParams.md)| The team data to update | |
+| **permitPackGroupRequest** | [**\Kleister\Model\PermitPackGroupRequest**](../Model/PermitPackGroupRequest.md)| The pack group data to permit | |
 
 ### Return type
 
@@ -1256,7 +1176,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1270,7 +1190,7 @@ try {
 ## `permitPackUser()`
 
 ```php
-permitPackUser($packId, $packUserParams): \Kleister\Model\Notification
+permitPackUser($packId, $permitPackUserRequest): \Kleister\Model\Notification
 ```
 
 Update user perms for pack
@@ -1281,11 +1201,6 @@ Update user perms for pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1308,10 +1223,10 @@ $apiInstance = new Kleister\Api\PackApi(
     $config
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
-$packUserParams = new \Kleister\Model\PackUserParams(); // \Kleister\Model\PackUserParams | The user data to update
+$permitPackUserRequest = new \Kleister\Model\PermitPackUserRequest(); // \Kleister\Model\PermitPackUserRequest | The pack user data to permit
 
 try {
-    $result = $apiInstance->permitPackUser($packId, $packUserParams);
+    $result = $apiInstance->permitPackUser($packId, $permitPackUserRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->permitPackUser: ', $e->getMessage(), PHP_EOL;
@@ -1323,7 +1238,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
-| **packUserParams** | [**\Kleister\Model\PackUserParams**](../Model/PackUserParams.md)| The user data to update | |
+| **permitPackUserRequest** | [**\Kleister\Model\PermitPackUserRequest**](../Model/PermitPackUserRequest.md)| The pack user data to permit | |
 
 ### Return type
 
@@ -1331,7 +1246,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1356,11 +1271,6 @@ Fetch a specific build for a pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1406,7 +1316,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1431,11 +1341,6 @@ Fetch a specific pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1479,7 +1384,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1493,7 +1398,7 @@ try {
 ## `updateBuild()`
 
 ```php
-updateBuild($packId, $buildId, $build): \Kleister\Model\Build
+updateBuild($packId, $buildId, $createBuildRequest): \Kleister\Model\Build
 ```
 
 Update a specific build for a pack
@@ -1504,11 +1409,6 @@ Update a specific build for a pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1532,10 +1432,10 @@ $apiInstance = new Kleister\Api\PackApi(
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
 $buildId = 'buildId_example'; // string | A build identifier or slug
-$build = new \Kleister\Model\Build(); // \Kleister\Model\Build | The build data to update
+$createBuildRequest = new \Kleister\Model\CreateBuildRequest(); // \Kleister\Model\CreateBuildRequest | The build data to update
 
 try {
-    $result = $apiInstance->updateBuild($packId, $buildId, $build);
+    $result = $apiInstance->updateBuild($packId, $buildId, $createBuildRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->updateBuild: ', $e->getMessage(), PHP_EOL;
@@ -1548,7 +1448,7 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
 | **buildId** | **string**| A build identifier or slug | |
-| **build** | [**\Kleister\Model\Build**](../Model/Build.md)| The build data to update | |
+| **createBuildRequest** | [**\Kleister\Model\CreateBuildRequest**](../Model/CreateBuildRequest.md)| The build data to update | |
 
 ### Return type
 
@@ -1556,7 +1456,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1570,7 +1470,7 @@ try {
 ## `updatePack()`
 
 ```php
-updatePack($packId, $pack): \Kleister\Model\Pack
+updatePack($packId, $createPackRequest): \Kleister\Model\Pack
 ```
 
 Update a specific pack
@@ -1581,11 +1481,6 @@ Update a specific pack
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1608,10 +1503,10 @@ $apiInstance = new Kleister\Api\PackApi(
     $config
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
-$pack = new \Kleister\Model\Pack(); // \Kleister\Model\Pack | The pack data to update
+$createPackRequest = new \Kleister\Model\CreatePackRequest(); // \Kleister\Model\CreatePackRequest | The pack data to update
 
 try {
-    $result = $apiInstance->updatePack($packId, $pack);
+    $result = $apiInstance->updatePack($packId, $createPackRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling PackApi->updatePack: ', $e->getMessage(), PHP_EOL;
@@ -1623,7 +1518,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **packId** | **string**| A pack identifier or slug | |
-| **pack** | [**\Kleister\Model\Pack**](../Model/Pack.md)| The pack data to update | |
+| **createPackRequest** | [**\Kleister\Model\CreatePackRequest**](../Model/CreatePackRequest.md)| The pack data to update | |
 
 ### Return type
 
@@ -1631,7 +1526,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 

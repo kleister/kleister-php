@@ -141,16 +141,16 @@ class ForgeApi
      * Attach a build to a Forge version
      *
      * @param  string $forgeId A forge identifier or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $forgeBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The forge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachForgeToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachForgeToBuild($forgeId, $forgeBuildParams, string $contentType = self::contentTypes['attachForgeToBuild'][0])
+    public function attachForgeToBuild($forgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachForgeToBuild'][0])
     {
-        list($response) = $this->attachForgeToBuildWithHttpInfo($forgeId, $forgeBuildParams, $contentType);
+        list($response) = $this->attachForgeToBuildWithHttpInfo($forgeId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -160,16 +160,16 @@ class ForgeApi
      * Attach a build to a Forge version
      *
      * @param  string $forgeId A forge identifier or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $forgeBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The forge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachForgeToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachForgeToBuildWithHttpInfo($forgeId, $forgeBuildParams, string $contentType = self::contentTypes['attachForgeToBuild'][0])
+    public function attachForgeToBuildWithHttpInfo($forgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachForgeToBuild'][0])
     {
-        $request = $this->attachForgeToBuildRequest($forgeId, $forgeBuildParams, $contentType);
+        $request = $this->attachForgeToBuildRequest($forgeId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -208,6 +208,33 @@ class ForgeApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -343,33 +370,6 @@ class ForgeApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -436,6 +436,14 @@ class ForgeApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -476,14 +484,6 @@ class ForgeApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -495,15 +495,15 @@ class ForgeApi
      * Attach a build to a Forge version
      *
      * @param  string $forgeId A forge identifier or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $forgeBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The forge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachForgeToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachForgeToBuildAsync($forgeId, $forgeBuildParams, string $contentType = self::contentTypes['attachForgeToBuild'][0])
+    public function attachForgeToBuildAsync($forgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachForgeToBuild'][0])
     {
-        return $this->attachForgeToBuildAsyncWithHttpInfo($forgeId, $forgeBuildParams, $contentType)
+        return $this->attachForgeToBuildAsyncWithHttpInfo($forgeId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -517,16 +517,16 @@ class ForgeApi
      * Attach a build to a Forge version
      *
      * @param  string $forgeId A forge identifier or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $forgeBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The forge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachForgeToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachForgeToBuildAsyncWithHttpInfo($forgeId, $forgeBuildParams, string $contentType = self::contentTypes['attachForgeToBuild'][0])
+    public function attachForgeToBuildAsyncWithHttpInfo($forgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachForgeToBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachForgeToBuildRequest($forgeId, $forgeBuildParams, $contentType);
+        $request = $this->attachForgeToBuildRequest($forgeId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -568,13 +568,13 @@ class ForgeApi
      * Create request for operation 'attachForgeToBuild'
      *
      * @param  string $forgeId A forge identifier or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $forgeBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The forge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachForgeToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachForgeToBuildRequest($forgeId, $forgeBuildParams, string $contentType = self::contentTypes['attachForgeToBuild'][0])
+    public function attachForgeToBuildRequest($forgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachForgeToBuild'][0])
     {
 
         // verify the required parameter 'forgeId' is set
@@ -584,10 +584,10 @@ class ForgeApi
             );
         }
 
-        // verify the required parameter 'forgeBuildParams' is set
-        if ($forgeBuildParams === null || (is_array($forgeBuildParams) && count($forgeBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $forgeBuildParams when calling attachForgeToBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling attachForgeToBuild'
             );
         }
 
@@ -618,12 +618,12 @@ class ForgeApi
         );
 
         // for model (json/xml)
-        if (isset($forgeBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($forgeBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $forgeBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -649,11 +649,6 @@ class ForgeApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -695,16 +690,16 @@ class ForgeApi
      * Unlink a build from a Forge version
      *
      * @param  string $forgeId A forge identifier or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $forgeBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The forge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteForgeFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteForgeFromBuild($forgeId, $forgeBuildParams, string $contentType = self::contentTypes['deleteForgeFromBuild'][0])
+    public function deleteForgeFromBuild($forgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteForgeFromBuild'][0])
     {
-        list($response) = $this->deleteForgeFromBuildWithHttpInfo($forgeId, $forgeBuildParams, $contentType);
+        list($response) = $this->deleteForgeFromBuildWithHttpInfo($forgeId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -714,16 +709,16 @@ class ForgeApi
      * Unlink a build from a Forge version
      *
      * @param  string $forgeId A forge identifier or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $forgeBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The forge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteForgeFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteForgeFromBuildWithHttpInfo($forgeId, $forgeBuildParams, string $contentType = self::contentTypes['deleteForgeFromBuild'][0])
+    public function deleteForgeFromBuildWithHttpInfo($forgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteForgeFromBuild'][0])
     {
-        $request = $this->deleteForgeFromBuildRequest($forgeId, $forgeBuildParams, $contentType);
+        $request = $this->deleteForgeFromBuildRequest($forgeId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -762,6 +757,33 @@ class ForgeApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -870,33 +892,6 @@ class ForgeApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -963,6 +958,14 @@ class ForgeApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -995,14 +998,6 @@ class ForgeApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1014,15 +1009,15 @@ class ForgeApi
      * Unlink a build from a Forge version
      *
      * @param  string $forgeId A forge identifier or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $forgeBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The forge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteForgeFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteForgeFromBuildAsync($forgeId, $forgeBuildParams, string $contentType = self::contentTypes['deleteForgeFromBuild'][0])
+    public function deleteForgeFromBuildAsync($forgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteForgeFromBuild'][0])
     {
-        return $this->deleteForgeFromBuildAsyncWithHttpInfo($forgeId, $forgeBuildParams, $contentType)
+        return $this->deleteForgeFromBuildAsyncWithHttpInfo($forgeId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1036,16 +1031,16 @@ class ForgeApi
      * Unlink a build from a Forge version
      *
      * @param  string $forgeId A forge identifier or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $forgeBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The forge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteForgeFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteForgeFromBuildAsyncWithHttpInfo($forgeId, $forgeBuildParams, string $contentType = self::contentTypes['deleteForgeFromBuild'][0])
+    public function deleteForgeFromBuildAsyncWithHttpInfo($forgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteForgeFromBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteForgeFromBuildRequest($forgeId, $forgeBuildParams, $contentType);
+        $request = $this->deleteForgeFromBuildRequest($forgeId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1087,13 +1082,13 @@ class ForgeApi
      * Create request for operation 'deleteForgeFromBuild'
      *
      * @param  string $forgeId A forge identifier or slug (required)
-     * @param  \Kleister\Model\ForgeBuildParams $forgeBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The forge build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteForgeFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteForgeFromBuildRequest($forgeId, $forgeBuildParams, string $contentType = self::contentTypes['deleteForgeFromBuild'][0])
+    public function deleteForgeFromBuildRequest($forgeId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteForgeFromBuild'][0])
     {
 
         // verify the required parameter 'forgeId' is set
@@ -1103,10 +1098,10 @@ class ForgeApi
             );
         }
 
-        // verify the required parameter 'forgeBuildParams' is set
-        if ($forgeBuildParams === null || (is_array($forgeBuildParams) && count($forgeBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $forgeBuildParams when calling deleteForgeFromBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling deleteForgeFromBuild'
             );
         }
 
@@ -1137,12 +1132,12 @@ class ForgeApi
         );
 
         // for model (json/xml)
-        if (isset($forgeBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($forgeBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $forgeBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -1168,11 +1163,6 @@ class ForgeApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1215,7 +1205,7 @@ class ForgeApi
      *
      * @param  string $forgeId A forge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1223,9 +1213,9 @@ class ForgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\ForgeBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListForgeBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listForgeBuilds($forgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
+    public function listForgeBuilds($forgeId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
     {
         list($response) = $this->listForgeBuildsWithHttpInfo($forgeId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -1238,7 +1228,7 @@ class ForgeApi
      *
      * @param  string $forgeId A forge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1246,9 +1236,9 @@ class ForgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\ForgeBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListForgeBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listForgeBuildsWithHttpInfo($forgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
+    public function listForgeBuildsWithHttpInfo($forgeId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
     {
         $request = $this->listForgeBuildsRequest($forgeId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -1289,11 +1279,11 @@ class ForgeApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\ForgeBuilds' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListForgeBuilds200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\ForgeBuilds' !== 'string') {
+                        if ('\Kleister\Model\ListForgeBuilds200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -1311,7 +1301,7 @@ class ForgeApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\ForgeBuilds', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListForgeBuilds200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1396,36 +1386,9 @@ class ForgeApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\ForgeBuilds';
+            $returnType = '\Kleister\Model\ListForgeBuilds200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -1458,7 +1421,7 @@ class ForgeApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\ForgeBuilds',
+                        '\Kleister\Model\ListForgeBuilds200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1487,14 +1450,6 @@ class ForgeApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1507,7 +1462,7 @@ class ForgeApi
      *
      * @param  string $forgeId A forge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1516,7 +1471,7 @@ class ForgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listForgeBuildsAsync($forgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
+    public function listForgeBuildsAsync($forgeId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
     {
         return $this->listForgeBuildsAsyncWithHttpInfo($forgeId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -1533,7 +1488,7 @@ class ForgeApi
      *
      * @param  string $forgeId A forge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1542,9 +1497,9 @@ class ForgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listForgeBuildsAsyncWithHttpInfo($forgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
+    public function listForgeBuildsAsyncWithHttpInfo($forgeId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
     {
-        $returnType = '\Kleister\Model\ForgeBuilds';
+        $returnType = '\Kleister\Model\ListForgeBuilds200Response';
         $request = $this->listForgeBuildsRequest($forgeId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -1588,7 +1543,7 @@ class ForgeApi
      *
      * @param  string $forgeId A forge identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1597,7 +1552,7 @@ class ForgeApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listForgeBuildsRequest($forgeId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
+    public function listForgeBuildsRequest($forgeId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listForgeBuilds'][0])
     {
 
         // verify the required parameter 'forgeId' is set
@@ -1708,11 +1663,6 @@ class ForgeApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1758,7 +1708,7 @@ class ForgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Forges|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListForges200Response|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function listForges($search = null, string $contentType = self::contentTypes['listForges'][0])
     {
@@ -1776,7 +1726,7 @@ class ForgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Forges|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListForges200Response|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function listForgesWithHttpInfo($search = null, string $contentType = self::contentTypes['listForges'][0])
     {
@@ -1819,11 +1769,11 @@ class ForgeApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Forges' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListForges200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Forges' !== 'string') {
+                        if ('\Kleister\Model\ListForges200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -1841,7 +1791,7 @@ class ForgeApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Forges', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListForges200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1899,36 +1849,9 @@ class ForgeApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\Forges';
+            $returnType = '\Kleister\Model\ListForges200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -1961,7 +1884,7 @@ class ForgeApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\Forges',
+                        '\Kleister\Model\ListForges200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1975,14 +1898,6 @@ class ForgeApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -2029,7 +1944,7 @@ class ForgeApi
      */
     public function listForgesAsyncWithHttpInfo($search = null, string $contentType = self::contentTypes['listForges'][0])
     {
-        $returnType = '\Kleister\Model\Forges';
+        $returnType = '\Kleister\Model\ListForges200Response';
         $request = $this->listForgesRequest($search, $contentType);
 
         return $this->client
@@ -2133,11 +2048,6 @@ class ForgeApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -2182,7 +2092,7 @@ class ForgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function updateForge(string $contentType = self::contentTypes['updateForge'][0])
     {
@@ -2199,7 +2109,7 @@ class ForgeApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function updateForgeWithHttpInfo(string $contentType = self::contentTypes['updateForge'][0])
     {
@@ -2349,33 +2259,6 @@ class ForgeApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Notification';
@@ -2433,14 +2316,6 @@ class ForgeApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -2578,11 +2453,6 @@ class ForgeApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());

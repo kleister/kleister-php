@@ -51,7 +51,7 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'build';
+    protected static $openAPIModelName = 'Build';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -71,7 +71,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'quilt' => '\Kleister\Model\Quilt',
         'fabricId' => 'string',
         'fabric' => '\Kleister\Model\Fabric',
-        'slug' => 'string',
         'name' => 'string',
         'java' => 'string',
         'memory' => 'string',
@@ -102,7 +101,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'quilt' => null,
         'fabricId' => null,
         'fabric' => null,
-        'slug' => null,
         'name' => null,
         'java' => null,
         'memory' => null,
@@ -131,7 +129,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'quilt' => false,
         'fabricId' => true,
         'fabric' => false,
-        'slug' => true,
         'name' => true,
         'java' => true,
         'memory' => true,
@@ -240,7 +237,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'quilt' => 'quilt',
         'fabricId' => 'fabric_id',
         'fabric' => 'fabric',
-        'slug' => 'slug',
         'name' => 'name',
         'java' => 'java',
         'memory' => 'memory',
@@ -269,7 +265,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'quilt' => 'setQuilt',
         'fabricId' => 'setFabricId',
         'fabric' => 'setFabric',
-        'slug' => 'setSlug',
         'name' => 'setName',
         'java' => 'setJava',
         'memory' => 'setMemory',
@@ -298,7 +293,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         'quilt' => 'getQuilt',
         'fabricId' => 'getFabricId',
         'fabric' => 'getFabric',
-        'slug' => 'getSlug',
         'name' => 'getName',
         'java' => 'getJava',
         'memory' => 'getMemory',
@@ -378,7 +372,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
         $this->setIfExists('quilt', $data ?? [], null);
         $this->setIfExists('fabricId', $data ?? [], null);
         $this->setIfExists('fabric', $data ?? [], null);
-        $this->setIfExists('slug', $data ?? [], null);
         $this->setIfExists('name', $data ?? [], null);
         $this->setIfExists('java', $data ?? [], null);
         $this->setIfExists('memory', $data ?? [], null);
@@ -786,40 +779,6 @@ class Build implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable fabric cannot be null');
         }
         $this->container['fabric'] = $fabric;
-
-        return $this;
-    }
-
-    /**
-     * Gets slug
-     *
-     * @return string|null
-     */
-    public function getSlug()
-    {
-        return $this->container['slug'];
-    }
-
-    /**
-     * Sets slug
-     *
-     * @param string|null $slug slug
-     *
-     * @return self
-     */
-    public function setSlug($slug)
-    {
-        if (is_null($slug)) {
-            array_push($this->openAPINullablesSetToNull, 'slug');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('slug', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['slug'] = $slug;
 
         return $this;
     }

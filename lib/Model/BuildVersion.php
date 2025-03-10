@@ -51,7 +51,7 @@ class BuildVersion implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'build_version';
+    protected static $openAPIModelName = 'BuildVersion';
 
     /**
       * Array of property to type mappings. Used for (de)serialization

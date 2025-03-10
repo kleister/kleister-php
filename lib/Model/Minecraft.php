@@ -51,7 +51,7 @@ class Minecraft implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'minecraft';
+    protected static $openAPIModelName = 'Minecraft';
 
     /**
       * Array of property to type mappings. Used for (de)serialization

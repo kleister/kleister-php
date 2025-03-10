@@ -51,7 +51,7 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'pack';
+    protected static $openAPIModelName = 'Pack';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -60,9 +60,7 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPITypes = [
         'id' => 'string',
-        'icon' => '\Kleister\Model\PackIcon',
-        'logo' => '\Kleister\Model\PackLogo',
-        'back' => '\Kleister\Model\PackBack',
+        'avatar' => '\Kleister\Model\PackAvatar',
         'slug' => 'string',
         'name' => 'string',
         'website' => 'string',
@@ -80,9 +78,7 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPIFormats = [
         'id' => null,
-        'icon' => null,
-        'logo' => null,
-        'back' => null,
+        'avatar' => null,
         'slug' => null,
         'name' => null,
         'website' => null,
@@ -98,9 +94,7 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static array $openAPINullables = [
         'id' => false,
-        'icon' => false,
-        'logo' => false,
-        'back' => false,
+        'avatar' => false,
         'slug' => true,
         'name' => true,
         'website' => true,
@@ -196,9 +190,7 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $attributeMap = [
         'id' => 'id',
-        'icon' => 'icon',
-        'logo' => 'logo',
-        'back' => 'back',
+        'avatar' => 'avatar',
         'slug' => 'slug',
         'name' => 'name',
         'website' => 'website',
@@ -214,9 +206,7 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $setters = [
         'id' => 'setId',
-        'icon' => 'setIcon',
-        'logo' => 'setLogo',
-        'back' => 'setBack',
+        'avatar' => 'setAvatar',
         'slug' => 'setSlug',
         'name' => 'setName',
         'website' => 'setWebsite',
@@ -232,9 +222,7 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $getters = [
         'id' => 'getId',
-        'icon' => 'getIcon',
-        'logo' => 'getLogo',
-        'back' => 'getBack',
+        'avatar' => 'getAvatar',
         'slug' => 'getSlug',
         'name' => 'getName',
         'website' => 'getWebsite',
@@ -301,9 +289,7 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
     public function __construct(array $data = null)
     {
         $this->setIfExists('id', $data ?? [], null);
-        $this->setIfExists('icon', $data ?? [], null);
-        $this->setIfExists('logo', $data ?? [], null);
-        $this->setIfExists('back', $data ?? [], null);
+        $this->setIfExists('avatar', $data ?? [], null);
         $this->setIfExists('slug', $data ?? [], null);
         $this->setIfExists('name', $data ?? [], null);
         $this->setIfExists('website', $data ?? [], null);
@@ -382,82 +368,28 @@ class Pack implements ModelInterface, ArrayAccess, \JsonSerializable
     }
 
     /**
-     * Gets icon
+     * Gets avatar
      *
-     * @return \Kleister\Model\PackIcon|null
+     * @return \Kleister\Model\PackAvatar|null
      */
-    public function getIcon()
+    public function getAvatar()
     {
-        return $this->container['icon'];
+        return $this->container['avatar'];
     }
 
     /**
-     * Sets icon
+     * Sets avatar
      *
-     * @param \Kleister\Model\PackIcon|null $icon icon
+     * @param \Kleister\Model\PackAvatar|null $avatar avatar
      *
      * @return self
      */
-    public function setIcon($icon)
+    public function setAvatar($avatar)
     {
-        if (is_null($icon)) {
-            throw new \InvalidArgumentException('non-nullable icon cannot be null');
+        if (is_null($avatar)) {
+            throw new \InvalidArgumentException('non-nullable avatar cannot be null');
         }
-        $this->container['icon'] = $icon;
-
-        return $this;
-    }
-
-    /**
-     * Gets logo
-     *
-     * @return \Kleister\Model\PackLogo|null
-     */
-    public function getLogo()
-    {
-        return $this->container['logo'];
-    }
-
-    /**
-     * Sets logo
-     *
-     * @param \Kleister\Model\PackLogo|null $logo logo
-     *
-     * @return self
-     */
-    public function setLogo($logo)
-    {
-        if (is_null($logo)) {
-            throw new \InvalidArgumentException('non-nullable logo cannot be null');
-        }
-        $this->container['logo'] = $logo;
-
-        return $this;
-    }
-
-    /**
-     * Gets back
-     *
-     * @return \Kleister\Model\PackBack|null
-     */
-    public function getBack()
-    {
-        return $this->container['back'];
-    }
-
-    /**
-     * Sets back
-     *
-     * @param \Kleister\Model\PackBack|null $back back
-     *
-     * @return self
-     */
-    public function setBack($back)
-    {
-        if (is_null($back)) {
-            throw new \InvalidArgumentException('non-nullable back cannot be null');
-        }
-        $this->container['back'] = $back;
+        $this->container['avatar'] = $avatar;
 
         return $this;
     }

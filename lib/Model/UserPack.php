@@ -51,7 +51,7 @@ class UserPack implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'user_pack';
+    protected static $openAPIModelName = 'UserPack';
 
     /**
       * Array of property to type mappings. Used for (de)serialization

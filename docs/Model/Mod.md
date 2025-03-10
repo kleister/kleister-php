@@ -5,6 +5,7 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **id** | **string** |  | [optional] [readonly]
+**avatar** | [**\Kleister\Model\ModAvatar**](ModAvatar.md) |  | [optional]
 **slug** | **string** |  | [optional]
 **name** | **string** |  | [optional]
 **side** | **string** |  | [optional]
