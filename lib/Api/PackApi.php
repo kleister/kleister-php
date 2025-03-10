@@ -75,7 +75,7 @@ class PackApi
         'attachBuildToVersion' => [
             'application/json',
         ],
-        'attachPackToTeam' => [
+        'attachPackToGroup' => [
             'application/json',
         ],
         'attachPackToUser' => [
@@ -96,7 +96,7 @@ class PackApi
         'deletePack' => [
             'application/json',
         ],
-        'deletePackFromTeam' => [
+        'deletePackFromGroup' => [
             'application/json',
         ],
         'deletePackFromUser' => [
@@ -108,7 +108,7 @@ class PackApi
         'listBuilds' => [
             'application/json',
         ],
-        'listPackTeams' => [
+        'listPackGroups' => [
             'application/json',
         ],
         'listPackUsers' => [
@@ -117,7 +117,7 @@ class PackApi
         'listPacks' => [
             'application/json',
         ],
-        'permitPackTeam' => [
+        'permitPackGroup' => [
             'application/json',
         ],
         'permitPackUser' => [
@@ -190,16 +190,16 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $buildVersionParams The build version data to attach (required)
+     * @param  \Kleister\Model\AttachBuildToVersionRequest $attachBuildToVersionRequest The build version data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachBuildToVersion'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachBuildToVersion($packId, $buildId, $buildVersionParams, string $contentType = self::contentTypes['attachBuildToVersion'][0])
+    public function attachBuildToVersion($packId, $buildId, $attachBuildToVersionRequest, string $contentType = self::contentTypes['attachBuildToVersion'][0])
     {
-        list($response) = $this->attachBuildToVersionWithHttpInfo($packId, $buildId, $buildVersionParams, $contentType);
+        list($response) = $this->attachBuildToVersionWithHttpInfo($packId, $buildId, $attachBuildToVersionRequest, $contentType);
         return $response;
     }
 
@@ -210,16 +210,16 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $buildVersionParams The build version data to attach (required)
+     * @param  \Kleister\Model\AttachBuildToVersionRequest $attachBuildToVersionRequest The build version data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachBuildToVersion'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachBuildToVersionWithHttpInfo($packId, $buildId, $buildVersionParams, string $contentType = self::contentTypes['attachBuildToVersion'][0])
+    public function attachBuildToVersionWithHttpInfo($packId, $buildId, $attachBuildToVersionRequest, string $contentType = self::contentTypes['attachBuildToVersion'][0])
     {
-        $request = $this->attachBuildToVersionRequest($packId, $buildId, $buildVersionParams, $contentType);
+        $request = $this->attachBuildToVersionRequest($packId, $buildId, $attachBuildToVersionRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -258,6 +258,33 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -393,33 +420,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -486,6 +486,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -526,14 +534,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -546,15 +546,15 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $buildVersionParams The build version data to attach (required)
+     * @param  \Kleister\Model\AttachBuildToVersionRequest $attachBuildToVersionRequest The build version data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachBuildToVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachBuildToVersionAsync($packId, $buildId, $buildVersionParams, string $contentType = self::contentTypes['attachBuildToVersion'][0])
+    public function attachBuildToVersionAsync($packId, $buildId, $attachBuildToVersionRequest, string $contentType = self::contentTypes['attachBuildToVersion'][0])
     {
-        return $this->attachBuildToVersionAsyncWithHttpInfo($packId, $buildId, $buildVersionParams, $contentType)
+        return $this->attachBuildToVersionAsyncWithHttpInfo($packId, $buildId, $attachBuildToVersionRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -569,16 +569,16 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $buildVersionParams The build version data to attach (required)
+     * @param  \Kleister\Model\AttachBuildToVersionRequest $attachBuildToVersionRequest The build version data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachBuildToVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachBuildToVersionAsyncWithHttpInfo($packId, $buildId, $buildVersionParams, string $contentType = self::contentTypes['attachBuildToVersion'][0])
+    public function attachBuildToVersionAsyncWithHttpInfo($packId, $buildId, $attachBuildToVersionRequest, string $contentType = self::contentTypes['attachBuildToVersion'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachBuildToVersionRequest($packId, $buildId, $buildVersionParams, $contentType);
+        $request = $this->attachBuildToVersionRequest($packId, $buildId, $attachBuildToVersionRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -621,13 +621,13 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $buildVersionParams The build version data to attach (required)
+     * @param  \Kleister\Model\AttachBuildToVersionRequest $attachBuildToVersionRequest The build version data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachBuildToVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachBuildToVersionRequest($packId, $buildId, $buildVersionParams, string $contentType = self::contentTypes['attachBuildToVersion'][0])
+    public function attachBuildToVersionRequest($packId, $buildId, $attachBuildToVersionRequest, string $contentType = self::contentTypes['attachBuildToVersion'][0])
     {
 
         // verify the required parameter 'packId' is set
@@ -644,10 +644,10 @@ class PackApi
             );
         }
 
-        // verify the required parameter 'buildVersionParams' is set
-        if ($buildVersionParams === null || (is_array($buildVersionParams) && count($buildVersionParams) === 0)) {
+        // verify the required parameter 'attachBuildToVersionRequest' is set
+        if ($attachBuildToVersionRequest === null || (is_array($attachBuildToVersionRequest) && count($attachBuildToVersionRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $buildVersionParams when calling attachBuildToVersion'
+                'Missing the required parameter $attachBuildToVersionRequest when calling attachBuildToVersion'
             );
         }
 
@@ -686,12 +686,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($buildVersionParams)) {
+        if (isset($attachBuildToVersionRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($buildVersionParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachBuildToVersionRequest));
             } else {
-                $httpBody = $buildVersionParams;
+                $httpBody = $attachBuildToVersionRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -717,11 +717,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -758,40 +753,40 @@ class PackApi
     }
 
     /**
-     * Operation attachPackToTeam
+     * Operation attachPackToGroup
      *
-     * Attach a team to pack
+     * Attach a group to pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The pack group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachPackToTeam($packId, $packTeamParams, string $contentType = self::contentTypes['attachPackToTeam'][0])
+    public function attachPackToGroup($packId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachPackToGroup'][0])
     {
-        list($response) = $this->attachPackToTeamWithHttpInfo($packId, $packTeamParams, $contentType);
+        list($response) = $this->attachPackToGroupWithHttpInfo($packId, $permitPackGroupRequest, $contentType);
         return $response;
     }
 
     /**
-     * Operation attachPackToTeamWithHttpInfo
+     * Operation attachPackToGroupWithHttpInfo
      *
-     * Attach a team to pack
+     * Attach a group to pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The pack group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachPackToTeamWithHttpInfo($packId, $packTeamParams, string $contentType = self::contentTypes['attachPackToTeam'][0])
+    public function attachPackToGroupWithHttpInfo($packId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachPackToGroup'][0])
     {
-        $request = $this->attachPackToTeamRequest($packId, $packTeamParams, $contentType);
+        $request = $this->attachPackToGroupRequest($packId, $permitPackGroupRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -830,6 +825,33 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -965,33 +987,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -1058,6 +1053,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -1098,34 +1101,26 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
     }
 
     /**
-     * Operation attachPackToTeamAsync
+     * Operation attachPackToGroupAsync
      *
-     * Attach a team to pack
+     * Attach a group to pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The pack group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachPackToTeamAsync($packId, $packTeamParams, string $contentType = self::contentTypes['attachPackToTeam'][0])
+    public function attachPackToGroupAsync($packId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachPackToGroup'][0])
     {
-        return $this->attachPackToTeamAsyncWithHttpInfo($packId, $packTeamParams, $contentType)
+        return $this->attachPackToGroupAsyncWithHttpInfo($packId, $permitPackGroupRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1134,21 +1129,21 @@ class PackApi
     }
 
     /**
-     * Operation attachPackToTeamAsyncWithHttpInfo
+     * Operation attachPackToGroupAsyncWithHttpInfo
      *
-     * Attach a team to pack
+     * Attach a group to pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The pack group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachPackToTeamAsyncWithHttpInfo($packId, $packTeamParams, string $contentType = self::contentTypes['attachPackToTeam'][0])
+    public function attachPackToGroupAsyncWithHttpInfo($packId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachPackToGroup'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachPackToTeamRequest($packId, $packTeamParams, $contentType);
+        $request = $this->attachPackToGroupRequest($packId, $permitPackGroupRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1187,34 +1182,34 @@ class PackApi
     }
 
     /**
-     * Create request for operation 'attachPackToTeam'
+     * Create request for operation 'attachPackToGroup'
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The pack group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachPackToTeamRequest($packId, $packTeamParams, string $contentType = self::contentTypes['attachPackToTeam'][0])
+    public function attachPackToGroupRequest($packId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachPackToGroup'][0])
     {
 
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $packId when calling attachPackToTeam'
+                'Missing the required parameter $packId when calling attachPackToGroup'
             );
         }
 
-        // verify the required parameter 'packTeamParams' is set
-        if ($packTeamParams === null || (is_array($packTeamParams) && count($packTeamParams) === 0)) {
+        // verify the required parameter 'permitPackGroupRequest' is set
+        if ($permitPackGroupRequest === null || (is_array($permitPackGroupRequest) && count($permitPackGroupRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $packTeamParams when calling attachPackToTeam'
+                'Missing the required parameter $permitPackGroupRequest when calling attachPackToGroup'
             );
         }
 
 
-        $resourcePath = '/packs/{pack_id}/teams';
+        $resourcePath = '/packs/{pack_id}/groups';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -1240,12 +1235,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($packTeamParams)) {
+        if (isset($permitPackGroupRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($packTeamParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitPackGroupRequest));
             } else {
-                $httpBody = $packTeamParams;
+                $httpBody = $permitPackGroupRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -1271,11 +1266,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1317,16 +1307,16 @@ class PackApi
      * Attach a user to pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The user data to attach (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The pack user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachPackToUser($packId, $packUserParams, string $contentType = self::contentTypes['attachPackToUser'][0])
+    public function attachPackToUser($packId, $permitPackUserRequest, string $contentType = self::contentTypes['attachPackToUser'][0])
     {
-        list($response) = $this->attachPackToUserWithHttpInfo($packId, $packUserParams, $contentType);
+        list($response) = $this->attachPackToUserWithHttpInfo($packId, $permitPackUserRequest, $contentType);
         return $response;
     }
 
@@ -1336,16 +1326,16 @@ class PackApi
      * Attach a user to pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The user data to attach (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The pack user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachPackToUserWithHttpInfo($packId, $packUserParams, string $contentType = self::contentTypes['attachPackToUser'][0])
+    public function attachPackToUserWithHttpInfo($packId, $permitPackUserRequest, string $contentType = self::contentTypes['attachPackToUser'][0])
     {
-        $request = $this->attachPackToUserRequest($packId, $packUserParams, $contentType);
+        $request = $this->attachPackToUserRequest($packId, $permitPackUserRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1384,6 +1374,33 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -1519,33 +1536,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -1612,6 +1602,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -1652,14 +1650,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1671,15 +1661,15 @@ class PackApi
      * Attach a user to pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The user data to attach (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The pack user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachPackToUserAsync($packId, $packUserParams, string $contentType = self::contentTypes['attachPackToUser'][0])
+    public function attachPackToUserAsync($packId, $permitPackUserRequest, string $contentType = self::contentTypes['attachPackToUser'][0])
     {
-        return $this->attachPackToUserAsyncWithHttpInfo($packId, $packUserParams, $contentType)
+        return $this->attachPackToUserAsyncWithHttpInfo($packId, $permitPackUserRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1693,16 +1683,16 @@ class PackApi
      * Attach a user to pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The user data to attach (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The pack user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachPackToUserAsyncWithHttpInfo($packId, $packUserParams, string $contentType = self::contentTypes['attachPackToUser'][0])
+    public function attachPackToUserAsyncWithHttpInfo($packId, $permitPackUserRequest, string $contentType = self::contentTypes['attachPackToUser'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachPackToUserRequest($packId, $packUserParams, $contentType);
+        $request = $this->attachPackToUserRequest($packId, $permitPackUserRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1744,13 +1734,13 @@ class PackApi
      * Create request for operation 'attachPackToUser'
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The user data to attach (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The pack user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachPackToUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachPackToUserRequest($packId, $packUserParams, string $contentType = self::contentTypes['attachPackToUser'][0])
+    public function attachPackToUserRequest($packId, $permitPackUserRequest, string $contentType = self::contentTypes['attachPackToUser'][0])
     {
 
         // verify the required parameter 'packId' is set
@@ -1760,10 +1750,10 @@ class PackApi
             );
         }
 
-        // verify the required parameter 'packUserParams' is set
-        if ($packUserParams === null || (is_array($packUserParams) && count($packUserParams) === 0)) {
+        // verify the required parameter 'permitPackUserRequest' is set
+        if ($permitPackUserRequest === null || (is_array($permitPackUserRequest) && count($permitPackUserRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $packUserParams when calling attachPackToUser'
+                'Missing the required parameter $permitPackUserRequest when calling attachPackToUser'
             );
         }
 
@@ -1794,12 +1784,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($packUserParams)) {
+        if (isset($permitPackUserRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($packUserParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitPackUserRequest));
             } else {
-                $httpBody = $packUserParams;
+                $httpBody = $permitPackUserRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -1825,11 +1815,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1871,16 +1856,16 @@ class PackApi
      * Create a new build for a pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\Build $build The build data to create (required)
+     * @param  \Kleister\Model\CreateBuildRequest $createBuildRequest The build data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Build|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function createBuild($packId, $build, string $contentType = self::contentTypes['createBuild'][0])
+    public function createBuild($packId, $createBuildRequest, string $contentType = self::contentTypes['createBuild'][0])
     {
-        list($response) = $this->createBuildWithHttpInfo($packId, $build, $contentType);
+        list($response) = $this->createBuildWithHttpInfo($packId, $createBuildRequest, $contentType);
         return $response;
     }
 
@@ -1890,16 +1875,16 @@ class PackApi
      * Create a new build for a pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\Build $build The build data to create (required)
+     * @param  \Kleister\Model\CreateBuildRequest $createBuildRequest The build data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Build|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createBuildWithHttpInfo($packId, $build, string $contentType = self::contentTypes['createBuild'][0])
+    public function createBuildWithHttpInfo($packId, $createBuildRequest, string $contentType = self::contentTypes['createBuild'][0])
     {
-        $request = $this->createBuildRequest($packId, $build, $contentType);
+        $request = $this->createBuildRequest($packId, $createBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1964,6 +1949,33 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
                 case 403:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
@@ -2046,33 +2058,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -2139,6 +2124,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -2171,14 +2164,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -2190,15 +2175,15 @@ class PackApi
      * Create a new build for a pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\Build $build The build data to create (required)
+     * @param  \Kleister\Model\CreateBuildRequest $createBuildRequest The build data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createBuildAsync($packId, $build, string $contentType = self::contentTypes['createBuild'][0])
+    public function createBuildAsync($packId, $createBuildRequest, string $contentType = self::contentTypes['createBuild'][0])
     {
-        return $this->createBuildAsyncWithHttpInfo($packId, $build, $contentType)
+        return $this->createBuildAsyncWithHttpInfo($packId, $createBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2212,16 +2197,16 @@ class PackApi
      * Create a new build for a pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\Build $build The build data to create (required)
+     * @param  \Kleister\Model\CreateBuildRequest $createBuildRequest The build data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createBuildAsyncWithHttpInfo($packId, $build, string $contentType = self::contentTypes['createBuild'][0])
+    public function createBuildAsyncWithHttpInfo($packId, $createBuildRequest, string $contentType = self::contentTypes['createBuild'][0])
     {
         $returnType = '\Kleister\Model\Build';
-        $request = $this->createBuildRequest($packId, $build, $contentType);
+        $request = $this->createBuildRequest($packId, $createBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2263,13 +2248,13 @@ class PackApi
      * Create request for operation 'createBuild'
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\Build $build The build data to create (required)
+     * @param  \Kleister\Model\CreateBuildRequest $createBuildRequest The build data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createBuildRequest($packId, $build, string $contentType = self::contentTypes['createBuild'][0])
+    public function createBuildRequest($packId, $createBuildRequest, string $contentType = self::contentTypes['createBuild'][0])
     {
 
         // verify the required parameter 'packId' is set
@@ -2279,10 +2264,10 @@ class PackApi
             );
         }
 
-        // verify the required parameter 'build' is set
-        if ($build === null || (is_array($build) && count($build) === 0)) {
+        // verify the required parameter 'createBuildRequest' is set
+        if ($createBuildRequest === null || (is_array($createBuildRequest) && count($createBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $build when calling createBuild'
+                'Missing the required parameter $createBuildRequest when calling createBuild'
             );
         }
 
@@ -2313,12 +2298,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($build)) {
+        if (isset($createBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($build));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($createBuildRequest));
             } else {
-                $httpBody = $build;
+                $httpBody = $createBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -2344,11 +2329,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -2389,16 +2369,16 @@ class PackApi
      *
      * Create a new pack
      *
-     * @param  \Kleister\Model\Pack $pack The pack data to create (required)
+     * @param  \Kleister\Model\CreatePackRequest $createPackRequest The pack data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPack'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Pack|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function createPack($pack, string $contentType = self::contentTypes['createPack'][0])
+    public function createPack($createPackRequest, string $contentType = self::contentTypes['createPack'][0])
     {
-        list($response) = $this->createPackWithHttpInfo($pack, $contentType);
+        list($response) = $this->createPackWithHttpInfo($createPackRequest, $contentType);
         return $response;
     }
 
@@ -2407,16 +2387,16 @@ class PackApi
      *
      * Create a new pack
      *
-     * @param  \Kleister\Model\Pack $pack The pack data to create (required)
+     * @param  \Kleister\Model\CreatePackRequest $createPackRequest The pack data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPack'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Pack|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createPackWithHttpInfo($pack, string $contentType = self::contentTypes['createPack'][0])
+    public function createPackWithHttpInfo($createPackRequest, string $contentType = self::contentTypes['createPack'][0])
     {
-        $request = $this->createPackRequest($pack, $contentType);
+        $request = $this->createPackRequest($createPackRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2481,6 +2461,33 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
                 case 403:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
@@ -2536,33 +2543,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -2629,6 +2609,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -2653,14 +2641,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -2671,15 +2651,15 @@ class PackApi
      *
      * Create a new pack
      *
-     * @param  \Kleister\Model\Pack $pack The pack data to create (required)
+     * @param  \Kleister\Model\CreatePackRequest $createPackRequest The pack data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createPackAsync($pack, string $contentType = self::contentTypes['createPack'][0])
+    public function createPackAsync($createPackRequest, string $contentType = self::contentTypes['createPack'][0])
     {
-        return $this->createPackAsyncWithHttpInfo($pack, $contentType)
+        return $this->createPackAsyncWithHttpInfo($createPackRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2692,16 +2672,16 @@ class PackApi
      *
      * Create a new pack
      *
-     * @param  \Kleister\Model\Pack $pack The pack data to create (required)
+     * @param  \Kleister\Model\CreatePackRequest $createPackRequest The pack data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createPackAsyncWithHttpInfo($pack, string $contentType = self::contentTypes['createPack'][0])
+    public function createPackAsyncWithHttpInfo($createPackRequest, string $contentType = self::contentTypes['createPack'][0])
     {
         $returnType = '\Kleister\Model\Pack';
-        $request = $this->createPackRequest($pack, $contentType);
+        $request = $this->createPackRequest($createPackRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2742,19 +2722,19 @@ class PackApi
     /**
      * Create request for operation 'createPack'
      *
-     * @param  \Kleister\Model\Pack $pack The pack data to create (required)
+     * @param  \Kleister\Model\CreatePackRequest $createPackRequest The pack data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createPackRequest($pack, string $contentType = self::contentTypes['createPack'][0])
+    public function createPackRequest($createPackRequest, string $contentType = self::contentTypes['createPack'][0])
     {
 
-        // verify the required parameter 'pack' is set
-        if ($pack === null || (is_array($pack) && count($pack) === 0)) {
+        // verify the required parameter 'createPackRequest' is set
+        if ($createPackRequest === null || (is_array($createPackRequest) && count($createPackRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $pack when calling createPack'
+                'Missing the required parameter $createPackRequest when calling createPack'
             );
         }
 
@@ -2777,12 +2757,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($pack)) {
+        if (isset($createPackRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($pack));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($createPackRequest));
             } else {
-                $httpBody = $pack;
+                $httpBody = $createPackRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -2808,11 +2788,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -2859,7 +2834,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function deleteBuild($packId, $buildId, string $contentType = self::contentTypes['deleteBuild'][0])
     {
@@ -2878,7 +2853,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function deleteBuildWithHttpInfo($packId, $buildId, string $contentType = self::contentTypes['deleteBuild'][0])
     {
@@ -3055,33 +3030,6 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Notification';
@@ -3147,14 +3095,6 @@ class PackApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -3328,11 +3268,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -3375,16 +3310,16 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $buildVersionParams The build version data to unlink (required)
+     * @param  \Kleister\Model\AttachBuildToVersionRequest $attachBuildToVersionRequest The build version data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteBuildFromVersion'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteBuildFromVersion($packId, $buildId, $buildVersionParams, string $contentType = self::contentTypes['deleteBuildFromVersion'][0])
+    public function deleteBuildFromVersion($packId, $buildId, $attachBuildToVersionRequest, string $contentType = self::contentTypes['deleteBuildFromVersion'][0])
     {
-        list($response) = $this->deleteBuildFromVersionWithHttpInfo($packId, $buildId, $buildVersionParams, $contentType);
+        list($response) = $this->deleteBuildFromVersionWithHttpInfo($packId, $buildId, $attachBuildToVersionRequest, $contentType);
         return $response;
     }
 
@@ -3395,16 +3330,16 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $buildVersionParams The build version data to unlink (required)
+     * @param  \Kleister\Model\AttachBuildToVersionRequest $attachBuildToVersionRequest The build version data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteBuildFromVersion'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteBuildFromVersionWithHttpInfo($packId, $buildId, $buildVersionParams, string $contentType = self::contentTypes['deleteBuildFromVersion'][0])
+    public function deleteBuildFromVersionWithHttpInfo($packId, $buildId, $attachBuildToVersionRequest, string $contentType = self::contentTypes['deleteBuildFromVersion'][0])
     {
-        $request = $this->deleteBuildFromVersionRequest($packId, $buildId, $buildVersionParams, $contentType);
+        $request = $this->deleteBuildFromVersionRequest($packId, $buildId, $attachBuildToVersionRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -3443,6 +3378,33 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -3551,33 +3513,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -3644,6 +3579,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -3676,14 +3619,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -3696,15 +3631,15 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $buildVersionParams The build version data to unlink (required)
+     * @param  \Kleister\Model\AttachBuildToVersionRequest $attachBuildToVersionRequest The build version data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteBuildFromVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteBuildFromVersionAsync($packId, $buildId, $buildVersionParams, string $contentType = self::contentTypes['deleteBuildFromVersion'][0])
+    public function deleteBuildFromVersionAsync($packId, $buildId, $attachBuildToVersionRequest, string $contentType = self::contentTypes['deleteBuildFromVersion'][0])
     {
-        return $this->deleteBuildFromVersionAsyncWithHttpInfo($packId, $buildId, $buildVersionParams, $contentType)
+        return $this->deleteBuildFromVersionAsyncWithHttpInfo($packId, $buildId, $attachBuildToVersionRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -3719,16 +3654,16 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $buildVersionParams The build version data to unlink (required)
+     * @param  \Kleister\Model\AttachBuildToVersionRequest $attachBuildToVersionRequest The build version data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteBuildFromVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteBuildFromVersionAsyncWithHttpInfo($packId, $buildId, $buildVersionParams, string $contentType = self::contentTypes['deleteBuildFromVersion'][0])
+    public function deleteBuildFromVersionAsyncWithHttpInfo($packId, $buildId, $attachBuildToVersionRequest, string $contentType = self::contentTypes['deleteBuildFromVersion'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteBuildFromVersionRequest($packId, $buildId, $buildVersionParams, $contentType);
+        $request = $this->deleteBuildFromVersionRequest($packId, $buildId, $attachBuildToVersionRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -3771,13 +3706,13 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\BuildVersionParams $buildVersionParams The build version data to unlink (required)
+     * @param  \Kleister\Model\AttachBuildToVersionRequest $attachBuildToVersionRequest The build version data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteBuildFromVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteBuildFromVersionRequest($packId, $buildId, $buildVersionParams, string $contentType = self::contentTypes['deleteBuildFromVersion'][0])
+    public function deleteBuildFromVersionRequest($packId, $buildId, $attachBuildToVersionRequest, string $contentType = self::contentTypes['deleteBuildFromVersion'][0])
     {
 
         // verify the required parameter 'packId' is set
@@ -3794,10 +3729,10 @@ class PackApi
             );
         }
 
-        // verify the required parameter 'buildVersionParams' is set
-        if ($buildVersionParams === null || (is_array($buildVersionParams) && count($buildVersionParams) === 0)) {
+        // verify the required parameter 'attachBuildToVersionRequest' is set
+        if ($attachBuildToVersionRequest === null || (is_array($attachBuildToVersionRequest) && count($attachBuildToVersionRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $buildVersionParams when calling deleteBuildFromVersion'
+                'Missing the required parameter $attachBuildToVersionRequest when calling deleteBuildFromVersion'
             );
         }
 
@@ -3836,12 +3771,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($buildVersionParams)) {
+        if (isset($attachBuildToVersionRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($buildVersionParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachBuildToVersionRequest));
             } else {
-                $httpBody = $buildVersionParams;
+                $httpBody = $attachBuildToVersionRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -3867,11 +3802,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -3917,7 +3847,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function deletePack($packId, string $contentType = self::contentTypes['deletePack'][0])
     {
@@ -3935,7 +3865,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function deletePackWithHttpInfo($packId, string $contentType = self::contentTypes['deletePack'][0])
     {
@@ -4112,33 +4042,6 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Notification';
@@ -4204,14 +4107,6 @@ class PackApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -4367,11 +4262,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -4408,40 +4298,40 @@ class PackApi
     }
 
     /**
-     * Operation deletePackFromTeam
+     * Operation deletePackFromGroup
      *
-     * Unlink a team from pack
+     * Unlink a group from pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The pack team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The pack group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deletePackFromTeam($packId, $packTeamParams, string $contentType = self::contentTypes['deletePackFromTeam'][0])
+    public function deletePackFromGroup($packId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deletePackFromGroup'][0])
     {
-        list($response) = $this->deletePackFromTeamWithHttpInfo($packId, $packTeamParams, $contentType);
+        list($response) = $this->deletePackFromGroupWithHttpInfo($packId, $deletePackFromGroupRequest, $contentType);
         return $response;
     }
 
     /**
-     * Operation deletePackFromTeamWithHttpInfo
+     * Operation deletePackFromGroupWithHttpInfo
      *
-     * Unlink a team from pack
+     * Unlink a group from pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The pack team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The pack group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deletePackFromTeamWithHttpInfo($packId, $packTeamParams, string $contentType = self::contentTypes['deletePackFromTeam'][0])
+    public function deletePackFromGroupWithHttpInfo($packId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deletePackFromGroup'][0])
     {
-        $request = $this->deletePackFromTeamRequest($packId, $packTeamParams, $contentType);
+        $request = $this->deletePackFromGroupRequest($packId, $deletePackFromGroupRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -4480,6 +4370,33 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -4588,33 +4505,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -4681,6 +4571,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -4713,34 +4611,26 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
     }
 
     /**
-     * Operation deletePackFromTeamAsync
+     * Operation deletePackFromGroupAsync
      *
-     * Unlink a team from pack
+     * Unlink a group from pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The pack team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The pack group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deletePackFromTeamAsync($packId, $packTeamParams, string $contentType = self::contentTypes['deletePackFromTeam'][0])
+    public function deletePackFromGroupAsync($packId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deletePackFromGroup'][0])
     {
-        return $this->deletePackFromTeamAsyncWithHttpInfo($packId, $packTeamParams, $contentType)
+        return $this->deletePackFromGroupAsyncWithHttpInfo($packId, $deletePackFromGroupRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -4749,21 +4639,21 @@ class PackApi
     }
 
     /**
-     * Operation deletePackFromTeamAsyncWithHttpInfo
+     * Operation deletePackFromGroupAsyncWithHttpInfo
      *
-     * Unlink a team from pack
+     * Unlink a group from pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The pack team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The pack group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deletePackFromTeamAsyncWithHttpInfo($packId, $packTeamParams, string $contentType = self::contentTypes['deletePackFromTeam'][0])
+    public function deletePackFromGroupAsyncWithHttpInfo($packId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deletePackFromGroup'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deletePackFromTeamRequest($packId, $packTeamParams, $contentType);
+        $request = $this->deletePackFromGroupRequest($packId, $deletePackFromGroupRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -4802,34 +4692,34 @@ class PackApi
     }
 
     /**
-     * Create request for operation 'deletePackFromTeam'
+     * Create request for operation 'deletePackFromGroup'
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The pack team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The pack group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deletePackFromTeamRequest($packId, $packTeamParams, string $contentType = self::contentTypes['deletePackFromTeam'][0])
+    public function deletePackFromGroupRequest($packId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deletePackFromGroup'][0])
     {
 
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $packId when calling deletePackFromTeam'
+                'Missing the required parameter $packId when calling deletePackFromGroup'
             );
         }
 
-        // verify the required parameter 'packTeamParams' is set
-        if ($packTeamParams === null || (is_array($packTeamParams) && count($packTeamParams) === 0)) {
+        // verify the required parameter 'deletePackFromGroupRequest' is set
+        if ($deletePackFromGroupRequest === null || (is_array($deletePackFromGroupRequest) && count($deletePackFromGroupRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $packTeamParams when calling deletePackFromTeam'
+                'Missing the required parameter $deletePackFromGroupRequest when calling deletePackFromGroup'
             );
         }
 
 
-        $resourcePath = '/packs/{pack_id}/teams';
+        $resourcePath = '/packs/{pack_id}/groups';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -4855,12 +4745,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($packTeamParams)) {
+        if (isset($deletePackFromGroupRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($packTeamParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($deletePackFromGroupRequest));
             } else {
-                $httpBody = $packTeamParams;
+                $httpBody = $deletePackFromGroupRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -4886,11 +4776,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -4932,16 +4817,16 @@ class PackApi
      * Unlink a user from pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The pack user data to unlink (required)
+     * @param  \Kleister\Model\DeletePackFromUserRequest $deletePackFromUserRequest The pack user data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deletePackFromUser($packId, $packUserParams, string $contentType = self::contentTypes['deletePackFromUser'][0])
+    public function deletePackFromUser($packId, $deletePackFromUserRequest, string $contentType = self::contentTypes['deletePackFromUser'][0])
     {
-        list($response) = $this->deletePackFromUserWithHttpInfo($packId, $packUserParams, $contentType);
+        list($response) = $this->deletePackFromUserWithHttpInfo($packId, $deletePackFromUserRequest, $contentType);
         return $response;
     }
 
@@ -4951,16 +4836,16 @@ class PackApi
      * Unlink a user from pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The pack user data to unlink (required)
+     * @param  \Kleister\Model\DeletePackFromUserRequest $deletePackFromUserRequest The pack user data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deletePackFromUserWithHttpInfo($packId, $packUserParams, string $contentType = self::contentTypes['deletePackFromUser'][0])
+    public function deletePackFromUserWithHttpInfo($packId, $deletePackFromUserRequest, string $contentType = self::contentTypes['deletePackFromUser'][0])
     {
-        $request = $this->deletePackFromUserRequest($packId, $packUserParams, $contentType);
+        $request = $this->deletePackFromUserRequest($packId, $deletePackFromUserRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -4999,6 +4884,33 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -5107,33 +5019,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -5200,6 +5085,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -5232,14 +5125,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -5251,15 +5136,15 @@ class PackApi
      * Unlink a user from pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The pack user data to unlink (required)
+     * @param  \Kleister\Model\DeletePackFromUserRequest $deletePackFromUserRequest The pack user data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deletePackFromUserAsync($packId, $packUserParams, string $contentType = self::contentTypes['deletePackFromUser'][0])
+    public function deletePackFromUserAsync($packId, $deletePackFromUserRequest, string $contentType = self::contentTypes['deletePackFromUser'][0])
     {
-        return $this->deletePackFromUserAsyncWithHttpInfo($packId, $packUserParams, $contentType)
+        return $this->deletePackFromUserAsyncWithHttpInfo($packId, $deletePackFromUserRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -5273,16 +5158,16 @@ class PackApi
      * Unlink a user from pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The pack user data to unlink (required)
+     * @param  \Kleister\Model\DeletePackFromUserRequest $deletePackFromUserRequest The pack user data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deletePackFromUserAsyncWithHttpInfo($packId, $packUserParams, string $contentType = self::contentTypes['deletePackFromUser'][0])
+    public function deletePackFromUserAsyncWithHttpInfo($packId, $deletePackFromUserRequest, string $contentType = self::contentTypes['deletePackFromUser'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deletePackFromUserRequest($packId, $packUserParams, $contentType);
+        $request = $this->deletePackFromUserRequest($packId, $deletePackFromUserRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -5324,13 +5209,13 @@ class PackApi
      * Create request for operation 'deletePackFromUser'
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The pack user data to unlink (required)
+     * @param  \Kleister\Model\DeletePackFromUserRequest $deletePackFromUserRequest The pack user data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackFromUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deletePackFromUserRequest($packId, $packUserParams, string $contentType = self::contentTypes['deletePackFromUser'][0])
+    public function deletePackFromUserRequest($packId, $deletePackFromUserRequest, string $contentType = self::contentTypes['deletePackFromUser'][0])
     {
 
         // verify the required parameter 'packId' is set
@@ -5340,10 +5225,10 @@ class PackApi
             );
         }
 
-        // verify the required parameter 'packUserParams' is set
-        if ($packUserParams === null || (is_array($packUserParams) && count($packUserParams) === 0)) {
+        // verify the required parameter 'deletePackFromUserRequest' is set
+        if ($deletePackFromUserRequest === null || (is_array($deletePackFromUserRequest) && count($deletePackFromUserRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $packUserParams when calling deletePackFromUser'
+                'Missing the required parameter $deletePackFromUserRequest when calling deletePackFromUser'
             );
         }
 
@@ -5374,12 +5259,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($packUserParams)) {
+        if (isset($deletePackFromUserRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($packUserParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($deletePackFromUserRequest));
             } else {
-                $httpBody = $packUserParams;
+                $httpBody = $deletePackFromUserRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -5405,11 +5290,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -5453,17 +5333,17 @@ class PackApi
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listBuildVersions'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\BuildVersions|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListBuildVersions200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listBuildVersions($packId, $buildId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuildVersions'][0])
+    public function listBuildVersions($packId, $buildId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listBuildVersions'][0])
     {
         list($response) = $this->listBuildVersionsWithHttpInfo($packId, $buildId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -5477,17 +5357,17 @@ class PackApi
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listBuildVersions'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\BuildVersions|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListBuildVersions200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listBuildVersionsWithHttpInfo($packId, $buildId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuildVersions'][0])
+    public function listBuildVersionsWithHttpInfo($packId, $buildId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listBuildVersions'][0])
     {
         $request = $this->listBuildVersionsRequest($packId, $buildId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -5528,11 +5408,11 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\BuildVersions' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListBuildVersions200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\BuildVersions' !== 'string') {
+                        if ('\Kleister\Model\ListBuildVersions200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -5550,7 +5430,7 @@ class PackApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\BuildVersions', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListBuildVersions200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -5635,36 +5515,9 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\BuildVersions';
+            $returnType = '\Kleister\Model\ListBuildVersions200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -5697,7 +5550,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\BuildVersions',
+                        '\Kleister\Model\ListBuildVersions200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5726,14 +5579,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -5747,16 +5592,16 @@ class PackApi
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listBuildVersions'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listBuildVersionsAsync($packId, $buildId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuildVersions'][0])
+    public function listBuildVersionsAsync($packId, $buildId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listBuildVersions'][0])
     {
         return $this->listBuildVersionsAsyncWithHttpInfo($packId, $buildId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -5774,18 +5619,18 @@ class PackApi
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listBuildVersions'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listBuildVersionsAsyncWithHttpInfo($packId, $buildId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuildVersions'][0])
+    public function listBuildVersionsAsyncWithHttpInfo($packId, $buildId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listBuildVersions'][0])
     {
-        $returnType = '\Kleister\Model\BuildVersions';
+        $returnType = '\Kleister\Model\ListBuildVersions200Response';
         $request = $this->listBuildVersionsRequest($packId, $buildId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -5830,16 +5675,16 @@ class PackApi
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listBuildVersions'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listBuildVersionsRequest($packId, $buildId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuildVersions'][0])
+    public function listBuildVersionsRequest($packId, $buildId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listBuildVersions'][0])
     {
 
         // verify the required parameter 'packId' is set
@@ -5965,11 +5810,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -6012,17 +5852,17 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listBuilds'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Builds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listBuilds($packId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuilds'][0])
+    public function listBuilds($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listBuilds'][0])
     {
         list($response) = $this->listBuildsWithHttpInfo($packId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -6035,17 +5875,17 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listBuilds'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Builds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listBuildsWithHttpInfo($packId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuilds'][0])
+    public function listBuildsWithHttpInfo($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listBuilds'][0])
     {
         $request = $this->listBuildsRequest($packId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -6086,11 +5926,11 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Builds' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListBuilds200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Builds' !== 'string') {
+                        if ('\Kleister\Model\ListBuilds200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -6108,7 +5948,7 @@ class PackApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Builds', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListBuilds200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -6193,36 +6033,9 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\Builds';
+            $returnType = '\Kleister\Model\ListBuilds200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -6255,7 +6068,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\Builds',
+                        '\Kleister\Model\ListBuilds200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6284,14 +6097,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -6304,16 +6109,16 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listBuilds'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listBuildsAsync($packId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuilds'][0])
+    public function listBuildsAsync($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listBuilds'][0])
     {
         return $this->listBuildsAsyncWithHttpInfo($packId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -6330,18 +6135,18 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listBuilds'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listBuildsAsyncWithHttpInfo($packId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuilds'][0])
+    public function listBuildsAsyncWithHttpInfo($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listBuilds'][0])
     {
-        $returnType = '\Kleister\Model\Builds';
+        $returnType = '\Kleister\Model\ListBuilds200Response';
         $request = $this->listBuildsRequest($packId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -6385,16 +6190,16 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
-     * @param  int $limit Paging limit (optional)
-     * @param  int $offset Paging offset (optional)
+     * @param  int $limit Paging limit (optional, default to 100)
+     * @param  int $offset Paging offset (optional, default to 0)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listBuilds'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listBuildsRequest($packId, $search = null, $sort = 'name', $order = 'asc', $limit = null, $offset = null, string $contentType = self::contentTypes['listBuilds'][0])
+    public function listBuildsRequest($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listBuilds'][0])
     {
 
         // verify the required parameter 'packId' is set
@@ -6505,11 +6310,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -6546,48 +6346,48 @@ class PackApi
     }
 
     /**
-     * Operation listPackTeams
+     * Operation listPackGroups
      *
-     * Fetch all teams attached to pack
+     * Fetch all groups attached to pack
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listPackTeams'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listPackGroups'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\PackTeams|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListPackGroups200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listPackTeams($packId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackTeams'][0])
+    public function listPackGroups($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackGroups'][0])
     {
-        list($response) = $this->listPackTeamsWithHttpInfo($packId, $search, $sort, $order, $limit, $offset, $contentType);
+        list($response) = $this->listPackGroupsWithHttpInfo($packId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
     }
 
     /**
-     * Operation listPackTeamsWithHttpInfo
+     * Operation listPackGroupsWithHttpInfo
      *
-     * Fetch all teams attached to pack
+     * Fetch all groups attached to pack
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listPackTeams'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listPackGroups'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\PackTeams|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListPackGroups200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listPackTeamsWithHttpInfo($packId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackTeams'][0])
+    public function listPackGroupsWithHttpInfo($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackGroups'][0])
     {
-        $request = $this->listPackTeamsRequest($packId, $search, $sort, $order, $limit, $offset, $contentType);
+        $request = $this->listPackGroupsRequest($packId, $search, $sort, $order, $limit, $offset, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -6626,11 +6426,11 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\PackTeams' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListPackGroups200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\PackTeams' !== 'string') {
+                        if ('\Kleister\Model\ListPackGroups200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -6648,7 +6448,7 @@ class PackApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\PackTeams', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListPackGroups200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -6733,36 +6533,9 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\PackTeams';
+            $returnType = '\Kleister\Model\ListPackGroups200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -6795,7 +6568,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\PackTeams',
+                        '\Kleister\Model\ListPackGroups200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6824,38 +6597,30 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
     }
 
     /**
-     * Operation listPackTeamsAsync
+     * Operation listPackGroupsAsync
      *
-     * Fetch all teams attached to pack
+     * Fetch all groups attached to pack
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listPackTeams'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listPackGroups'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listPackTeamsAsync($packId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackTeams'][0])
+    public function listPackGroupsAsync($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackGroups'][0])
     {
-        return $this->listPackTeamsAsyncWithHttpInfo($packId, $search, $sort, $order, $limit, $offset, $contentType)
+        return $this->listPackGroupsAsyncWithHttpInfo($packId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -6864,25 +6629,25 @@ class PackApi
     }
 
     /**
-     * Operation listPackTeamsAsyncWithHttpInfo
+     * Operation listPackGroupsAsyncWithHttpInfo
      *
-     * Fetch all teams attached to pack
+     * Fetch all groups attached to pack
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listPackTeams'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listPackGroups'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listPackTeamsAsyncWithHttpInfo($packId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackTeams'][0])
+    public function listPackGroupsAsyncWithHttpInfo($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackGroups'][0])
     {
-        $returnType = '\Kleister\Model\PackTeams';
-        $request = $this->listPackTeamsRequest($packId, $search, $sort, $order, $limit, $offset, $contentType);
+        $returnType = '\Kleister\Model\ListPackGroups200Response';
+        $request = $this->listPackGroupsRequest($packId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -6921,26 +6686,26 @@ class PackApi
     }
 
     /**
-     * Create request for operation 'listPackTeams'
+     * Create request for operation 'listPackGroups'
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listPackTeams'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listPackGroups'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listPackTeamsRequest($packId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackTeams'][0])
+    public function listPackGroupsRequest($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackGroups'][0])
     {
 
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $packId when calling listPackTeams'
+                'Missing the required parameter $packId when calling listPackGroups'
             );
         }
 
@@ -6950,7 +6715,7 @@ class PackApi
 
 
 
-        $resourcePath = '/packs/{pack_id}/teams';
+        $resourcePath = '/packs/{pack_id}/groups';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -7045,11 +6810,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -7092,7 +6852,7 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7100,9 +6860,9 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\PackUsers|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListPackUsers200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listPackUsers($packId, $search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackUsers'][0])
+    public function listPackUsers($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackUsers'][0])
     {
         list($response) = $this->listPackUsersWithHttpInfo($packId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -7115,7 +6875,7 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7123,9 +6883,9 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\PackUsers|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListPackUsers200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listPackUsersWithHttpInfo($packId, $search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackUsers'][0])
+    public function listPackUsersWithHttpInfo($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackUsers'][0])
     {
         $request = $this->listPackUsersRequest($packId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -7166,11 +6926,11 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\PackUsers' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListPackUsers200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\PackUsers' !== 'string') {
+                        if ('\Kleister\Model\ListPackUsers200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -7188,7 +6948,7 @@ class PackApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\PackUsers', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListPackUsers200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -7273,36 +7033,9 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\PackUsers';
+            $returnType = '\Kleister\Model\ListPackUsers200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -7335,7 +7068,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\PackUsers',
+                        '\Kleister\Model\ListPackUsers200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7364,14 +7097,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -7384,7 +7109,7 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7393,7 +7118,7 @@ class PackApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listPackUsersAsync($packId, $search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackUsers'][0])
+    public function listPackUsersAsync($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackUsers'][0])
     {
         return $this->listPackUsersAsyncWithHttpInfo($packId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -7410,7 +7135,7 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7419,9 +7144,9 @@ class PackApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listPackUsersAsyncWithHttpInfo($packId, $search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackUsers'][0])
+    public function listPackUsersAsyncWithHttpInfo($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackUsers'][0])
     {
-        $returnType = '\Kleister\Model\PackUsers';
+        $returnType = '\Kleister\Model\ListPackUsers200Response';
         $request = $this->listPackUsersRequest($packId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -7465,7 +7190,7 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7474,7 +7199,7 @@ class PackApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listPackUsersRequest($packId, $search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackUsers'][0])
+    public function listPackUsersRequest($packId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPackUsers'][0])
     {
 
         // verify the required parameter 'packId' is set
@@ -7585,11 +7310,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -7631,7 +7351,7 @@ class PackApi
      * Fetch all available packs
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7639,9 +7359,9 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Packs|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListPacks200Response|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listPacks($search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPacks'][0])
+    public function listPacks($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPacks'][0])
     {
         list($response) = $this->listPacksWithHttpInfo($search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -7653,7 +7373,7 @@ class PackApi
      * Fetch all available packs
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7661,9 +7381,9 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Packs|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListPacks200Response|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listPacksWithHttpInfo($search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPacks'][0])
+    public function listPacksWithHttpInfo($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPacks'][0])
     {
         $request = $this->listPacksRequest($search, $sort, $order, $limit, $offset, $contentType);
 
@@ -7704,11 +7424,11 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Packs' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListPacks200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Packs' !== 'string') {
+                        if ('\Kleister\Model\ListPacks200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -7726,7 +7446,7 @@ class PackApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Packs', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListPacks200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -7784,36 +7504,9 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\Packs';
+            $returnType = '\Kleister\Model\ListPacks200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -7846,7 +7539,7 @@ class PackApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\Packs',
+                        '\Kleister\Model\ListPacks200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7867,14 +7560,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -7886,7 +7571,7 @@ class PackApi
      * Fetch all available packs
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7895,7 +7580,7 @@ class PackApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listPacksAsync($search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPacks'][0])
+    public function listPacksAsync($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPacks'][0])
     {
         return $this->listPacksAsyncWithHttpInfo($search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -7911,7 +7596,7 @@ class PackApi
      * Fetch all available packs
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7920,9 +7605,9 @@ class PackApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listPacksAsyncWithHttpInfo($search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPacks'][0])
+    public function listPacksAsyncWithHttpInfo($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPacks'][0])
     {
-        $returnType = '\Kleister\Model\Packs';
+        $returnType = '\Kleister\Model\ListPacks200Response';
         $request = $this->listPacksRequest($search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -7965,7 +7650,7 @@ class PackApi
      * Create request for operation 'listPacks'
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7974,7 +7659,7 @@ class PackApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listPacksRequest($search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPacks'][0])
+    public function listPacksRequest($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listPacks'][0])
     {
 
 
@@ -8070,11 +7755,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -8111,40 +7791,40 @@ class PackApi
     }
 
     /**
-     * Operation permitPackTeam
+     * Operation permitPackGroup
      *
-     * Update team perms for pack
+     * Update group perms for pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The pack group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function permitPackTeam($packId, $packTeamParams, string $contentType = self::contentTypes['permitPackTeam'][0])
+    public function permitPackGroup($packId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitPackGroup'][0])
     {
-        list($response) = $this->permitPackTeamWithHttpInfo($packId, $packTeamParams, $contentType);
+        list($response) = $this->permitPackGroupWithHttpInfo($packId, $permitPackGroupRequest, $contentType);
         return $response;
     }
 
     /**
-     * Operation permitPackTeamWithHttpInfo
+     * Operation permitPackGroupWithHttpInfo
      *
-     * Update team perms for pack
+     * Update group perms for pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The pack group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitPackTeamWithHttpInfo($packId, $packTeamParams, string $contentType = self::contentTypes['permitPackTeam'][0])
+    public function permitPackGroupWithHttpInfo($packId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitPackGroup'][0])
     {
-        $request = $this->permitPackTeamRequest($packId, $packTeamParams, $contentType);
+        $request = $this->permitPackGroupRequest($packId, $permitPackGroupRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -8183,6 +7863,33 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -8318,33 +8025,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -8411,6 +8091,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -8451,34 +8139,26 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
     }
 
     /**
-     * Operation permitPackTeamAsync
+     * Operation permitPackGroupAsync
      *
-     * Update team perms for pack
+     * Update group perms for pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The pack group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitPackTeamAsync($packId, $packTeamParams, string $contentType = self::contentTypes['permitPackTeam'][0])
+    public function permitPackGroupAsync($packId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitPackGroup'][0])
     {
-        return $this->permitPackTeamAsyncWithHttpInfo($packId, $packTeamParams, $contentType)
+        return $this->permitPackGroupAsyncWithHttpInfo($packId, $permitPackGroupRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -8487,21 +8167,21 @@ class PackApi
     }
 
     /**
-     * Operation permitPackTeamAsyncWithHttpInfo
+     * Operation permitPackGroupAsyncWithHttpInfo
      *
-     * Update team perms for pack
+     * Update group perms for pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The pack group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitPackTeamAsyncWithHttpInfo($packId, $packTeamParams, string $contentType = self::contentTypes['permitPackTeam'][0])
+    public function permitPackGroupAsyncWithHttpInfo($packId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitPackGroup'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->permitPackTeamRequest($packId, $packTeamParams, $contentType);
+        $request = $this->permitPackGroupRequest($packId, $permitPackGroupRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -8540,34 +8220,34 @@ class PackApi
     }
 
     /**
-     * Create request for operation 'permitPackTeam'
+     * Create request for operation 'permitPackGroup'
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackTeamParams $packTeamParams The team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The pack group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function permitPackTeamRequest($packId, $packTeamParams, string $contentType = self::contentTypes['permitPackTeam'][0])
+    public function permitPackGroupRequest($packId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitPackGroup'][0])
     {
 
         // verify the required parameter 'packId' is set
         if ($packId === null || (is_array($packId) && count($packId) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $packId when calling permitPackTeam'
+                'Missing the required parameter $packId when calling permitPackGroup'
             );
         }
 
-        // verify the required parameter 'packTeamParams' is set
-        if ($packTeamParams === null || (is_array($packTeamParams) && count($packTeamParams) === 0)) {
+        // verify the required parameter 'permitPackGroupRequest' is set
+        if ($permitPackGroupRequest === null || (is_array($permitPackGroupRequest) && count($permitPackGroupRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $packTeamParams when calling permitPackTeam'
+                'Missing the required parameter $permitPackGroupRequest when calling permitPackGroup'
             );
         }
 
 
-        $resourcePath = '/packs/{pack_id}/teams';
+        $resourcePath = '/packs/{pack_id}/groups';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -8593,12 +8273,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($packTeamParams)) {
+        if (isset($permitPackGroupRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($packTeamParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitPackGroupRequest));
             } else {
-                $httpBody = $packTeamParams;
+                $httpBody = $permitPackGroupRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -8624,11 +8304,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -8670,16 +8345,16 @@ class PackApi
      * Update user perms for pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The user data to update (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The pack user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function permitPackUser($packId, $packUserParams, string $contentType = self::contentTypes['permitPackUser'][0])
+    public function permitPackUser($packId, $permitPackUserRequest, string $contentType = self::contentTypes['permitPackUser'][0])
     {
-        list($response) = $this->permitPackUserWithHttpInfo($packId, $packUserParams, $contentType);
+        list($response) = $this->permitPackUserWithHttpInfo($packId, $permitPackUserRequest, $contentType);
         return $response;
     }
 
@@ -8689,16 +8364,16 @@ class PackApi
      * Update user perms for pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The user data to update (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The pack user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitPackUserWithHttpInfo($packId, $packUserParams, string $contentType = self::contentTypes['permitPackUser'][0])
+    public function permitPackUserWithHttpInfo($packId, $permitPackUserRequest, string $contentType = self::contentTypes['permitPackUser'][0])
     {
-        $request = $this->permitPackUserRequest($packId, $packUserParams, $contentType);
+        $request = $this->permitPackUserRequest($packId, $permitPackUserRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -8737,6 +8412,33 @@ class PackApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -8872,33 +8574,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -8965,6 +8640,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -9005,14 +8688,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -9024,15 +8699,15 @@ class PackApi
      * Update user perms for pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The user data to update (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The pack user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitPackUserAsync($packId, $packUserParams, string $contentType = self::contentTypes['permitPackUser'][0])
+    public function permitPackUserAsync($packId, $permitPackUserRequest, string $contentType = self::contentTypes['permitPackUser'][0])
     {
-        return $this->permitPackUserAsyncWithHttpInfo($packId, $packUserParams, $contentType)
+        return $this->permitPackUserAsyncWithHttpInfo($packId, $permitPackUserRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -9046,16 +8721,16 @@ class PackApi
      * Update user perms for pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The user data to update (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The pack user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitPackUserAsyncWithHttpInfo($packId, $packUserParams, string $contentType = self::contentTypes['permitPackUser'][0])
+    public function permitPackUserAsyncWithHttpInfo($packId, $permitPackUserRequest, string $contentType = self::contentTypes['permitPackUser'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->permitPackUserRequest($packId, $packUserParams, $contentType);
+        $request = $this->permitPackUserRequest($packId, $permitPackUserRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -9097,13 +8772,13 @@ class PackApi
      * Create request for operation 'permitPackUser'
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\PackUserParams $packUserParams The user data to update (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The pack user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitPackUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function permitPackUserRequest($packId, $packUserParams, string $contentType = self::contentTypes['permitPackUser'][0])
+    public function permitPackUserRequest($packId, $permitPackUserRequest, string $contentType = self::contentTypes['permitPackUser'][0])
     {
 
         // verify the required parameter 'packId' is set
@@ -9113,10 +8788,10 @@ class PackApi
             );
         }
 
-        // verify the required parameter 'packUserParams' is set
-        if ($packUserParams === null || (is_array($packUserParams) && count($packUserParams) === 0)) {
+        // verify the required parameter 'permitPackUserRequest' is set
+        if ($permitPackUserRequest === null || (is_array($permitPackUserRequest) && count($permitPackUserRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $packUserParams when calling permitPackUser'
+                'Missing the required parameter $permitPackUserRequest when calling permitPackUser'
             );
         }
 
@@ -9147,12 +8822,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($packUserParams)) {
+        if (isset($permitPackUserRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($packUserParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitPackUserRequest));
             } else {
-                $httpBody = $packUserParams;
+                $httpBody = $permitPackUserRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -9178,11 +8853,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -9229,7 +8899,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Build|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Build|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function showBuild($packId, $buildId, string $contentType = self::contentTypes['showBuild'][0])
     {
@@ -9248,7 +8918,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Build|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Build|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function showBuildWithHttpInfo($packId, $buildId, string $contentType = self::contentTypes['showBuild'][0])
     {
@@ -9398,33 +9068,6 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Build';
@@ -9482,14 +9125,6 @@ class PackApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -9663,11 +9298,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -9713,7 +9343,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Pack|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Pack|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function showPack($packId, string $contentType = self::contentTypes['showPack'][0])
     {
@@ -9731,7 +9361,7 @@ class PackApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Pack|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Pack|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function showPackWithHttpInfo($packId, string $contentType = self::contentTypes['showPack'][0])
     {
@@ -9881,33 +9511,6 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Pack';
@@ -9965,14 +9568,6 @@ class PackApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -10128,11 +9723,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -10175,16 +9765,16 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\Build $build The build data to update (required)
+     * @param  \Kleister\Model\CreateBuildRequest $createBuildRequest The build data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Build|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function updateBuild($packId, $buildId, $build, string $contentType = self::contentTypes['updateBuild'][0])
+    public function updateBuild($packId, $buildId, $createBuildRequest, string $contentType = self::contentTypes['updateBuild'][0])
     {
-        list($response) = $this->updateBuildWithHttpInfo($packId, $buildId, $build, $contentType);
+        list($response) = $this->updateBuildWithHttpInfo($packId, $buildId, $createBuildRequest, $contentType);
         return $response;
     }
 
@@ -10195,16 +9785,16 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\Build $build The build data to update (required)
+     * @param  \Kleister\Model\CreateBuildRequest $createBuildRequest The build data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Build|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updateBuildWithHttpInfo($packId, $buildId, $build, string $contentType = self::contentTypes['updateBuild'][0])
+    public function updateBuildWithHttpInfo($packId, $buildId, $createBuildRequest, string $contentType = self::contentTypes['updateBuild'][0])
     {
-        $request = $this->updateBuildRequest($packId, $buildId, $build, $contentType);
+        $request = $this->updateBuildRequest($packId, $buildId, $createBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -10266,6 +9856,33 @@ class PackApi
 
                     return [
                         ObjectSerializer::deserialize($content, '\Kleister\Model\Build', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -10351,33 +9968,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -10444,6 +10034,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -10476,14 +10074,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -10496,15 +10086,15 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\Build $build The build data to update (required)
+     * @param  \Kleister\Model\CreateBuildRequest $createBuildRequest The build data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateBuildAsync($packId, $buildId, $build, string $contentType = self::contentTypes['updateBuild'][0])
+    public function updateBuildAsync($packId, $buildId, $createBuildRequest, string $contentType = self::contentTypes['updateBuild'][0])
     {
-        return $this->updateBuildAsyncWithHttpInfo($packId, $buildId, $build, $contentType)
+        return $this->updateBuildAsyncWithHttpInfo($packId, $buildId, $createBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -10519,16 +10109,16 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\Build $build The build data to update (required)
+     * @param  \Kleister\Model\CreateBuildRequest $createBuildRequest The build data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateBuildAsyncWithHttpInfo($packId, $buildId, $build, string $contentType = self::contentTypes['updateBuild'][0])
+    public function updateBuildAsyncWithHttpInfo($packId, $buildId, $createBuildRequest, string $contentType = self::contentTypes['updateBuild'][0])
     {
         $returnType = '\Kleister\Model\Build';
-        $request = $this->updateBuildRequest($packId, $buildId, $build, $contentType);
+        $request = $this->updateBuildRequest($packId, $buildId, $createBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -10571,13 +10161,13 @@ class PackApi
      *
      * @param  string $packId A pack identifier or slug (required)
      * @param  string $buildId A build identifier or slug (required)
-     * @param  \Kleister\Model\Build $build The build data to update (required)
+     * @param  \Kleister\Model\CreateBuildRequest $createBuildRequest The build data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function updateBuildRequest($packId, $buildId, $build, string $contentType = self::contentTypes['updateBuild'][0])
+    public function updateBuildRequest($packId, $buildId, $createBuildRequest, string $contentType = self::contentTypes['updateBuild'][0])
     {
 
         // verify the required parameter 'packId' is set
@@ -10594,10 +10184,10 @@ class PackApi
             );
         }
 
-        // verify the required parameter 'build' is set
-        if ($build === null || (is_array($build) && count($build) === 0)) {
+        // verify the required parameter 'createBuildRequest' is set
+        if ($createBuildRequest === null || (is_array($createBuildRequest) && count($createBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $build when calling updateBuild'
+                'Missing the required parameter $createBuildRequest when calling updateBuild'
             );
         }
 
@@ -10636,12 +10226,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($build)) {
+        if (isset($createBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($build));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($createBuildRequest));
             } else {
-                $httpBody = $build;
+                $httpBody = $createBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -10667,11 +10257,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -10713,16 +10298,16 @@ class PackApi
      * Update a specific pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\Pack $pack The pack data to update (required)
+     * @param  \Kleister\Model\CreatePackRequest $createPackRequest The pack data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updatePack'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Pack|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function updatePack($packId, $pack, string $contentType = self::contentTypes['updatePack'][0])
+    public function updatePack($packId, $createPackRequest, string $contentType = self::contentTypes['updatePack'][0])
     {
-        list($response) = $this->updatePackWithHttpInfo($packId, $pack, $contentType);
+        list($response) = $this->updatePackWithHttpInfo($packId, $createPackRequest, $contentType);
         return $response;
     }
 
@@ -10732,16 +10317,16 @@ class PackApi
      * Update a specific pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\Pack $pack The pack data to update (required)
+     * @param  \Kleister\Model\CreatePackRequest $createPackRequest The pack data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updatePack'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Pack|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updatePackWithHttpInfo($packId, $pack, string $contentType = self::contentTypes['updatePack'][0])
+    public function updatePackWithHttpInfo($packId, $createPackRequest, string $contentType = self::contentTypes['updatePack'][0])
     {
-        $request = $this->updatePackRequest($packId, $pack, $contentType);
+        $request = $this->updatePackRequest($packId, $createPackRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -10806,6 +10391,33 @@ class PackApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
                 case 403:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
@@ -10888,33 +10500,6 @@ class PackApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -10981,6 +10566,14 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -11013,14 +10606,6 @@ class PackApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -11032,15 +10617,15 @@ class PackApi
      * Update a specific pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\Pack $pack The pack data to update (required)
+     * @param  \Kleister\Model\CreatePackRequest $createPackRequest The pack data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updatePack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updatePackAsync($packId, $pack, string $contentType = self::contentTypes['updatePack'][0])
+    public function updatePackAsync($packId, $createPackRequest, string $contentType = self::contentTypes['updatePack'][0])
     {
-        return $this->updatePackAsyncWithHttpInfo($packId, $pack, $contentType)
+        return $this->updatePackAsyncWithHttpInfo($packId, $createPackRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -11054,16 +10639,16 @@ class PackApi
      * Update a specific pack
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\Pack $pack The pack data to update (required)
+     * @param  \Kleister\Model\CreatePackRequest $createPackRequest The pack data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updatePack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updatePackAsyncWithHttpInfo($packId, $pack, string $contentType = self::contentTypes['updatePack'][0])
+    public function updatePackAsyncWithHttpInfo($packId, $createPackRequest, string $contentType = self::contentTypes['updatePack'][0])
     {
         $returnType = '\Kleister\Model\Pack';
-        $request = $this->updatePackRequest($packId, $pack, $contentType);
+        $request = $this->updatePackRequest($packId, $createPackRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -11105,13 +10690,13 @@ class PackApi
      * Create request for operation 'updatePack'
      *
      * @param  string $packId A pack identifier or slug (required)
-     * @param  \Kleister\Model\Pack $pack The pack data to update (required)
+     * @param  \Kleister\Model\CreatePackRequest $createPackRequest The pack data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updatePack'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function updatePackRequest($packId, $pack, string $contentType = self::contentTypes['updatePack'][0])
+    public function updatePackRequest($packId, $createPackRequest, string $contentType = self::contentTypes['updatePack'][0])
     {
 
         // verify the required parameter 'packId' is set
@@ -11121,10 +10706,10 @@ class PackApi
             );
         }
 
-        // verify the required parameter 'pack' is set
-        if ($pack === null || (is_array($pack) && count($pack) === 0)) {
+        // verify the required parameter 'createPackRequest' is set
+        if ($createPackRequest === null || (is_array($createPackRequest) && count($createPackRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $pack when calling updatePack'
+                'Missing the required parameter $createPackRequest when calling updatePack'
             );
         }
 
@@ -11155,12 +10740,12 @@ class PackApi
         );
 
         // for model (json/xml)
-        if (isset($pack)) {
+        if (isset($createPackRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($pack));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($createPackRequest));
             } else {
-                $httpBody = $pack;
+                $httpBody = $createPackRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -11186,11 +10771,6 @@ class PackApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());

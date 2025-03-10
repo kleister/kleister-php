@@ -141,16 +141,16 @@ class MinecraftApi
      * Attach a build to a Minecraft version
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The minecraft build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachMinecraftToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachMinecraftToBuild($minecraftId, $minecraftBuildParams, string $contentType = self::contentTypes['attachMinecraftToBuild'][0])
+    public function attachMinecraftToBuild($minecraftId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachMinecraftToBuild'][0])
     {
-        list($response) = $this->attachMinecraftToBuildWithHttpInfo($minecraftId, $minecraftBuildParams, $contentType);
+        list($response) = $this->attachMinecraftToBuildWithHttpInfo($minecraftId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -160,16 +160,16 @@ class MinecraftApi
      * Attach a build to a Minecraft version
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The minecraft build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachMinecraftToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachMinecraftToBuildWithHttpInfo($minecraftId, $minecraftBuildParams, string $contentType = self::contentTypes['attachMinecraftToBuild'][0])
+    public function attachMinecraftToBuildWithHttpInfo($minecraftId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachMinecraftToBuild'][0])
     {
-        $request = $this->attachMinecraftToBuildRequest($minecraftId, $minecraftBuildParams, $contentType);
+        $request = $this->attachMinecraftToBuildRequest($minecraftId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -208,6 +208,33 @@ class MinecraftApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -343,33 +370,6 @@ class MinecraftApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -436,6 +436,14 @@ class MinecraftApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -476,14 +484,6 @@ class MinecraftApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -495,15 +495,15 @@ class MinecraftApi
      * Attach a build to a Minecraft version
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The minecraft build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachMinecraftToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachMinecraftToBuildAsync($minecraftId, $minecraftBuildParams, string $contentType = self::contentTypes['attachMinecraftToBuild'][0])
+    public function attachMinecraftToBuildAsync($minecraftId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachMinecraftToBuild'][0])
     {
-        return $this->attachMinecraftToBuildAsyncWithHttpInfo($minecraftId, $minecraftBuildParams, $contentType)
+        return $this->attachMinecraftToBuildAsyncWithHttpInfo($minecraftId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -517,16 +517,16 @@ class MinecraftApi
      * Attach a build to a Minecraft version
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The minecraft build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachMinecraftToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachMinecraftToBuildAsyncWithHttpInfo($minecraftId, $minecraftBuildParams, string $contentType = self::contentTypes['attachMinecraftToBuild'][0])
+    public function attachMinecraftToBuildAsyncWithHttpInfo($minecraftId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachMinecraftToBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachMinecraftToBuildRequest($minecraftId, $minecraftBuildParams, $contentType);
+        $request = $this->attachMinecraftToBuildRequest($minecraftId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -568,13 +568,13 @@ class MinecraftApi
      * Create request for operation 'attachMinecraftToBuild'
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The minecraft build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachMinecraftToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachMinecraftToBuildRequest($minecraftId, $minecraftBuildParams, string $contentType = self::contentTypes['attachMinecraftToBuild'][0])
+    public function attachMinecraftToBuildRequest($minecraftId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachMinecraftToBuild'][0])
     {
 
         // verify the required parameter 'minecraftId' is set
@@ -584,10 +584,10 @@ class MinecraftApi
             );
         }
 
-        // verify the required parameter 'minecraftBuildParams' is set
-        if ($minecraftBuildParams === null || (is_array($minecraftBuildParams) && count($minecraftBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $minecraftBuildParams when calling attachMinecraftToBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling attachMinecraftToBuild'
             );
         }
 
@@ -618,12 +618,12 @@ class MinecraftApi
         );
 
         // for model (json/xml)
-        if (isset($minecraftBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($minecraftBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $minecraftBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -649,11 +649,6 @@ class MinecraftApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -695,16 +690,16 @@ class MinecraftApi
      * Unlink a build from a Minecraft version
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The minecraft build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteMinecraftFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteMinecraftFromBuild($minecraftId, $minecraftBuildParams, string $contentType = self::contentTypes['deleteMinecraftFromBuild'][0])
+    public function deleteMinecraftFromBuild($minecraftId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteMinecraftFromBuild'][0])
     {
-        list($response) = $this->deleteMinecraftFromBuildWithHttpInfo($minecraftId, $minecraftBuildParams, $contentType);
+        list($response) = $this->deleteMinecraftFromBuildWithHttpInfo($minecraftId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -714,16 +709,16 @@ class MinecraftApi
      * Unlink a build from a Minecraft version
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The minecraft build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteMinecraftFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteMinecraftFromBuildWithHttpInfo($minecraftId, $minecraftBuildParams, string $contentType = self::contentTypes['deleteMinecraftFromBuild'][0])
+    public function deleteMinecraftFromBuildWithHttpInfo($minecraftId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteMinecraftFromBuild'][0])
     {
-        $request = $this->deleteMinecraftFromBuildRequest($minecraftId, $minecraftBuildParams, $contentType);
+        $request = $this->deleteMinecraftFromBuildRequest($minecraftId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -762,6 +757,33 @@ class MinecraftApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -870,33 +892,6 @@ class MinecraftApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -963,6 +958,14 @@ class MinecraftApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -995,14 +998,6 @@ class MinecraftApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1014,15 +1009,15 @@ class MinecraftApi
      * Unlink a build from a Minecraft version
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The minecraft build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteMinecraftFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteMinecraftFromBuildAsync($minecraftId, $minecraftBuildParams, string $contentType = self::contentTypes['deleteMinecraftFromBuild'][0])
+    public function deleteMinecraftFromBuildAsync($minecraftId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteMinecraftFromBuild'][0])
     {
-        return $this->deleteMinecraftFromBuildAsyncWithHttpInfo($minecraftId, $minecraftBuildParams, $contentType)
+        return $this->deleteMinecraftFromBuildAsyncWithHttpInfo($minecraftId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1036,16 +1031,16 @@ class MinecraftApi
      * Unlink a build from a Minecraft version
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The minecraft build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteMinecraftFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteMinecraftFromBuildAsyncWithHttpInfo($minecraftId, $minecraftBuildParams, string $contentType = self::contentTypes['deleteMinecraftFromBuild'][0])
+    public function deleteMinecraftFromBuildAsyncWithHttpInfo($minecraftId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteMinecraftFromBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteMinecraftFromBuildRequest($minecraftId, $minecraftBuildParams, $contentType);
+        $request = $this->deleteMinecraftFromBuildRequest($minecraftId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1087,13 +1082,13 @@ class MinecraftApi
      * Create request for operation 'deleteMinecraftFromBuild'
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
-     * @param  \Kleister\Model\MinecraftBuildParams $minecraftBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The minecraft build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteMinecraftFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteMinecraftFromBuildRequest($minecraftId, $minecraftBuildParams, string $contentType = self::contentTypes['deleteMinecraftFromBuild'][0])
+    public function deleteMinecraftFromBuildRequest($minecraftId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteMinecraftFromBuild'][0])
     {
 
         // verify the required parameter 'minecraftId' is set
@@ -1103,10 +1098,10 @@ class MinecraftApi
             );
         }
 
-        // verify the required parameter 'minecraftBuildParams' is set
-        if ($minecraftBuildParams === null || (is_array($minecraftBuildParams) && count($minecraftBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $minecraftBuildParams when calling deleteMinecraftFromBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling deleteMinecraftFromBuild'
             );
         }
 
@@ -1137,12 +1132,12 @@ class MinecraftApi
         );
 
         // for model (json/xml)
-        if (isset($minecraftBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($minecraftBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $minecraftBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -1168,11 +1163,6 @@ class MinecraftApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1215,7 +1205,7 @@ class MinecraftApi
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1223,9 +1213,9 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\MinecraftBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListMinecraftBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listMinecraftBuilds($minecraftId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMinecraftBuilds'][0])
+    public function listMinecraftBuilds($minecraftId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMinecraftBuilds'][0])
     {
         list($response) = $this->listMinecraftBuildsWithHttpInfo($minecraftId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -1238,7 +1228,7 @@ class MinecraftApi
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1246,9 +1236,9 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\MinecraftBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListMinecraftBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listMinecraftBuildsWithHttpInfo($minecraftId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMinecraftBuilds'][0])
+    public function listMinecraftBuildsWithHttpInfo($minecraftId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMinecraftBuilds'][0])
     {
         $request = $this->listMinecraftBuildsRequest($minecraftId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -1289,11 +1279,11 @@ class MinecraftApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\MinecraftBuilds' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListMinecraftBuilds200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\MinecraftBuilds' !== 'string') {
+                        if ('\Kleister\Model\ListMinecraftBuilds200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -1311,7 +1301,7 @@ class MinecraftApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\MinecraftBuilds', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListMinecraftBuilds200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1396,36 +1386,9 @@ class MinecraftApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\MinecraftBuilds';
+            $returnType = '\Kleister\Model\ListMinecraftBuilds200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -1458,7 +1421,7 @@ class MinecraftApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\MinecraftBuilds',
+                        '\Kleister\Model\ListMinecraftBuilds200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1487,14 +1450,6 @@ class MinecraftApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1507,7 +1462,7 @@ class MinecraftApi
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1516,7 +1471,7 @@ class MinecraftApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listMinecraftBuildsAsync($minecraftId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMinecraftBuilds'][0])
+    public function listMinecraftBuildsAsync($minecraftId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMinecraftBuilds'][0])
     {
         return $this->listMinecraftBuildsAsyncWithHttpInfo($minecraftId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -1533,7 +1488,7 @@ class MinecraftApi
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1542,9 +1497,9 @@ class MinecraftApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listMinecraftBuildsAsyncWithHttpInfo($minecraftId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMinecraftBuilds'][0])
+    public function listMinecraftBuildsAsyncWithHttpInfo($minecraftId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMinecraftBuilds'][0])
     {
-        $returnType = '\Kleister\Model\MinecraftBuilds';
+        $returnType = '\Kleister\Model\ListMinecraftBuilds200Response';
         $request = $this->listMinecraftBuildsRequest($minecraftId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -1588,7 +1543,7 @@ class MinecraftApi
      *
      * @param  string $minecraftId A minecraft identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1597,7 +1552,7 @@ class MinecraftApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listMinecraftBuildsRequest($minecraftId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMinecraftBuilds'][0])
+    public function listMinecraftBuildsRequest($minecraftId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMinecraftBuilds'][0])
     {
 
         // verify the required parameter 'minecraftId' is set
@@ -1708,11 +1663,6 @@ class MinecraftApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1758,7 +1708,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Minecrafts|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListMinecrafts200Response|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function listMinecrafts($search = null, string $contentType = self::contentTypes['listMinecrafts'][0])
     {
@@ -1776,7 +1726,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Minecrafts|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListMinecrafts200Response|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function listMinecraftsWithHttpInfo($search = null, string $contentType = self::contentTypes['listMinecrafts'][0])
     {
@@ -1819,11 +1769,11 @@ class MinecraftApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Minecrafts' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListMinecrafts200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Minecrafts' !== 'string') {
+                        if ('\Kleister\Model\ListMinecrafts200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -1841,7 +1791,7 @@ class MinecraftApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Minecrafts', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListMinecrafts200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1899,36 +1849,9 @@ class MinecraftApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\Minecrafts';
+            $returnType = '\Kleister\Model\ListMinecrafts200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -1961,7 +1884,7 @@ class MinecraftApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\Minecrafts',
+                        '\Kleister\Model\ListMinecrafts200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1975,14 +1898,6 @@ class MinecraftApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -2029,7 +1944,7 @@ class MinecraftApi
      */
     public function listMinecraftsAsyncWithHttpInfo($search = null, string $contentType = self::contentTypes['listMinecrafts'][0])
     {
-        $returnType = '\Kleister\Model\Minecrafts';
+        $returnType = '\Kleister\Model\ListMinecrafts200Response';
         $request = $this->listMinecraftsRequest($search, $contentType);
 
         return $this->client
@@ -2133,11 +2048,6 @@ class MinecraftApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -2182,7 +2092,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function updateMinecraft(string $contentType = self::contentTypes['updateMinecraft'][0])
     {
@@ -2199,7 +2109,7 @@ class MinecraftApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function updateMinecraftWithHttpInfo(string $contentType = self::contentTypes['updateMinecraft'][0])
     {
@@ -2349,33 +2259,6 @@ class MinecraftApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Notification';
@@ -2433,14 +2316,6 @@ class MinecraftApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -2578,11 +2453,6 @@ class MinecraftApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());

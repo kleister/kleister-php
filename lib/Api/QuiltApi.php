@@ -141,16 +141,16 @@ class QuiltApi
      * Attach a build to a Quilt version
      *
      * @param  string $quiltId A quilt identifier or slug (required)
-     * @param  \Kleister\Model\QuiltBuildParams $quiltBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The quilt build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachQuiltToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachQuiltToBuild($quiltId, $quiltBuildParams, string $contentType = self::contentTypes['attachQuiltToBuild'][0])
+    public function attachQuiltToBuild($quiltId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachQuiltToBuild'][0])
     {
-        list($response) = $this->attachQuiltToBuildWithHttpInfo($quiltId, $quiltBuildParams, $contentType);
+        list($response) = $this->attachQuiltToBuildWithHttpInfo($quiltId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -160,16 +160,16 @@ class QuiltApi
      * Attach a build to a Quilt version
      *
      * @param  string $quiltId A quilt identifier or slug (required)
-     * @param  \Kleister\Model\QuiltBuildParams $quiltBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The quilt build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachQuiltToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachQuiltToBuildWithHttpInfo($quiltId, $quiltBuildParams, string $contentType = self::contentTypes['attachQuiltToBuild'][0])
+    public function attachQuiltToBuildWithHttpInfo($quiltId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachQuiltToBuild'][0])
     {
-        $request = $this->attachQuiltToBuildRequest($quiltId, $quiltBuildParams, $contentType);
+        $request = $this->attachQuiltToBuildRequest($quiltId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -208,6 +208,33 @@ class QuiltApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -343,33 +370,6 @@ class QuiltApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -436,6 +436,14 @@ class QuiltApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -476,14 +484,6 @@ class QuiltApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -495,15 +495,15 @@ class QuiltApi
      * Attach a build to a Quilt version
      *
      * @param  string $quiltId A quilt identifier or slug (required)
-     * @param  \Kleister\Model\QuiltBuildParams $quiltBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The quilt build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachQuiltToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachQuiltToBuildAsync($quiltId, $quiltBuildParams, string $contentType = self::contentTypes['attachQuiltToBuild'][0])
+    public function attachQuiltToBuildAsync($quiltId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachQuiltToBuild'][0])
     {
-        return $this->attachQuiltToBuildAsyncWithHttpInfo($quiltId, $quiltBuildParams, $contentType)
+        return $this->attachQuiltToBuildAsyncWithHttpInfo($quiltId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -517,16 +517,16 @@ class QuiltApi
      * Attach a build to a Quilt version
      *
      * @param  string $quiltId A quilt identifier or slug (required)
-     * @param  \Kleister\Model\QuiltBuildParams $quiltBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The quilt build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachQuiltToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachQuiltToBuildAsyncWithHttpInfo($quiltId, $quiltBuildParams, string $contentType = self::contentTypes['attachQuiltToBuild'][0])
+    public function attachQuiltToBuildAsyncWithHttpInfo($quiltId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachQuiltToBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachQuiltToBuildRequest($quiltId, $quiltBuildParams, $contentType);
+        $request = $this->attachQuiltToBuildRequest($quiltId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -568,13 +568,13 @@ class QuiltApi
      * Create request for operation 'attachQuiltToBuild'
      *
      * @param  string $quiltId A quilt identifier or slug (required)
-     * @param  \Kleister\Model\QuiltBuildParams $quiltBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The quilt build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachQuiltToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachQuiltToBuildRequest($quiltId, $quiltBuildParams, string $contentType = self::contentTypes['attachQuiltToBuild'][0])
+    public function attachQuiltToBuildRequest($quiltId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachQuiltToBuild'][0])
     {
 
         // verify the required parameter 'quiltId' is set
@@ -584,10 +584,10 @@ class QuiltApi
             );
         }
 
-        // verify the required parameter 'quiltBuildParams' is set
-        if ($quiltBuildParams === null || (is_array($quiltBuildParams) && count($quiltBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $quiltBuildParams when calling attachQuiltToBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling attachQuiltToBuild'
             );
         }
 
@@ -618,12 +618,12 @@ class QuiltApi
         );
 
         // for model (json/xml)
-        if (isset($quiltBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($quiltBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $quiltBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -649,11 +649,6 @@ class QuiltApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -695,16 +690,16 @@ class QuiltApi
      * Unlink a build from a Quilt version
      *
      * @param  string $quiltId A quilt identifier or slug (required)
-     * @param  \Kleister\Model\QuiltBuildParams $quiltBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The quilt build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteQuiltFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteQuiltFromBuild($quiltId, $quiltBuildParams, string $contentType = self::contentTypes['deleteQuiltFromBuild'][0])
+    public function deleteQuiltFromBuild($quiltId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteQuiltFromBuild'][0])
     {
-        list($response) = $this->deleteQuiltFromBuildWithHttpInfo($quiltId, $quiltBuildParams, $contentType);
+        list($response) = $this->deleteQuiltFromBuildWithHttpInfo($quiltId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -714,16 +709,16 @@ class QuiltApi
      * Unlink a build from a Quilt version
      *
      * @param  string $quiltId A quilt identifier or slug (required)
-     * @param  \Kleister\Model\QuiltBuildParams $quiltBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The quilt build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteQuiltFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteQuiltFromBuildWithHttpInfo($quiltId, $quiltBuildParams, string $contentType = self::contentTypes['deleteQuiltFromBuild'][0])
+    public function deleteQuiltFromBuildWithHttpInfo($quiltId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteQuiltFromBuild'][0])
     {
-        $request = $this->deleteQuiltFromBuildRequest($quiltId, $quiltBuildParams, $contentType);
+        $request = $this->deleteQuiltFromBuildRequest($quiltId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -762,6 +757,33 @@ class QuiltApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -870,33 +892,6 @@ class QuiltApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -963,6 +958,14 @@ class QuiltApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -995,14 +998,6 @@ class QuiltApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1014,15 +1009,15 @@ class QuiltApi
      * Unlink a build from a Quilt version
      *
      * @param  string $quiltId A quilt identifier or slug (required)
-     * @param  \Kleister\Model\QuiltBuildParams $quiltBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The quilt build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteQuiltFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteQuiltFromBuildAsync($quiltId, $quiltBuildParams, string $contentType = self::contentTypes['deleteQuiltFromBuild'][0])
+    public function deleteQuiltFromBuildAsync($quiltId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteQuiltFromBuild'][0])
     {
-        return $this->deleteQuiltFromBuildAsyncWithHttpInfo($quiltId, $quiltBuildParams, $contentType)
+        return $this->deleteQuiltFromBuildAsyncWithHttpInfo($quiltId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1036,16 +1031,16 @@ class QuiltApi
      * Unlink a build from a Quilt version
      *
      * @param  string $quiltId A quilt identifier or slug (required)
-     * @param  \Kleister\Model\QuiltBuildParams $quiltBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The quilt build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteQuiltFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteQuiltFromBuildAsyncWithHttpInfo($quiltId, $quiltBuildParams, string $contentType = self::contentTypes['deleteQuiltFromBuild'][0])
+    public function deleteQuiltFromBuildAsyncWithHttpInfo($quiltId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteQuiltFromBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteQuiltFromBuildRequest($quiltId, $quiltBuildParams, $contentType);
+        $request = $this->deleteQuiltFromBuildRequest($quiltId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1087,13 +1082,13 @@ class QuiltApi
      * Create request for operation 'deleteQuiltFromBuild'
      *
      * @param  string $quiltId A quilt identifier or slug (required)
-     * @param  \Kleister\Model\QuiltBuildParams $quiltBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The quilt build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteQuiltFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteQuiltFromBuildRequest($quiltId, $quiltBuildParams, string $contentType = self::contentTypes['deleteQuiltFromBuild'][0])
+    public function deleteQuiltFromBuildRequest($quiltId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteQuiltFromBuild'][0])
     {
 
         // verify the required parameter 'quiltId' is set
@@ -1103,10 +1098,10 @@ class QuiltApi
             );
         }
 
-        // verify the required parameter 'quiltBuildParams' is set
-        if ($quiltBuildParams === null || (is_array($quiltBuildParams) && count($quiltBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $quiltBuildParams when calling deleteQuiltFromBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling deleteQuiltFromBuild'
             );
         }
 
@@ -1137,12 +1132,12 @@ class QuiltApi
         );
 
         // for model (json/xml)
-        if (isset($quiltBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($quiltBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $quiltBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -1168,11 +1163,6 @@ class QuiltApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1215,7 +1205,7 @@ class QuiltApi
      *
      * @param  string $quiltId A quilt identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1223,9 +1213,9 @@ class QuiltApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\QuiltBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListQuiltBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listQuiltBuilds($quiltId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listQuiltBuilds'][0])
+    public function listQuiltBuilds($quiltId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listQuiltBuilds'][0])
     {
         list($response) = $this->listQuiltBuildsWithHttpInfo($quiltId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -1238,7 +1228,7 @@ class QuiltApi
      *
      * @param  string $quiltId A quilt identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1246,9 +1236,9 @@ class QuiltApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\QuiltBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListQuiltBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listQuiltBuildsWithHttpInfo($quiltId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listQuiltBuilds'][0])
+    public function listQuiltBuildsWithHttpInfo($quiltId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listQuiltBuilds'][0])
     {
         $request = $this->listQuiltBuildsRequest($quiltId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -1289,11 +1279,11 @@ class QuiltApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\QuiltBuilds' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListQuiltBuilds200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\QuiltBuilds' !== 'string') {
+                        if ('\Kleister\Model\ListQuiltBuilds200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -1311,7 +1301,7 @@ class QuiltApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\QuiltBuilds', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListQuiltBuilds200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1396,36 +1386,9 @@ class QuiltApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\QuiltBuilds';
+            $returnType = '\Kleister\Model\ListQuiltBuilds200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -1458,7 +1421,7 @@ class QuiltApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\QuiltBuilds',
+                        '\Kleister\Model\ListQuiltBuilds200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1487,14 +1450,6 @@ class QuiltApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1507,7 +1462,7 @@ class QuiltApi
      *
      * @param  string $quiltId A quilt identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1516,7 +1471,7 @@ class QuiltApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listQuiltBuildsAsync($quiltId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listQuiltBuilds'][0])
+    public function listQuiltBuildsAsync($quiltId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listQuiltBuilds'][0])
     {
         return $this->listQuiltBuildsAsyncWithHttpInfo($quiltId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -1533,7 +1488,7 @@ class QuiltApi
      *
      * @param  string $quiltId A quilt identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1542,9 +1497,9 @@ class QuiltApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listQuiltBuildsAsyncWithHttpInfo($quiltId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listQuiltBuilds'][0])
+    public function listQuiltBuildsAsyncWithHttpInfo($quiltId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listQuiltBuilds'][0])
     {
-        $returnType = '\Kleister\Model\QuiltBuilds';
+        $returnType = '\Kleister\Model\ListQuiltBuilds200Response';
         $request = $this->listQuiltBuildsRequest($quiltId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -1588,7 +1543,7 @@ class QuiltApi
      *
      * @param  string $quiltId A quilt identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1597,7 +1552,7 @@ class QuiltApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listQuiltBuildsRequest($quiltId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listQuiltBuilds'][0])
+    public function listQuiltBuildsRequest($quiltId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listQuiltBuilds'][0])
     {
 
         // verify the required parameter 'quiltId' is set
@@ -1708,11 +1663,6 @@ class QuiltApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1758,7 +1708,7 @@ class QuiltApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Quilts|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListQuilts200Response|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function listQuilts($search = null, string $contentType = self::contentTypes['listQuilts'][0])
     {
@@ -1776,7 +1726,7 @@ class QuiltApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Quilts|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListQuilts200Response|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function listQuiltsWithHttpInfo($search = null, string $contentType = self::contentTypes['listQuilts'][0])
     {
@@ -1819,11 +1769,11 @@ class QuiltApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Quilts' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListQuilts200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Quilts' !== 'string') {
+                        if ('\Kleister\Model\ListQuilts200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -1841,7 +1791,7 @@ class QuiltApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Quilts', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListQuilts200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1899,36 +1849,9 @@ class QuiltApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\Quilts';
+            $returnType = '\Kleister\Model\ListQuilts200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -1961,7 +1884,7 @@ class QuiltApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\Quilts',
+                        '\Kleister\Model\ListQuilts200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1975,14 +1898,6 @@ class QuiltApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -2029,7 +1944,7 @@ class QuiltApi
      */
     public function listQuiltsAsyncWithHttpInfo($search = null, string $contentType = self::contentTypes['listQuilts'][0])
     {
-        $returnType = '\Kleister\Model\Quilts';
+        $returnType = '\Kleister\Model\ListQuilts200Response';
         $request = $this->listQuiltsRequest($search, $contentType);
 
         return $this->client
@@ -2133,11 +2048,6 @@ class QuiltApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -2182,7 +2092,7 @@ class QuiltApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function updateQuilt(string $contentType = self::contentTypes['updateQuilt'][0])
     {
@@ -2199,7 +2109,7 @@ class QuiltApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function updateQuiltWithHttpInfo(string $contentType = self::contentTypes['updateQuilt'][0])
     {
@@ -2349,33 +2259,6 @@ class QuiltApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Notification';
@@ -2433,14 +2316,6 @@ class QuiltApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -2578,11 +2453,6 @@ class QuiltApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());

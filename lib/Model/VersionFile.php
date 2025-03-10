@@ -51,7 +51,7 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'version_file';
+    protected static $openAPIModelName = 'VersionFile';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -59,13 +59,11 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
       * @var string[]
       */
     protected static $openAPITypes = [
-        'id' => 'string',
         'slug' => 'string',
         'contentType' => 'string',
         'md5' => 'string',
         'path' => 'string',
         'url' => 'string',
-        'upload' => 'string',
         'createdAt' => '\DateTime',
         'updatedAt' => '\DateTime'
     ];
@@ -78,13 +76,11 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
       * @psalm-var array<string, string|null>
       */
     protected static $openAPIFormats = [
-        'id' => null,
         'slug' => null,
         'contentType' => null,
         'md5' => null,
         'path' => null,
         'url' => null,
-        'upload' => null,
         'createdAt' => 'date-time',
         'updatedAt' => 'date-time'
     ];
@@ -95,13 +91,11 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
       * @var boolean[]
       */
     protected static array $openAPINullables = [
-        'id' => false,
         'slug' => true,
         'contentType' => true,
         'md5' => true,
         'path' => true,
         'url' => true,
-        'upload' => true,
         'createdAt' => false,
         'updatedAt' => false
     ];
@@ -192,13 +186,11 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $attributeMap = [
-        'id' => 'id',
         'slug' => 'slug',
         'contentType' => 'content_type',
         'md5' => 'md5',
         'path' => 'path',
         'url' => 'url',
-        'upload' => 'upload',
         'createdAt' => 'created_at',
         'updatedAt' => 'updated_at'
     ];
@@ -209,13 +201,11 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $setters = [
-        'id' => 'setId',
         'slug' => 'setSlug',
         'contentType' => 'setContentType',
         'md5' => 'setMd5',
         'path' => 'setPath',
         'url' => 'setUrl',
-        'upload' => 'setUpload',
         'createdAt' => 'setCreatedAt',
         'updatedAt' => 'setUpdatedAt'
     ];
@@ -226,13 +216,11 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
      * @var string[]
      */
     protected static $getters = [
-        'id' => 'getId',
         'slug' => 'getSlug',
         'contentType' => 'getContentType',
         'md5' => 'getMd5',
         'path' => 'getPath',
         'url' => 'getUrl',
-        'upload' => 'getUpload',
         'createdAt' => 'getCreatedAt',
         'updatedAt' => 'getUpdatedAt'
     ];
@@ -294,13 +282,11 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     public function __construct(array $data = null)
     {
-        $this->setIfExists('id', $data ?? [], null);
         $this->setIfExists('slug', $data ?? [], null);
         $this->setIfExists('contentType', $data ?? [], null);
         $this->setIfExists('md5', $data ?? [], null);
         $this->setIfExists('path', $data ?? [], null);
         $this->setIfExists('url', $data ?? [], null);
-        $this->setIfExists('upload', $data ?? [], null);
         $this->setIfExists('createdAt', $data ?? [], null);
         $this->setIfExists('updatedAt', $data ?? [], null);
     }
@@ -346,33 +332,6 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
         return count($this->listInvalidProperties()) === 0;
     }
 
-
-    /**
-     * Gets id
-     *
-     * @return string|null
-     */
-    public function getId()
-    {
-        return $this->container['id'];
-    }
-
-    /**
-     * Sets id
-     *
-     * @param string|null $id id
-     *
-     * @return self
-     */
-    public function setId($id)
-    {
-        if (is_null($id)) {
-            throw new \InvalidArgumentException('non-nullable id cannot be null');
-        }
-        $this->container['id'] = $id;
-
-        return $this;
-    }
 
     /**
      * Gets slug
@@ -540,40 +499,6 @@ class VersionFile implements ModelInterface, ArrayAccess, \JsonSerializable
             }
         }
         $this->container['url'] = $url;
-
-        return $this;
-    }
-
-    /**
-     * Gets upload
-     *
-     * @return string|null
-     */
-    public function getUpload()
-    {
-        return $this->container['upload'];
-    }
-
-    /**
-     * Sets upload
-     *
-     * @param string|null $upload upload
-     *
-     * @return self
-     */
-    public function setUpload($upload)
-    {
-        if (is_null($upload)) {
-            array_push($this->openAPINullablesSetToNull, 'upload');
-        } else {
-            $nullablesSetToNull = $this->getOpenAPINullablesSetToNull();
-            $index = array_search('upload', $nullablesSetToNull);
-            if ($index !== FALSE) {
-                unset($nullablesSetToNull[$index]);
-                $this->setOpenAPINullablesSetToNull($nullablesSetToNull);
-            }
-        }
-        $this->container['upload'] = $upload;
 
         return $this;
     }

@@ -51,7 +51,7 @@ class Provider implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'provider';
+    protected static $openAPIModelName = 'Provider';
 
     /**
       * Array of property to type mappings. Used for (de)serialization

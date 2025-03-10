@@ -72,7 +72,7 @@ class ModApi
 
     /** @var string[] $contentTypes **/
     public const contentTypes = [
-        'attachModToTeam' => [
+        'attachModToGroup' => [
             'application/json',
         ],
         'attachModToUser' => [
@@ -84,16 +84,28 @@ class ModApi
         'createMod' => [
             'application/json',
         ],
+        'createModAvatar' => [
+            'multipart/form-data',
+        ],
+        'createPackAvatar' => [
+            'multipart/form-data',
+        ],
         'createVersion' => [
             'application/json',
         ],
         'deleteMod' => [
             'application/json',
         ],
-        'deleteModFromTeam' => [
+        'deleteModAvatar' => [
+            'application/json',
+        ],
+        'deleteModFromGroup' => [
             'application/json',
         ],
         'deleteModFromUser' => [
+            'application/json',
+        ],
+        'deletePackAvatar' => [
             'application/json',
         ],
         'deleteVersion' => [
@@ -102,7 +114,7 @@ class ModApi
         'deleteVersionFromBuild' => [
             'application/json',
         ],
-        'listModTeams' => [
+        'listModGroups' => [
             'application/json',
         ],
         'listModUsers' => [
@@ -117,7 +129,7 @@ class ModApi
         'listVersions' => [
             'application/json',
         ],
-        'permitModTeam' => [
+        'permitModGroup' => [
             'application/json',
         ],
         'permitModUser' => [
@@ -184,40 +196,40 @@ class ModApi
     }
 
     /**
-     * Operation attachModToTeam
+     * Operation attachModToGroup
      *
-     * Attach a team to mod
+     * Attach a group to mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The mod group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachModToTeam($modId, $modTeamParams, string $contentType = self::contentTypes['attachModToTeam'][0])
+    public function attachModToGroup($modId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachModToGroup'][0])
     {
-        list($response) = $this->attachModToTeamWithHttpInfo($modId, $modTeamParams, $contentType);
+        list($response) = $this->attachModToGroupWithHttpInfo($modId, $permitPackGroupRequest, $contentType);
         return $response;
     }
 
     /**
-     * Operation attachModToTeamWithHttpInfo
+     * Operation attachModToGroupWithHttpInfo
      *
-     * Attach a team to mod
+     * Attach a group to mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The mod group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachModToTeamWithHttpInfo($modId, $modTeamParams, string $contentType = self::contentTypes['attachModToTeam'][0])
+    public function attachModToGroupWithHttpInfo($modId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachModToGroup'][0])
     {
-        $request = $this->attachModToTeamRequest($modId, $modTeamParams, $contentType);
+        $request = $this->attachModToGroupRequest($modId, $permitPackGroupRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -256,6 +268,33 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -391,33 +430,6 @@ class ModApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -484,6 +496,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -524,34 +544,26 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
     }
 
     /**
-     * Operation attachModToTeamAsync
+     * Operation attachModToGroupAsync
      *
-     * Attach a team to mod
+     * Attach a group to mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The mod group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachModToTeamAsync($modId, $modTeamParams, string $contentType = self::contentTypes['attachModToTeam'][0])
+    public function attachModToGroupAsync($modId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachModToGroup'][0])
     {
-        return $this->attachModToTeamAsyncWithHttpInfo($modId, $modTeamParams, $contentType)
+        return $this->attachModToGroupAsyncWithHttpInfo($modId, $permitPackGroupRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -560,21 +572,21 @@ class ModApi
     }
 
     /**
-     * Operation attachModToTeamAsyncWithHttpInfo
+     * Operation attachModToGroupAsyncWithHttpInfo
      *
-     * Attach a team to mod
+     * Attach a group to mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The mod group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachModToTeamAsyncWithHttpInfo($modId, $modTeamParams, string $contentType = self::contentTypes['attachModToTeam'][0])
+    public function attachModToGroupAsyncWithHttpInfo($modId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachModToGroup'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachModToTeamRequest($modId, $modTeamParams, $contentType);
+        $request = $this->attachModToGroupRequest($modId, $permitPackGroupRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -613,34 +625,34 @@ class ModApi
     }
 
     /**
-     * Create request for operation 'attachModToTeam'
+     * Create request for operation 'attachModToGroup'
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The team data to attach (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The mod group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachModToTeamRequest($modId, $modTeamParams, string $contentType = self::contentTypes['attachModToTeam'][0])
+    public function attachModToGroupRequest($modId, $permitPackGroupRequest, string $contentType = self::contentTypes['attachModToGroup'][0])
     {
 
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $modId when calling attachModToTeam'
+                'Missing the required parameter $modId when calling attachModToGroup'
             );
         }
 
-        // verify the required parameter 'modTeamParams' is set
-        if ($modTeamParams === null || (is_array($modTeamParams) && count($modTeamParams) === 0)) {
+        // verify the required parameter 'permitPackGroupRequest' is set
+        if ($permitPackGroupRequest === null || (is_array($permitPackGroupRequest) && count($permitPackGroupRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $modTeamParams when calling attachModToTeam'
+                'Missing the required parameter $permitPackGroupRequest when calling attachModToGroup'
             );
         }
 
 
-        $resourcePath = '/mods/{mod_id}/teams';
+        $resourcePath = '/mods/{mod_id}/groups';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -666,12 +678,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($modTeamParams)) {
+        if (isset($permitPackGroupRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($modTeamParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitPackGroupRequest));
             } else {
-                $httpBody = $modTeamParams;
+                $httpBody = $permitPackGroupRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -697,11 +709,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -743,16 +750,16 @@ class ModApi
      * Attach a user to mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The user data to attach (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The mod user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachModToUser($modId, $modUserParams, string $contentType = self::contentTypes['attachModToUser'][0])
+    public function attachModToUser($modId, $permitPackUserRequest, string $contentType = self::contentTypes['attachModToUser'][0])
     {
-        list($response) = $this->attachModToUserWithHttpInfo($modId, $modUserParams, $contentType);
+        list($response) = $this->attachModToUserWithHttpInfo($modId, $permitPackUserRequest, $contentType);
         return $response;
     }
 
@@ -762,16 +769,16 @@ class ModApi
      * Attach a user to mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The user data to attach (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The mod user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachModToUserWithHttpInfo($modId, $modUserParams, string $contentType = self::contentTypes['attachModToUser'][0])
+    public function attachModToUserWithHttpInfo($modId, $permitPackUserRequest, string $contentType = self::contentTypes['attachModToUser'][0])
     {
-        $request = $this->attachModToUserRequest($modId, $modUserParams, $contentType);
+        $request = $this->attachModToUserRequest($modId, $permitPackUserRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -810,6 +817,33 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -945,33 +979,6 @@ class ModApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -1038,6 +1045,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -1078,14 +1093,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1097,15 +1104,15 @@ class ModApi
      * Attach a user to mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The user data to attach (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The mod user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachModToUserAsync($modId, $modUserParams, string $contentType = self::contentTypes['attachModToUser'][0])
+    public function attachModToUserAsync($modId, $permitPackUserRequest, string $contentType = self::contentTypes['attachModToUser'][0])
     {
-        return $this->attachModToUserAsyncWithHttpInfo($modId, $modUserParams, $contentType)
+        return $this->attachModToUserAsyncWithHttpInfo($modId, $permitPackUserRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1119,16 +1126,16 @@ class ModApi
      * Attach a user to mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The user data to attach (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The mod user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachModToUserAsyncWithHttpInfo($modId, $modUserParams, string $contentType = self::contentTypes['attachModToUser'][0])
+    public function attachModToUserAsyncWithHttpInfo($modId, $permitPackUserRequest, string $contentType = self::contentTypes['attachModToUser'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachModToUserRequest($modId, $modUserParams, $contentType);
+        $request = $this->attachModToUserRequest($modId, $permitPackUserRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1170,13 +1177,13 @@ class ModApi
      * Create request for operation 'attachModToUser'
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The user data to attach (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The mod user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachModToUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachModToUserRequest($modId, $modUserParams, string $contentType = self::contentTypes['attachModToUser'][0])
+    public function attachModToUserRequest($modId, $permitPackUserRequest, string $contentType = self::contentTypes['attachModToUser'][0])
     {
 
         // verify the required parameter 'modId' is set
@@ -1186,10 +1193,10 @@ class ModApi
             );
         }
 
-        // verify the required parameter 'modUserParams' is set
-        if ($modUserParams === null || (is_array($modUserParams) && count($modUserParams) === 0)) {
+        // verify the required parameter 'permitPackUserRequest' is set
+        if ($permitPackUserRequest === null || (is_array($permitPackUserRequest) && count($permitPackUserRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $modUserParams when calling attachModToUser'
+                'Missing the required parameter $permitPackUserRequest when calling attachModToUser'
             );
         }
 
@@ -1220,12 +1227,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($modUserParams)) {
+        if (isset($permitPackUserRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($modUserParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitPackUserRequest));
             } else {
-                $httpBody = $modUserParams;
+                $httpBody = $permitPackUserRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -1251,11 +1258,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1298,16 +1300,16 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $versionBuildParams The version build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The version build data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachVersionToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachVersionToBuild($modId, $versionId, $versionBuildParams, string $contentType = self::contentTypes['attachVersionToBuild'][0])
+    public function attachVersionToBuild($modId, $versionId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachVersionToBuild'][0])
     {
-        list($response) = $this->attachVersionToBuildWithHttpInfo($modId, $versionId, $versionBuildParams, $contentType);
+        list($response) = $this->attachVersionToBuildWithHttpInfo($modId, $versionId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -1318,16 +1320,16 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $versionBuildParams The version build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The version build data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachVersionToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachVersionToBuildWithHttpInfo($modId, $versionId, $versionBuildParams, string $contentType = self::contentTypes['attachVersionToBuild'][0])
+    public function attachVersionToBuildWithHttpInfo($modId, $versionId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachVersionToBuild'][0])
     {
-        $request = $this->attachVersionToBuildRequest($modId, $versionId, $versionBuildParams, $contentType);
+        $request = $this->attachVersionToBuildRequest($modId, $versionId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1366,6 +1368,33 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -1501,33 +1530,6 @@ class ModApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -1594,6 +1596,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -1634,14 +1644,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1654,15 +1656,15 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $versionBuildParams The version build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The version build data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachVersionToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachVersionToBuildAsync($modId, $versionId, $versionBuildParams, string $contentType = self::contentTypes['attachVersionToBuild'][0])
+    public function attachVersionToBuildAsync($modId, $versionId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachVersionToBuild'][0])
     {
-        return $this->attachVersionToBuildAsyncWithHttpInfo($modId, $versionId, $versionBuildParams, $contentType)
+        return $this->attachVersionToBuildAsyncWithHttpInfo($modId, $versionId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1677,16 +1679,16 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $versionBuildParams The version build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The version build data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachVersionToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachVersionToBuildAsyncWithHttpInfo($modId, $versionId, $versionBuildParams, string $contentType = self::contentTypes['attachVersionToBuild'][0])
+    public function attachVersionToBuildAsyncWithHttpInfo($modId, $versionId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachVersionToBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachVersionToBuildRequest($modId, $versionId, $versionBuildParams, $contentType);
+        $request = $this->attachVersionToBuildRequest($modId, $versionId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1729,13 +1731,13 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $versionBuildParams The version build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The version build data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachVersionToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachVersionToBuildRequest($modId, $versionId, $versionBuildParams, string $contentType = self::contentTypes['attachVersionToBuild'][0])
+    public function attachVersionToBuildRequest($modId, $versionId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachVersionToBuild'][0])
     {
 
         // verify the required parameter 'modId' is set
@@ -1752,10 +1754,10 @@ class ModApi
             );
         }
 
-        // verify the required parameter 'versionBuildParams' is set
-        if ($versionBuildParams === null || (is_array($versionBuildParams) && count($versionBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $versionBuildParams when calling attachVersionToBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling attachVersionToBuild'
             );
         }
 
@@ -1794,12 +1796,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($versionBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($versionBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $versionBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -1825,11 +1827,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1870,16 +1867,16 @@ class ModApi
      *
      * Create a new mod
      *
-     * @param  \Kleister\Model\Mod $mod The mod data to create (required)
+     * @param  \Kleister\Model\CreateModRequest $createModRequest The mod data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createMod'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Mod|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function createMod($mod, string $contentType = self::contentTypes['createMod'][0])
+    public function createMod($createModRequest, string $contentType = self::contentTypes['createMod'][0])
     {
-        list($response) = $this->createModWithHttpInfo($mod, $contentType);
+        list($response) = $this->createModWithHttpInfo($createModRequest, $contentType);
         return $response;
     }
 
@@ -1888,16 +1885,16 @@ class ModApi
      *
      * Create a new mod
      *
-     * @param  \Kleister\Model\Mod $mod The mod data to create (required)
+     * @param  \Kleister\Model\CreateModRequest $createModRequest The mod data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createMod'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Mod|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createModWithHttpInfo($mod, string $contentType = self::contentTypes['createMod'][0])
+    public function createModWithHttpInfo($createModRequest, string $contentType = self::contentTypes['createMod'][0])
     {
-        $request = $this->createModRequest($mod, $contentType);
+        $request = $this->createModRequest($createModRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -1962,6 +1959,33 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
                 case 403:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
@@ -2017,33 +2041,6 @@ class ModApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -2110,6 +2107,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -2134,14 +2139,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -2152,15 +2149,15 @@ class ModApi
      *
      * Create a new mod
      *
-     * @param  \Kleister\Model\Mod $mod The mod data to create (required)
+     * @param  \Kleister\Model\CreateModRequest $createModRequest The mod data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createModAsync($mod, string $contentType = self::contentTypes['createMod'][0])
+    public function createModAsync($createModRequest, string $contentType = self::contentTypes['createMod'][0])
     {
-        return $this->createModAsyncWithHttpInfo($mod, $contentType)
+        return $this->createModAsyncWithHttpInfo($createModRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2173,16 +2170,16 @@ class ModApi
      *
      * Create a new mod
      *
-     * @param  \Kleister\Model\Mod $mod The mod data to create (required)
+     * @param  \Kleister\Model\CreateModRequest $createModRequest The mod data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createModAsyncWithHttpInfo($mod, string $contentType = self::contentTypes['createMod'][0])
+    public function createModAsyncWithHttpInfo($createModRequest, string $contentType = self::contentTypes['createMod'][0])
     {
         $returnType = '\Kleister\Model\Mod';
-        $request = $this->createModRequest($mod, $contentType);
+        $request = $this->createModRequest($createModRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2223,19 +2220,19 @@ class ModApi
     /**
      * Create request for operation 'createMod'
      *
-     * @param  \Kleister\Model\Mod $mod The mod data to create (required)
+     * @param  \Kleister\Model\CreateModRequest $createModRequest The mod data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createModRequest($mod, string $contentType = self::contentTypes['createMod'][0])
+    public function createModRequest($createModRequest, string $contentType = self::contentTypes['createMod'][0])
     {
 
-        // verify the required parameter 'mod' is set
-        if ($mod === null || (is_array($mod) && count($mod) === 0)) {
+        // verify the required parameter 'createModRequest' is set
+        if ($createModRequest === null || (is_array($createModRequest) && count($createModRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $mod when calling createMod'
+                'Missing the required parameter $createModRequest when calling createMod'
             );
         }
 
@@ -2258,12 +2255,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($mod)) {
+        if (isset($createModRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($mod));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($createModRequest));
             } else {
-                $httpBody = $mod;
+                $httpBody = $createModRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -2289,11 +2286,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -2330,40 +2322,40 @@ class ModApi
     }
 
     /**
-     * Operation createVersion
+     * Operation createModAvatar
      *
-     * Create a new version for a mod
+     * Upload an avatar for the defined mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\Version $version The version data to create (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createVersion'] to see the possible values for this operation
+     * @param  \SplFileObject $file file (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createModAvatar'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Version|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ModAvatar|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function createVersion($modId, $version, string $contentType = self::contentTypes['createVersion'][0])
+    public function createModAvatar($modId, $file = null, string $contentType = self::contentTypes['createModAvatar'][0])
     {
-        list($response) = $this->createVersionWithHttpInfo($modId, $version, $contentType);
+        list($response) = $this->createModAvatarWithHttpInfo($modId, $file, $contentType);
         return $response;
     }
 
     /**
-     * Operation createVersionWithHttpInfo
+     * Operation createModAvatarWithHttpInfo
      *
-     * Create a new version for a mod
+     * Upload an avatar for the defined mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\Version $version The version data to create (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createVersion'] to see the possible values for this operation
+     * @param  \SplFileObject $file (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createModAvatar'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Version|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ModAvatar|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function createVersionWithHttpInfo($modId, $version, string $contentType = self::contentTypes['createVersion'][0])
+    public function createModAvatarWithHttpInfo($modId, $file = null, string $contentType = self::contentTypes['createModAvatar'][0])
     {
-        $request = $this->createVersionRequest($modId, $version, $contentType);
+        $request = $this->createModAvatarRequest($modId, $file, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -2402,11 +2394,11 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Version' === '\SplFileObject') {
+                    if ('\Kleister\Model\ModAvatar' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Version' !== 'string') {
+                        if ('\Kleister\Model\ModAvatar' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -2424,7 +2416,34 @@ class ModApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Version', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ModAvatar', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -2536,7 +2555,1006 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
+            }
+
+            $returnType = '\Kleister\Model\ModAvatar';
+            if ($returnType === '\SplFileObject') {
+                $content = $response->getBody(); //stream goes to serializer
+            } else {
+                $content = (string) $response->getBody();
+                if ($returnType !== 'string') {
+                    try {
+                        $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $exception) {
+                        throw new ApiException(
+                            sprintf(
+                                'Error JSON decoding server response (%s)',
+                                $request->getUri()
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $content
+                        );
+                    }
+                }
+            }
+
+            return [
+                ObjectSerializer::deserialize($content, $returnType, []),
+                $response->getStatusCode(),
+                $response->getHeaders()
+            ];
+
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\ModAvatar',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 403:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 404:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 422:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 500:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation createModAvatarAsync
+     *
+     * Upload an avatar for the defined mod
+     *
+     * @param  string $modId A mod identifier or slug (required)
+     * @param  \SplFileObject $file (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createModAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function createModAvatarAsync($modId, $file = null, string $contentType = self::contentTypes['createModAvatar'][0])
+    {
+        return $this->createModAvatarAsyncWithHttpInfo($modId, $file, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation createModAvatarAsyncWithHttpInfo
+     *
+     * Upload an avatar for the defined mod
+     *
+     * @param  string $modId A mod identifier or slug (required)
+     * @param  \SplFileObject $file (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createModAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function createModAvatarAsyncWithHttpInfo($modId, $file = null, string $contentType = self::contentTypes['createModAvatar'][0])
+    {
+        $returnType = '\Kleister\Model\ModAvatar';
+        $request = $this->createModAvatarRequest($modId, $file, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    if ($returnType === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'createModAvatar'
+     *
+     * @param  string $modId A mod identifier or slug (required)
+     * @param  \SplFileObject $file (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createModAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function createModAvatarRequest($modId, $file = null, string $contentType = self::contentTypes['createModAvatar'][0])
+    {
+
+        // verify the required parameter 'modId' is set
+        if ($modId === null || (is_array($modId) && count($modId) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $modId when calling createModAvatar'
+            );
+        }
+
+
+
+        $resourcePath = '/mods/{mod_id}/avatar';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+        // path params
+        if ($modId !== null) {
+            $resourcePath = str_replace(
+                '{' . 'mod_id' . '}',
+                ObjectSerializer::toPathValue($modId),
+                $resourcePath
+            );
+        }
+
+        // form params
+        if ($file !== null) {
+            $multipart = true;
+            $formParams['file'] = [];
+            $paramFiles = is_array($file) ? $file : [$file];
+            foreach ($paramFiles as $paramFile) {
+                $formParams['file'][] = \GuzzleHttp\Psr7\Utils::tryFopen(
+                    ObjectSerializer::toFormValue($paramFile),
+                    'rb'
+                );
+            }
+        }
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
+        }
+        // this endpoint requires API key authentication
+        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
+        if ($apiKey !== null) {
+            $headers['X-API-Key'] = $apiKey;
+        }
+        // this endpoint requires Bearer authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'POST',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation createPackAvatar
+     *
+     * Upload an avatar for the defined pack
+     *
+     * @param  string $packId A pack identifier or slug (required)
+     * @param  \SplFileObject $file file (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPackAvatar'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return \Kleister\Model\PackAvatar|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     */
+    public function createPackAvatar($packId, $file = null, string $contentType = self::contentTypes['createPackAvatar'][0])
+    {
+        list($response) = $this->createPackAvatarWithHttpInfo($packId, $file, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation createPackAvatarWithHttpInfo
+     *
+     * Upload an avatar for the defined pack
+     *
+     * @param  string $packId A pack identifier or slug (required)
+     * @param  \SplFileObject $file (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPackAvatar'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return array of \Kleister\Model\PackAvatar|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function createPackAvatarWithHttpInfo($packId, $file = null, string $contentType = self::contentTypes['createPackAvatar'][0])
+    {
+        $request = $this->createPackAvatarRequest($packId, $file, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            switch($statusCode) {
+                case 200:
+                    if ('\Kleister\Model\PackAvatar' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\PackAvatar' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\PackAvatar', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 403:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 404:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 422:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 500:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+            }
+
+            $returnType = '\Kleister\Model\PackAvatar';
+            if ($returnType === '\SplFileObject') {
+                $content = $response->getBody(); //stream goes to serializer
+            } else {
+                $content = (string) $response->getBody();
+                if ($returnType !== 'string') {
+                    try {
+                        $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $exception) {
+                        throw new ApiException(
+                            sprintf(
+                                'Error JSON decoding server response (%s)',
+                                $request->getUri()
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $content
+                        );
+                    }
+                }
+            }
+
+            return [
+                ObjectSerializer::deserialize($content, $returnType, []),
+                $response->getStatusCode(),
+                $response->getHeaders()
+            ];
+
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\PackAvatar',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 403:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 404:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 422:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 500:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation createPackAvatarAsync
+     *
+     * Upload an avatar for the defined pack
+     *
+     * @param  string $packId A pack identifier or slug (required)
+     * @param  \SplFileObject $file (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPackAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function createPackAvatarAsync($packId, $file = null, string $contentType = self::contentTypes['createPackAvatar'][0])
+    {
+        return $this->createPackAvatarAsyncWithHttpInfo($packId, $file, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation createPackAvatarAsyncWithHttpInfo
+     *
+     * Upload an avatar for the defined pack
+     *
+     * @param  string $packId A pack identifier or slug (required)
+     * @param  \SplFileObject $file (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPackAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function createPackAvatarAsyncWithHttpInfo($packId, $file = null, string $contentType = self::contentTypes['createPackAvatar'][0])
+    {
+        $returnType = '\Kleister\Model\PackAvatar';
+        $request = $this->createPackAvatarRequest($packId, $file, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    if ($returnType === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'createPackAvatar'
+     *
+     * @param  string $packId A pack identifier or slug (required)
+     * @param  \SplFileObject $file (optional)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createPackAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function createPackAvatarRequest($packId, $file = null, string $contentType = self::contentTypes['createPackAvatar'][0])
+    {
+
+        // verify the required parameter 'packId' is set
+        if ($packId === null || (is_array($packId) && count($packId) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $packId when calling createPackAvatar'
+            );
+        }
+
+
+
+        $resourcePath = '/packs/{pack_id}/avatar';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+        // path params
+        if ($packId !== null) {
+            $resourcePath = str_replace(
+                '{' . 'pack_id' . '}',
+                ObjectSerializer::toPathValue($packId),
+                $resourcePath
+            );
+        }
+
+        // form params
+        if ($file !== null) {
+            $multipart = true;
+            $formParams['file'] = [];
+            $paramFiles = is_array($file) ? $file : [$file];
+            foreach ($paramFiles as $paramFile) {
+                $formParams['file'][] = \GuzzleHttp\Psr7\Utils::tryFopen(
+                    ObjectSerializer::toFormValue($paramFile),
+                    'rb'
+                );
+            }
+        }
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
+        }
+        // this endpoint requires API key authentication
+        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
+        if ($apiKey !== null) {
+            $headers['X-API-Key'] = $apiKey;
+        }
+        // this endpoint requires Bearer authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'POST',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation createVersion
+     *
+     * Create a new version for a mod
+     *
+     * @param  string $modId A mod identifier or slug (required)
+     * @param  \Kleister\Model\CreateVersionRequest $createVersionRequest The version data to create (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createVersion'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return \Kleister\Model\Version|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     */
+    public function createVersion($modId, $createVersionRequest, string $contentType = self::contentTypes['createVersion'][0])
+    {
+        list($response) = $this->createVersionWithHttpInfo($modId, $createVersionRequest, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation createVersionWithHttpInfo
+     *
+     * Create a new version for a mod
+     *
+     * @param  string $modId A mod identifier or slug (required)
+     * @param  \Kleister\Model\CreateVersionRequest $createVersionRequest The version data to create (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createVersion'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return array of \Kleister\Model\Version|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function createVersionWithHttpInfo($modId, $createVersionRequest, string $contentType = self::contentTypes['createVersion'][0])
+    {
+        $request = $this->createVersionRequest($modId, $createVersionRequest, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            switch($statusCode) {
+                case 200:
+                    if ('\Kleister\Model\Version' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Version' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Version', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 403:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 404:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 422:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 500:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -2603,6 +3621,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -2635,14 +3661,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -2654,15 +3672,15 @@ class ModApi
      * Create a new version for a mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\Version $version The version data to create (required)
+     * @param  \Kleister\Model\CreateVersionRequest $createVersionRequest The version data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createVersionAsync($modId, $version, string $contentType = self::contentTypes['createVersion'][0])
+    public function createVersionAsync($modId, $createVersionRequest, string $contentType = self::contentTypes['createVersion'][0])
     {
-        return $this->createVersionAsyncWithHttpInfo($modId, $version, $contentType)
+        return $this->createVersionAsyncWithHttpInfo($modId, $createVersionRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -2676,16 +3694,16 @@ class ModApi
      * Create a new version for a mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\Version $version The version data to create (required)
+     * @param  \Kleister\Model\CreateVersionRequest $createVersionRequest The version data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function createVersionAsyncWithHttpInfo($modId, $version, string $contentType = self::contentTypes['createVersion'][0])
+    public function createVersionAsyncWithHttpInfo($modId, $createVersionRequest, string $contentType = self::contentTypes['createVersion'][0])
     {
         $returnType = '\Kleister\Model\Version';
-        $request = $this->createVersionRequest($modId, $version, $contentType);
+        $request = $this->createVersionRequest($modId, $createVersionRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -2727,13 +3745,13 @@ class ModApi
      * Create request for operation 'createVersion'
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\Version $version The version data to create (required)
+     * @param  \Kleister\Model\CreateVersionRequest $createVersionRequest The version data to create (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['createVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function createVersionRequest($modId, $version, string $contentType = self::contentTypes['createVersion'][0])
+    public function createVersionRequest($modId, $createVersionRequest, string $contentType = self::contentTypes['createVersion'][0])
     {
 
         // verify the required parameter 'modId' is set
@@ -2743,10 +3761,10 @@ class ModApi
             );
         }
 
-        // verify the required parameter 'version' is set
-        if ($version === null || (is_array($version) && count($version) === 0)) {
+        // verify the required parameter 'createVersionRequest' is set
+        if ($createVersionRequest === null || (is_array($createVersionRequest) && count($createVersionRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $version when calling createVersion'
+                'Missing the required parameter $createVersionRequest when calling createVersion'
             );
         }
 
@@ -2777,12 +3795,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($version)) {
+        if (isset($createVersionRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($version));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($createVersionRequest));
             } else {
-                $httpBody = $version;
+                $httpBody = $createVersionRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -2808,11 +3826,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -2858,7 +3871,7 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function deleteMod($modId, string $contentType = self::contentTypes['deleteMod'][0])
     {
@@ -2876,7 +3889,7 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function deleteModWithHttpInfo($modId, string $contentType = self::contentTypes['deleteMod'][0])
     {
@@ -3053,33 +4066,6 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Notification';
@@ -3145,14 +4131,6 @@ class ModApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -3308,11 +4286,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -3349,40 +4322,38 @@ class ModApi
     }
 
     /**
-     * Operation deleteModFromTeam
+     * Operation deleteModAvatar
      *
-     * Unlink a team from mod
+     * Delete the avatar for the defined mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The mod team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromTeam'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModAvatar'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ModAvatar|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteModFromTeam($modId, $modTeamParams, string $contentType = self::contentTypes['deleteModFromTeam'][0])
+    public function deleteModAvatar($modId, string $contentType = self::contentTypes['deleteModAvatar'][0])
     {
-        list($response) = $this->deleteModFromTeamWithHttpInfo($modId, $modTeamParams, $contentType);
+        list($response) = $this->deleteModAvatarWithHttpInfo($modId, $contentType);
         return $response;
     }
 
     /**
-     * Operation deleteModFromTeamWithHttpInfo
+     * Operation deleteModAvatarWithHttpInfo
      *
-     * Unlink a team from mod
+     * Delete the avatar for the defined mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The mod team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromTeam'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModAvatar'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ModAvatar|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteModFromTeamWithHttpInfo($modId, $modTeamParams, string $contentType = self::contentTypes['deleteModFromTeam'][0])
+    public function deleteModAvatarWithHttpInfo($modId, string $contentType = self::contentTypes['deleteModAvatar'][0])
     {
-        $request = $this->deleteModFromTeamRequest($modId, $modTeamParams, $contentType);
+        $request = $this->deleteModAvatarRequest($modId, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -3421,6 +4392,495 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\ModAvatar' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\ModAvatar' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ModAvatar', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 403:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 404:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 500:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+            }
+
+            $returnType = '\Kleister\Model\ModAvatar';
+            if ($returnType === '\SplFileObject') {
+                $content = $response->getBody(); //stream goes to serializer
+            } else {
+                $content = (string) $response->getBody();
+                if ($returnType !== 'string') {
+                    try {
+                        $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $exception) {
+                        throw new ApiException(
+                            sprintf(
+                                'Error JSON decoding server response (%s)',
+                                $request->getUri()
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $content
+                        );
+                    }
+                }
+            }
+
+            return [
+                ObjectSerializer::deserialize($content, $returnType, []),
+                $response->getStatusCode(),
+                $response->getHeaders()
+            ];
+
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\ModAvatar',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 403:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 404:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 500:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation deleteModAvatarAsync
+     *
+     * Delete the avatar for the defined mod
+     *
+     * @param  string $modId A mod identifier or slug (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function deleteModAvatarAsync($modId, string $contentType = self::contentTypes['deleteModAvatar'][0])
+    {
+        return $this->deleteModAvatarAsyncWithHttpInfo($modId, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation deleteModAvatarAsyncWithHttpInfo
+     *
+     * Delete the avatar for the defined mod
+     *
+     * @param  string $modId A mod identifier or slug (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function deleteModAvatarAsyncWithHttpInfo($modId, string $contentType = self::contentTypes['deleteModAvatar'][0])
+    {
+        $returnType = '\Kleister\Model\ModAvatar';
+        $request = $this->deleteModAvatarRequest($modId, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    if ($returnType === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'deleteModAvatar'
+     *
+     * @param  string $modId A mod identifier or slug (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function deleteModAvatarRequest($modId, string $contentType = self::contentTypes['deleteModAvatar'][0])
+    {
+
+        // verify the required parameter 'modId' is set
+        if ($modId === null || (is_array($modId) && count($modId) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $modId when calling deleteModAvatar'
+            );
+        }
+
+
+        $resourcePath = '/mods/{mod_id}/avatar';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+        // path params
+        if ($modId !== null) {
+            $resourcePath = str_replace(
+                '{' . 'mod_id' . '}',
+                ObjectSerializer::toPathValue($modId),
+                $resourcePath
+            );
+        }
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
+        }
+        // this endpoint requires API key authentication
+        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
+        if ($apiKey !== null) {
+            $headers['X-API-Key'] = $apiKey;
+        }
+        // this endpoint requires Bearer authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'DELETE',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation deleteModFromGroup
+     *
+     * Unlink a group from mod
+     *
+     * @param  string $modId A mod identifier or slug (required)
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The mod group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromGroup'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     */
+    public function deleteModFromGroup($modId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deleteModFromGroup'][0])
+    {
+        list($response) = $this->deleteModFromGroupWithHttpInfo($modId, $deletePackFromGroupRequest, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation deleteModFromGroupWithHttpInfo
+     *
+     * Unlink a group from mod
+     *
+     * @param  string $modId A mod identifier or slug (required)
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The mod group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromGroup'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function deleteModFromGroupWithHttpInfo($modId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deleteModFromGroup'][0])
+    {
+        $request = $this->deleteModFromGroupRequest($modId, $deletePackFromGroupRequest, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            switch($statusCode) {
+                case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -3529,33 +4989,6 @@ class ModApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -3622,6 +5055,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -3654,34 +5095,26 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
     }
 
     /**
-     * Operation deleteModFromTeamAsync
+     * Operation deleteModFromGroupAsync
      *
-     * Unlink a team from mod
+     * Unlink a group from mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The mod team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The mod group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteModFromTeamAsync($modId, $modTeamParams, string $contentType = self::contentTypes['deleteModFromTeam'][0])
+    public function deleteModFromGroupAsync($modId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deleteModFromGroup'][0])
     {
-        return $this->deleteModFromTeamAsyncWithHttpInfo($modId, $modTeamParams, $contentType)
+        return $this->deleteModFromGroupAsyncWithHttpInfo($modId, $deletePackFromGroupRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -3690,21 +5123,21 @@ class ModApi
     }
 
     /**
-     * Operation deleteModFromTeamAsyncWithHttpInfo
+     * Operation deleteModFromGroupAsyncWithHttpInfo
      *
-     * Unlink a team from mod
+     * Unlink a group from mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The mod team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The mod group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteModFromTeamAsyncWithHttpInfo($modId, $modTeamParams, string $contentType = self::contentTypes['deleteModFromTeam'][0])
+    public function deleteModFromGroupAsyncWithHttpInfo($modId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deleteModFromGroup'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteModFromTeamRequest($modId, $modTeamParams, $contentType);
+        $request = $this->deleteModFromGroupRequest($modId, $deletePackFromGroupRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -3743,34 +5176,34 @@ class ModApi
     }
 
     /**
-     * Create request for operation 'deleteModFromTeam'
+     * Create request for operation 'deleteModFromGroup'
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The mod team data to unlink (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\DeletePackFromGroupRequest $deletePackFromGroupRequest The mod group data to unlink (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteModFromTeamRequest($modId, $modTeamParams, string $contentType = self::contentTypes['deleteModFromTeam'][0])
+    public function deleteModFromGroupRequest($modId, $deletePackFromGroupRequest, string $contentType = self::contentTypes['deleteModFromGroup'][0])
     {
 
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $modId when calling deleteModFromTeam'
+                'Missing the required parameter $modId when calling deleteModFromGroup'
             );
         }
 
-        // verify the required parameter 'modTeamParams' is set
-        if ($modTeamParams === null || (is_array($modTeamParams) && count($modTeamParams) === 0)) {
+        // verify the required parameter 'deletePackFromGroupRequest' is set
+        if ($deletePackFromGroupRequest === null || (is_array($deletePackFromGroupRequest) && count($deletePackFromGroupRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $modTeamParams when calling deleteModFromTeam'
+                'Missing the required parameter $deletePackFromGroupRequest when calling deleteModFromGroup'
             );
         }
 
 
-        $resourcePath = '/mods/{mod_id}/teams';
+        $resourcePath = '/mods/{mod_id}/groups';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -3796,12 +5229,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($modTeamParams)) {
+        if (isset($deletePackFromGroupRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($modTeamParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($deletePackFromGroupRequest));
             } else {
-                $httpBody = $modTeamParams;
+                $httpBody = $deletePackFromGroupRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -3827,11 +5260,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -3873,16 +5301,16 @@ class ModApi
      * Unlink a user from mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The mod user data to unlink (required)
+     * @param  \Kleister\Model\DeletePackFromUserRequest $deletePackFromUserRequest The mod user data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteModFromUser($modId, $modUserParams, string $contentType = self::contentTypes['deleteModFromUser'][0])
+    public function deleteModFromUser($modId, $deletePackFromUserRequest, string $contentType = self::contentTypes['deleteModFromUser'][0])
     {
-        list($response) = $this->deleteModFromUserWithHttpInfo($modId, $modUserParams, $contentType);
+        list($response) = $this->deleteModFromUserWithHttpInfo($modId, $deletePackFromUserRequest, $contentType);
         return $response;
     }
 
@@ -3892,16 +5320,16 @@ class ModApi
      * Unlink a user from mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The mod user data to unlink (required)
+     * @param  \Kleister\Model\DeletePackFromUserRequest $deletePackFromUserRequest The mod user data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteModFromUserWithHttpInfo($modId, $modUserParams, string $contentType = self::contentTypes['deleteModFromUser'][0])
+    public function deleteModFromUserWithHttpInfo($modId, $deletePackFromUserRequest, string $contentType = self::contentTypes['deleteModFromUser'][0])
     {
-        $request = $this->deleteModFromUserRequest($modId, $modUserParams, $contentType);
+        $request = $this->deleteModFromUserRequest($modId, $deletePackFromUserRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -3940,6 +5368,33 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -4048,33 +5503,6 @@ class ModApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -4141,6 +5569,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -4173,14 +5609,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -4192,15 +5620,15 @@ class ModApi
      * Unlink a user from mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The mod user data to unlink (required)
+     * @param  \Kleister\Model\DeletePackFromUserRequest $deletePackFromUserRequest The mod user data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteModFromUserAsync($modId, $modUserParams, string $contentType = self::contentTypes['deleteModFromUser'][0])
+    public function deleteModFromUserAsync($modId, $deletePackFromUserRequest, string $contentType = self::contentTypes['deleteModFromUser'][0])
     {
-        return $this->deleteModFromUserAsyncWithHttpInfo($modId, $modUserParams, $contentType)
+        return $this->deleteModFromUserAsyncWithHttpInfo($modId, $deletePackFromUserRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -4214,16 +5642,16 @@ class ModApi
      * Unlink a user from mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The mod user data to unlink (required)
+     * @param  \Kleister\Model\DeletePackFromUserRequest $deletePackFromUserRequest The mod user data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteModFromUserAsyncWithHttpInfo($modId, $modUserParams, string $contentType = self::contentTypes['deleteModFromUser'][0])
+    public function deleteModFromUserAsyncWithHttpInfo($modId, $deletePackFromUserRequest, string $contentType = self::contentTypes['deleteModFromUser'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteModFromUserRequest($modId, $modUserParams, $contentType);
+        $request = $this->deleteModFromUserRequest($modId, $deletePackFromUserRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -4265,13 +5693,13 @@ class ModApi
      * Create request for operation 'deleteModFromUser'
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The mod user data to unlink (required)
+     * @param  \Kleister\Model\DeletePackFromUserRequest $deletePackFromUserRequest The mod user data to unlink (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteModFromUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteModFromUserRequest($modId, $modUserParams, string $contentType = self::contentTypes['deleteModFromUser'][0])
+    public function deleteModFromUserRequest($modId, $deletePackFromUserRequest, string $contentType = self::contentTypes['deleteModFromUser'][0])
     {
 
         // verify the required parameter 'modId' is set
@@ -4281,10 +5709,10 @@ class ModApi
             );
         }
 
-        // verify the required parameter 'modUserParams' is set
-        if ($modUserParams === null || (is_array($modUserParams) && count($modUserParams) === 0)) {
+        // verify the required parameter 'deletePackFromUserRequest' is set
+        if ($deletePackFromUserRequest === null || (is_array($deletePackFromUserRequest) && count($deletePackFromUserRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $modUserParams when calling deleteModFromUser'
+                'Missing the required parameter $deletePackFromUserRequest when calling deleteModFromUser'
             );
         }
 
@@ -4315,12 +5743,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($modUserParams)) {
+        if (isset($deletePackFromUserRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($modUserParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($deletePackFromUserRequest));
             } else {
-                $httpBody = $modUserParams;
+                $httpBody = $deletePackFromUserRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -4346,11 +5774,466 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
+        // this endpoint requires HTTP basic authentication
+        if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
+            $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
         }
+        // this endpoint requires API key authentication
+        $apiKey = $this->config->getApiKeyWithPrefix('X-API-Key');
+        if ($apiKey !== null) {
+            $headers['X-API-Key'] = $apiKey;
+        }
+        // this endpoint requires Bearer authentication (access token)
+        if (!empty($this->config->getAccessToken())) {
+            $headers['Authorization'] = 'Bearer ' . $this->config->getAccessToken();
+        }
+
+        $defaultHeaders = [];
+        if ($this->config->getUserAgent()) {
+            $defaultHeaders['User-Agent'] = $this->config->getUserAgent();
+        }
+
+        $headers = array_merge(
+            $defaultHeaders,
+            $headerParams,
+            $headers
+        );
+
+        $operationHost = $this->config->getHost();
+        $query = ObjectSerializer::buildQuery($queryParams);
+        return new Request(
+            'DELETE',
+            $operationHost . $resourcePath . ($query ? "?{$query}" : ''),
+            $headers,
+            $httpBody
+        );
+    }
+
+    /**
+     * Operation deletePackAvatar
+     *
+     * Delete the avatar for the defined pack
+     *
+     * @param  string $packId A pack identifier or slug (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackAvatar'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return \Kleister\Model\PackAvatar|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     */
+    public function deletePackAvatar($packId, string $contentType = self::contentTypes['deletePackAvatar'][0])
+    {
+        list($response) = $this->deletePackAvatarWithHttpInfo($packId, $contentType);
+        return $response;
+    }
+
+    /**
+     * Operation deletePackAvatarWithHttpInfo
+     *
+     * Delete the avatar for the defined pack
+     *
+     * @param  string $packId A pack identifier or slug (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackAvatar'] to see the possible values for this operation
+     *
+     * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
+     * @throws \InvalidArgumentException
+     * @return array of \Kleister\Model\PackAvatar|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     */
+    public function deletePackAvatarWithHttpInfo($packId, string $contentType = self::contentTypes['deletePackAvatar'][0])
+    {
+        $request = $this->deletePackAvatarRequest($packId, $contentType);
+
+        try {
+            $options = $this->createHttpClientOption();
+            try {
+                $response = $this->client->send($request, $options);
+            } catch (RequestException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    $e->getResponse() ? $e->getResponse()->getHeaders() : null,
+                    $e->getResponse() ? (string) $e->getResponse()->getBody() : null
+                );
+            } catch (ConnectException $e) {
+                throw new ApiException(
+                    "[{$e->getCode()}] {$e->getMessage()}",
+                    (int) $e->getCode(),
+                    null,
+                    null
+                );
+            }
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode < 200 || $statusCode > 299) {
+                throw new ApiException(
+                    sprintf(
+                        '[%d] Error connecting to the API (%s)',
+                        $statusCode,
+                        (string) $request->getUri()
+                    ),
+                    $statusCode,
+                    $response->getHeaders(),
+                    (string) $response->getBody()
+                );
+            }
+
+            switch($statusCode) {
+                case 200:
+                    if ('\Kleister\Model\PackAvatar' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\PackAvatar' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\PackAvatar', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 403:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 404:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 500:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+            }
+
+            $returnType = '\Kleister\Model\PackAvatar';
+            if ($returnType === '\SplFileObject') {
+                $content = $response->getBody(); //stream goes to serializer
+            } else {
+                $content = (string) $response->getBody();
+                if ($returnType !== 'string') {
+                    try {
+                        $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                    } catch (\JsonException $exception) {
+                        throw new ApiException(
+                            sprintf(
+                                'Error JSON decoding server response (%s)',
+                                $request->getUri()
+                            ),
+                            $statusCode,
+                            $response->getHeaders(),
+                            $content
+                        );
+                    }
+                }
+            }
+
+            return [
+                ObjectSerializer::deserialize($content, $returnType, []),
+                $response->getStatusCode(),
+                $response->getHeaders()
+            ];
+
+        } catch (ApiException $e) {
+            switch ($e->getCode()) {
+                case 200:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\PackAvatar',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 403:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 404:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+                case 500:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
+            }
+            throw $e;
+        }
+    }
+
+    /**
+     * Operation deletePackAvatarAsync
+     *
+     * Delete the avatar for the defined pack
+     *
+     * @param  string $packId A pack identifier or slug (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function deletePackAvatarAsync($packId, string $contentType = self::contentTypes['deletePackAvatar'][0])
+    {
+        return $this->deletePackAvatarAsyncWithHttpInfo($packId, $contentType)
+            ->then(
+                function ($response) {
+                    return $response[0];
+                }
+            );
+    }
+
+    /**
+     * Operation deletePackAvatarAsyncWithHttpInfo
+     *
+     * Delete the avatar for the defined pack
+     *
+     * @param  string $packId A pack identifier or slug (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Promise\PromiseInterface
+     */
+    public function deletePackAvatarAsyncWithHttpInfo($packId, string $contentType = self::contentTypes['deletePackAvatar'][0])
+    {
+        $returnType = '\Kleister\Model\PackAvatar';
+        $request = $this->deletePackAvatarRequest($packId, $contentType);
+
+        return $this->client
+            ->sendAsync($request, $this->createHttpClientOption())
+            ->then(
+                function ($response) use ($returnType) {
+                    if ($returnType === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ($returnType !== 'string') {
+                            $content = json_decode($content);
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, $returnType, []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                },
+                function ($exception) {
+                    $response = $exception->getResponse();
+                    $statusCode = $response->getStatusCode();
+                    throw new ApiException(
+                        sprintf(
+                            '[%d] Error connecting to the API (%s)',
+                            $statusCode,
+                            $exception->getRequest()->getUri()
+                        ),
+                        $statusCode,
+                        $response->getHeaders(),
+                        (string) $response->getBody()
+                    );
+                }
+            );
+    }
+
+    /**
+     * Create request for operation 'deletePackAvatar'
+     *
+     * @param  string $packId A pack identifier or slug (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deletePackAvatar'] to see the possible values for this operation
+     *
+     * @throws \InvalidArgumentException
+     * @return \GuzzleHttp\Psr7\Request
+     */
+    public function deletePackAvatarRequest($packId, string $contentType = self::contentTypes['deletePackAvatar'][0])
+    {
+
+        // verify the required parameter 'packId' is set
+        if ($packId === null || (is_array($packId) && count($packId) === 0)) {
+            throw new \InvalidArgumentException(
+                'Missing the required parameter $packId when calling deletePackAvatar'
+            );
+        }
+
+
+        $resourcePath = '/packs/{pack_id}/avatar';
+        $formParams = [];
+        $queryParams = [];
+        $headerParams = [];
+        $httpBody = '';
+        $multipart = false;
+
+
+
+        // path params
+        if ($packId !== null) {
+            $resourcePath = str_replace(
+                '{' . 'pack_id' . '}',
+                ObjectSerializer::toPathValue($packId),
+                $resourcePath
+            );
+        }
+
+
+        $headers = $this->headerSelector->selectHeaders(
+            ['application/json', ],
+            $contentType,
+            $multipart
+        );
+
+        // for model (json/xml)
+        if (count($formParams) > 0) {
+            if ($multipart) {
+                $multipartContents = [];
+                foreach ($formParams as $formParamName => $formParamValue) {
+                    $formParamValueItems = is_array($formParamValue) ? $formParamValue : [$formParamValue];
+                    foreach ($formParamValueItems as $formParamValueItem) {
+                        $multipartContents[] = [
+                            'name' => $formParamName,
+                            'contents' => $formParamValueItem
+                        ];
+                    }
+                }
+                // for HTTP post (form)
+                $httpBody = new MultipartStream($multipartContents);
+
+            } elseif (stripos($headers['Content-Type'], 'application/json') !== false) {
+                # if Content-Type contains "application/json", json_encode the form parameters
+                $httpBody = \GuzzleHttp\Utils::jsonEncode($formParams);
+            } else {
+                // for HTTP post (form)
+                $httpBody = ObjectSerializer::buildQuery($formParams);
+            }
+        }
+
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -4397,7 +6280,7 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function deleteVersion($modId, $versionId, string $contentType = self::contentTypes['deleteVersion'][0])
     {
@@ -4416,7 +6299,7 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function deleteVersionWithHttpInfo($modId, $versionId, string $contentType = self::contentTypes['deleteVersion'][0])
     {
@@ -4593,33 +6476,6 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Notification';
@@ -4685,14 +6541,6 @@ class ModApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -4866,11 +6714,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -4913,16 +6756,16 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $versionBuildParams The version build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The version build data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteVersionFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteVersionFromBuild($modId, $versionId, $versionBuildParams, string $contentType = self::contentTypes['deleteVersionFromBuild'][0])
+    public function deleteVersionFromBuild($modId, $versionId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteVersionFromBuild'][0])
     {
-        list($response) = $this->deleteVersionFromBuildWithHttpInfo($modId, $versionId, $versionBuildParams, $contentType);
+        list($response) = $this->deleteVersionFromBuildWithHttpInfo($modId, $versionId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -4933,16 +6776,16 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $versionBuildParams The version build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The version build data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteVersionFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteVersionFromBuildWithHttpInfo($modId, $versionId, $versionBuildParams, string $contentType = self::contentTypes['deleteVersionFromBuild'][0])
+    public function deleteVersionFromBuildWithHttpInfo($modId, $versionId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteVersionFromBuild'][0])
     {
-        $request = $this->deleteVersionFromBuildRequest($modId, $versionId, $versionBuildParams, $contentType);
+        $request = $this->deleteVersionFromBuildRequest($modId, $versionId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -4981,6 +6824,33 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -5089,33 +6959,6 @@ class ModApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -5182,6 +7025,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -5214,14 +7065,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -5234,15 +7077,15 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $versionBuildParams The version build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The version build data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteVersionFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteVersionFromBuildAsync($modId, $versionId, $versionBuildParams, string $contentType = self::contentTypes['deleteVersionFromBuild'][0])
+    public function deleteVersionFromBuildAsync($modId, $versionId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteVersionFromBuild'][0])
     {
-        return $this->deleteVersionFromBuildAsyncWithHttpInfo($modId, $versionId, $versionBuildParams, $contentType)
+        return $this->deleteVersionFromBuildAsyncWithHttpInfo($modId, $versionId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -5257,16 +7100,16 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $versionBuildParams The version build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The version build data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteVersionFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteVersionFromBuildAsyncWithHttpInfo($modId, $versionId, $versionBuildParams, string $contentType = self::contentTypes['deleteVersionFromBuild'][0])
+    public function deleteVersionFromBuildAsyncWithHttpInfo($modId, $versionId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteVersionFromBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteVersionFromBuildRequest($modId, $versionId, $versionBuildParams, $contentType);
+        $request = $this->deleteVersionFromBuildRequest($modId, $versionId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -5309,13 +7152,13 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\VersionBuildParams $versionBuildParams The version build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The version build data to create or delete (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteVersionFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteVersionFromBuildRequest($modId, $versionId, $versionBuildParams, string $contentType = self::contentTypes['deleteVersionFromBuild'][0])
+    public function deleteVersionFromBuildRequest($modId, $versionId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteVersionFromBuild'][0])
     {
 
         // verify the required parameter 'modId' is set
@@ -5332,10 +7175,10 @@ class ModApi
             );
         }
 
-        // verify the required parameter 'versionBuildParams' is set
-        if ($versionBuildParams === null || (is_array($versionBuildParams) && count($versionBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $versionBuildParams when calling deleteVersionFromBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling deleteVersionFromBuild'
             );
         }
 
@@ -5374,12 +7217,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($versionBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($versionBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $versionBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -5405,11 +7248,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -5446,48 +7284,48 @@ class ModApi
     }
 
     /**
-     * Operation listModTeams
+     * Operation listModGroups
      *
-     * Fetch all teams attached to mod
+     * Fetch all groups attached to mod
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listModTeams'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listModGroups'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\ModTeams|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListModGroups200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listModTeams($modId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModTeams'][0])
+    public function listModGroups($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModGroups'][0])
     {
-        list($response) = $this->listModTeamsWithHttpInfo($modId, $search, $sort, $order, $limit, $offset, $contentType);
+        list($response) = $this->listModGroupsWithHttpInfo($modId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
     }
 
     /**
-     * Operation listModTeamsWithHttpInfo
+     * Operation listModGroupsWithHttpInfo
      *
-     * Fetch all teams attached to mod
+     * Fetch all groups attached to mod
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listModTeams'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listModGroups'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\ModTeams|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListModGroups200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listModTeamsWithHttpInfo($modId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModTeams'][0])
+    public function listModGroupsWithHttpInfo($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModGroups'][0])
     {
-        $request = $this->listModTeamsRequest($modId, $search, $sort, $order, $limit, $offset, $contentType);
+        $request = $this->listModGroupsRequest($modId, $search, $sort, $order, $limit, $offset, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -5526,11 +7364,11 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\ModTeams' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListModGroups200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\ModTeams' !== 'string') {
+                        if ('\Kleister\Model\ListModGroups200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -5548,7 +7386,7 @@ class ModApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\ModTeams', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListModGroups200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -5633,36 +7471,9 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\ModTeams';
+            $returnType = '\Kleister\Model\ListModGroups200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -5695,7 +7506,7 @@ class ModApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\ModTeams',
+                        '\Kleister\Model\ListModGroups200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -5724,38 +7535,30 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
     }
 
     /**
-     * Operation listModTeamsAsync
+     * Operation listModGroupsAsync
      *
-     * Fetch all teams attached to mod
+     * Fetch all groups attached to mod
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listModTeams'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listModGroups'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listModTeamsAsync($modId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModTeams'][0])
+    public function listModGroupsAsync($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModGroups'][0])
     {
-        return $this->listModTeamsAsyncWithHttpInfo($modId, $search, $sort, $order, $limit, $offset, $contentType)
+        return $this->listModGroupsAsyncWithHttpInfo($modId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -5764,25 +7567,25 @@ class ModApi
     }
 
     /**
-     * Operation listModTeamsAsyncWithHttpInfo
+     * Operation listModGroupsAsyncWithHttpInfo
      *
-     * Fetch all teams attached to mod
+     * Fetch all groups attached to mod
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listModTeams'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listModGroups'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listModTeamsAsyncWithHttpInfo($modId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModTeams'][0])
+    public function listModGroupsAsyncWithHttpInfo($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModGroups'][0])
     {
-        $returnType = '\Kleister\Model\ModTeams';
-        $request = $this->listModTeamsRequest($modId, $search, $sort, $order, $limit, $offset, $contentType);
+        $returnType = '\Kleister\Model\ListModGroups200Response';
+        $request = $this->listModGroupsRequest($modId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -5821,26 +7624,26 @@ class ModApi
     }
 
     /**
-     * Create request for operation 'listModTeams'
+     * Create request for operation 'listModGroups'
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listModTeams'] to see the possible values for this operation
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['listModGroups'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listModTeamsRequest($modId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModTeams'][0])
+    public function listModGroupsRequest($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModGroups'][0])
     {
 
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $modId when calling listModTeams'
+                'Missing the required parameter $modId when calling listModGroups'
             );
         }
 
@@ -5850,7 +7653,7 @@ class ModApi
 
 
 
-        $resourcePath = '/mods/{mod_id}/teams';
+        $resourcePath = '/mods/{mod_id}/groups';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -5945,11 +7748,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -5992,7 +7790,7 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6000,9 +7798,9 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\ModUsers|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListModUsers200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listModUsers($modId, $search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModUsers'][0])
+    public function listModUsers($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModUsers'][0])
     {
         list($response) = $this->listModUsersWithHttpInfo($modId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -6015,7 +7813,7 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6023,9 +7821,9 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\ModUsers|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListModUsers200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listModUsersWithHttpInfo($modId, $search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModUsers'][0])
+    public function listModUsersWithHttpInfo($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModUsers'][0])
     {
         $request = $this->listModUsersRequest($modId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -6066,11 +7864,11 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\ModUsers' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListModUsers200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\ModUsers' !== 'string') {
+                        if ('\Kleister\Model\ListModUsers200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -6088,7 +7886,7 @@ class ModApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\ModUsers', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListModUsers200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -6173,36 +7971,9 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\ModUsers';
+            $returnType = '\Kleister\Model\ListModUsers200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -6235,7 +8006,7 @@ class ModApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\ModUsers',
+                        '\Kleister\Model\ListModUsers200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6264,14 +8035,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -6284,7 +8047,7 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6293,7 +8056,7 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listModUsersAsync($modId, $search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModUsers'][0])
+    public function listModUsersAsync($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModUsers'][0])
     {
         return $this->listModUsersAsyncWithHttpInfo($modId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -6310,7 +8073,7 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6319,9 +8082,9 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listModUsersAsyncWithHttpInfo($modId, $search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModUsers'][0])
+    public function listModUsersAsyncWithHttpInfo($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModUsers'][0])
     {
-        $returnType = '\Kleister\Model\ModUsers';
+        $returnType = '\Kleister\Model\ListModUsers200Response';
         $request = $this->listModUsersRequest($modId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -6365,7 +8128,7 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'username')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6374,7 +8137,7 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listModUsersRequest($modId, $search = null, $sort = 'username', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModUsers'][0])
+    public function listModUsersRequest($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listModUsers'][0])
     {
 
         // verify the required parameter 'modId' is set
@@ -6485,11 +8248,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -6531,7 +8289,7 @@ class ModApi
      * Fetch all available mods
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6539,9 +8297,9 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Mods|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListMods200Response|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listMods($search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMods'][0])
+    public function listMods($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMods'][0])
     {
         list($response) = $this->listModsWithHttpInfo($search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -6553,7 +8311,7 @@ class ModApi
      * Fetch all available mods
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6561,9 +8319,9 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Mods|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListMods200Response|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listModsWithHttpInfo($search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMods'][0])
+    public function listModsWithHttpInfo($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMods'][0])
     {
         $request = $this->listModsRequest($search, $sort, $order, $limit, $offset, $contentType);
 
@@ -6604,11 +8362,11 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Mods' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListMods200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Mods' !== 'string') {
+                        if ('\Kleister\Model\ListMods200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -6626,7 +8384,7 @@ class ModApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Mods', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListMods200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -6684,36 +8442,9 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\Mods';
+            $returnType = '\Kleister\Model\ListMods200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -6746,7 +8477,7 @@ class ModApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\Mods',
+                        '\Kleister\Model\ListMods200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -6767,14 +8498,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -6786,7 +8509,7 @@ class ModApi
      * Fetch all available mods
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6795,7 +8518,7 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listModsAsync($search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMods'][0])
+    public function listModsAsync($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMods'][0])
     {
         return $this->listModsAsyncWithHttpInfo($search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -6811,7 +8534,7 @@ class ModApi
      * Fetch all available mods
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6820,9 +8543,9 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listModsAsyncWithHttpInfo($search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMods'][0])
+    public function listModsAsyncWithHttpInfo($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMods'][0])
     {
-        $returnType = '\Kleister\Model\Mods';
+        $returnType = '\Kleister\Model\ListMods200Response';
         $request = $this->listModsRequest($search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -6865,7 +8588,7 @@ class ModApi
      * Create request for operation 'listMods'
      *
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -6874,7 +8597,7 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listModsRequest($search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMods'][0])
+    public function listModsRequest($search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listMods'][0])
     {
 
 
@@ -6970,11 +8693,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -7018,7 +8736,7 @@ class ModApi
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7026,9 +8744,9 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\VersionBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListVersionBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listVersionBuilds($modId, $versionId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersionBuilds'][0])
+    public function listVersionBuilds($modId, $versionId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersionBuilds'][0])
     {
         list($response) = $this->listVersionBuildsWithHttpInfo($modId, $versionId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -7042,7 +8760,7 @@ class ModApi
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7050,9 +8768,9 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\VersionBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListVersionBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listVersionBuildsWithHttpInfo($modId, $versionId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersionBuilds'][0])
+    public function listVersionBuildsWithHttpInfo($modId, $versionId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersionBuilds'][0])
     {
         $request = $this->listVersionBuildsRequest($modId, $versionId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -7093,11 +8811,11 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\VersionBuilds' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListVersionBuilds200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\VersionBuilds' !== 'string') {
+                        if ('\Kleister\Model\ListVersionBuilds200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -7115,7 +8833,7 @@ class ModApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\VersionBuilds', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListVersionBuilds200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -7200,36 +8918,9 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\VersionBuilds';
+            $returnType = '\Kleister\Model\ListVersionBuilds200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -7262,7 +8953,7 @@ class ModApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\VersionBuilds',
+                        '\Kleister\Model\ListVersionBuilds200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7291,14 +8982,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -7312,7 +8995,7 @@ class ModApi
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7321,7 +9004,7 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listVersionBuildsAsync($modId, $versionId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersionBuilds'][0])
+    public function listVersionBuildsAsync($modId, $versionId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersionBuilds'][0])
     {
         return $this->listVersionBuildsAsyncWithHttpInfo($modId, $versionId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -7339,7 +9022,7 @@ class ModApi
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7348,9 +9031,9 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listVersionBuildsAsyncWithHttpInfo($modId, $versionId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersionBuilds'][0])
+    public function listVersionBuildsAsyncWithHttpInfo($modId, $versionId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersionBuilds'][0])
     {
-        $returnType = '\Kleister\Model\VersionBuilds';
+        $returnType = '\Kleister\Model\ListVersionBuilds200Response';
         $request = $this->listVersionBuildsRequest($modId, $versionId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -7395,7 +9078,7 @@ class ModApi
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7404,7 +9087,7 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listVersionBuildsRequest($modId, $versionId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersionBuilds'][0])
+    public function listVersionBuildsRequest($modId, $versionId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersionBuilds'][0])
     {
 
         // verify the required parameter 'modId' is set
@@ -7530,11 +9213,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -7577,7 +9255,7 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7585,9 +9263,9 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Versions|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListVersions200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listVersions($modId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersions'][0])
+    public function listVersions($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersions'][0])
     {
         list($response) = $this->listVersionsWithHttpInfo($modId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -7600,7 +9278,7 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7608,9 +9286,9 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Versions|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListVersions200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listVersionsWithHttpInfo($modId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersions'][0])
+    public function listVersionsWithHttpInfo($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersions'][0])
     {
         $request = $this->listVersionsRequest($modId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -7651,11 +9329,11 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Versions' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListVersions200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Versions' !== 'string') {
+                        if ('\Kleister\Model\ListVersions200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -7673,7 +9351,7 @@ class ModApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Versions', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListVersions200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -7758,36 +9436,9 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\Versions';
+            $returnType = '\Kleister\Model\ListVersions200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -7820,7 +9471,7 @@ class ModApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\Versions',
+                        '\Kleister\Model\ListVersions200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -7849,14 +9500,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -7869,7 +9512,7 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7878,7 +9521,7 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listVersionsAsync($modId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersions'][0])
+    public function listVersionsAsync($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersions'][0])
     {
         return $this->listVersionsAsyncWithHttpInfo($modId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -7895,7 +9538,7 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7904,9 +9547,9 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listVersionsAsyncWithHttpInfo($modId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersions'][0])
+    public function listVersionsAsyncWithHttpInfo($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersions'][0])
     {
-        $returnType = '\Kleister\Model\Versions';
+        $returnType = '\Kleister\Model\ListVersions200Response';
         $request = $this->listVersionsRequest($modId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -7950,7 +9593,7 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -7959,7 +9602,7 @@ class ModApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listVersionsRequest($modId, $search = null, $sort = 'name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersions'][0])
+    public function listVersionsRequest($modId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listVersions'][0])
     {
 
         // verify the required parameter 'modId' is set
@@ -8070,11 +9713,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -8111,40 +9749,40 @@ class ModApi
     }
 
     /**
-     * Operation permitModTeam
+     * Operation permitModGroup
      *
-     * Update team perms for mod
+     * Update group perms for mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The mod group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function permitModTeam($modId, $modTeamParams, string $contentType = self::contentTypes['permitModTeam'][0])
+    public function permitModGroup($modId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitModGroup'][0])
     {
-        list($response) = $this->permitModTeamWithHttpInfo($modId, $modTeamParams, $contentType);
+        list($response) = $this->permitModGroupWithHttpInfo($modId, $permitPackGroupRequest, $contentType);
         return $response;
     }
 
     /**
-     * Operation permitModTeamWithHttpInfo
+     * Operation permitModGroupWithHttpInfo
      *
-     * Update team perms for mod
+     * Update group perms for mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The mod group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModGroup'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitModTeamWithHttpInfo($modId, $modTeamParams, string $contentType = self::contentTypes['permitModTeam'][0])
+    public function permitModGroupWithHttpInfo($modId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitModGroup'][0])
     {
-        $request = $this->permitModTeamRequest($modId, $modTeamParams, $contentType);
+        $request = $this->permitModGroupRequest($modId, $permitPackGroupRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -8183,6 +9821,33 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -8318,33 +9983,6 @@ class ModApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -8411,6 +10049,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -8451,34 +10097,26 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
     }
 
     /**
-     * Operation permitModTeamAsync
+     * Operation permitModGroupAsync
      *
-     * Update team perms for mod
+     * Update group perms for mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The mod group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitModTeamAsync($modId, $modTeamParams, string $contentType = self::contentTypes['permitModTeam'][0])
+    public function permitModGroupAsync($modId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitModGroup'][0])
     {
-        return $this->permitModTeamAsyncWithHttpInfo($modId, $modTeamParams, $contentType)
+        return $this->permitModGroupAsyncWithHttpInfo($modId, $permitPackGroupRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -8487,21 +10125,21 @@ class ModApi
     }
 
     /**
-     * Operation permitModTeamAsyncWithHttpInfo
+     * Operation permitModGroupAsyncWithHttpInfo
      *
-     * Update team perms for mod
+     * Update group perms for mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The mod group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitModTeamAsyncWithHttpInfo($modId, $modTeamParams, string $contentType = self::contentTypes['permitModTeam'][0])
+    public function permitModGroupAsyncWithHttpInfo($modId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitModGroup'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->permitModTeamRequest($modId, $modTeamParams, $contentType);
+        $request = $this->permitModGroupRequest($modId, $permitPackGroupRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -8540,34 +10178,34 @@ class ModApi
     }
 
     /**
-     * Create request for operation 'permitModTeam'
+     * Create request for operation 'permitModGroup'
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModTeamParams $modTeamParams The team data to update (required)
-     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModTeam'] to see the possible values for this operation
+     * @param  \Kleister\Model\PermitPackGroupRequest $permitPackGroupRequest The mod group data to permit (required)
+     * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModGroup'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function permitModTeamRequest($modId, $modTeamParams, string $contentType = self::contentTypes['permitModTeam'][0])
+    public function permitModGroupRequest($modId, $permitPackGroupRequest, string $contentType = self::contentTypes['permitModGroup'][0])
     {
 
         // verify the required parameter 'modId' is set
         if ($modId === null || (is_array($modId) && count($modId) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $modId when calling permitModTeam'
+                'Missing the required parameter $modId when calling permitModGroup'
             );
         }
 
-        // verify the required parameter 'modTeamParams' is set
-        if ($modTeamParams === null || (is_array($modTeamParams) && count($modTeamParams) === 0)) {
+        // verify the required parameter 'permitPackGroupRequest' is set
+        if ($permitPackGroupRequest === null || (is_array($permitPackGroupRequest) && count($permitPackGroupRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $modTeamParams when calling permitModTeam'
+                'Missing the required parameter $permitPackGroupRequest when calling permitModGroup'
             );
         }
 
 
-        $resourcePath = '/mods/{mod_id}/teams';
+        $resourcePath = '/mods/{mod_id}/groups';
         $formParams = [];
         $queryParams = [];
         $headerParams = [];
@@ -8593,12 +10231,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($modTeamParams)) {
+        if (isset($permitPackGroupRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($modTeamParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitPackGroupRequest));
             } else {
-                $httpBody = $modTeamParams;
+                $httpBody = $permitPackGroupRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -8624,11 +10262,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -8670,16 +10303,16 @@ class ModApi
      * Update user perms for mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The user data to update (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The mod user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function permitModUser($modId, $modUserParams, string $contentType = self::contentTypes['permitModUser'][0])
+    public function permitModUser($modId, $permitPackUserRequest, string $contentType = self::contentTypes['permitModUser'][0])
     {
-        list($response) = $this->permitModUserWithHttpInfo($modId, $modUserParams, $contentType);
+        list($response) = $this->permitModUserWithHttpInfo($modId, $permitPackUserRequest, $contentType);
         return $response;
     }
 
@@ -8689,16 +10322,16 @@ class ModApi
      * Update user perms for mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The user data to update (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The mod user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModUser'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function permitModUserWithHttpInfo($modId, $modUserParams, string $contentType = self::contentTypes['permitModUser'][0])
+    public function permitModUserWithHttpInfo($modId, $permitPackUserRequest, string $contentType = self::contentTypes['permitModUser'][0])
     {
-        $request = $this->permitModUserRequest($modId, $modUserParams, $contentType);
+        $request = $this->permitModUserRequest($modId, $permitPackUserRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -8737,6 +10370,33 @@ class ModApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -8872,33 +10532,6 @@ class ModApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -8965,6 +10598,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -9005,14 +10646,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -9024,15 +10657,15 @@ class ModApi
      * Update user perms for mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The user data to update (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The mod user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitModUserAsync($modId, $modUserParams, string $contentType = self::contentTypes['permitModUser'][0])
+    public function permitModUserAsync($modId, $permitPackUserRequest, string $contentType = self::contentTypes['permitModUser'][0])
     {
-        return $this->permitModUserAsyncWithHttpInfo($modId, $modUserParams, $contentType)
+        return $this->permitModUserAsyncWithHttpInfo($modId, $permitPackUserRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -9046,16 +10679,16 @@ class ModApi
      * Update user perms for mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The user data to update (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The mod user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function permitModUserAsyncWithHttpInfo($modId, $modUserParams, string $contentType = self::contentTypes['permitModUser'][0])
+    public function permitModUserAsyncWithHttpInfo($modId, $permitPackUserRequest, string $contentType = self::contentTypes['permitModUser'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->permitModUserRequest($modId, $modUserParams, $contentType);
+        $request = $this->permitModUserRequest($modId, $permitPackUserRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -9097,13 +10730,13 @@ class ModApi
      * Create request for operation 'permitModUser'
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\ModUserParams $modUserParams The user data to update (required)
+     * @param  \Kleister\Model\PermitPackUserRequest $permitPackUserRequest The mod user data to permit (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['permitModUser'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function permitModUserRequest($modId, $modUserParams, string $contentType = self::contentTypes['permitModUser'][0])
+    public function permitModUserRequest($modId, $permitPackUserRequest, string $contentType = self::contentTypes['permitModUser'][0])
     {
 
         // verify the required parameter 'modId' is set
@@ -9113,10 +10746,10 @@ class ModApi
             );
         }
 
-        // verify the required parameter 'modUserParams' is set
-        if ($modUserParams === null || (is_array($modUserParams) && count($modUserParams) === 0)) {
+        // verify the required parameter 'permitPackUserRequest' is set
+        if ($permitPackUserRequest === null || (is_array($permitPackUserRequest) && count($permitPackUserRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $modUserParams when calling permitModUser'
+                'Missing the required parameter $permitPackUserRequest when calling permitModUser'
             );
         }
 
@@ -9147,12 +10780,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($modUserParams)) {
+        if (isset($permitPackUserRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($modUserParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($permitPackUserRequest));
             } else {
-                $httpBody = $modUserParams;
+                $httpBody = $permitPackUserRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -9178,11 +10811,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -9228,7 +10856,7 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Mod|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Mod|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function showMod($modId, string $contentType = self::contentTypes['showMod'][0])
     {
@@ -9246,7 +10874,7 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Mod|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Mod|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function showModWithHttpInfo($modId, string $contentType = self::contentTypes['showMod'][0])
     {
@@ -9396,33 +11024,6 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Mod';
@@ -9480,14 +11081,6 @@ class ModApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -9643,11 +11236,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -9694,7 +11282,7 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Version|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Version|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function showVersion($modId, $versionId, string $contentType = self::contentTypes['showVersion'][0])
     {
@@ -9713,7 +11301,7 @@ class ModApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Version|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Version|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function showVersionWithHttpInfo($modId, $versionId, string $contentType = self::contentTypes['showVersion'][0])
     {
@@ -9863,33 +11451,6 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Version';
@@ -9947,14 +11508,6 @@ class ModApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -10128,11 +11681,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -10174,16 +11722,16 @@ class ModApi
      * Update a specific mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\Mod $mod The mod data to update (required)
+     * @param  \Kleister\Model\CreateModRequest $createModRequest The mod data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateMod'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Mod|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function updateMod($modId, $mod, string $contentType = self::contentTypes['updateMod'][0])
+    public function updateMod($modId, $createModRequest, string $contentType = self::contentTypes['updateMod'][0])
     {
-        list($response) = $this->updateModWithHttpInfo($modId, $mod, $contentType);
+        list($response) = $this->updateModWithHttpInfo($modId, $createModRequest, $contentType);
         return $response;
     }
 
@@ -10193,16 +11741,16 @@ class ModApi
      * Update a specific mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\Mod $mod The mod data to update (required)
+     * @param  \Kleister\Model\CreateModRequest $createModRequest The mod data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateMod'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Mod|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updateModWithHttpInfo($modId, $mod, string $contentType = self::contentTypes['updateMod'][0])
+    public function updateModWithHttpInfo($modId, $createModRequest, string $contentType = self::contentTypes['updateMod'][0])
     {
-        $request = $this->updateModRequest($modId, $mod, $contentType);
+        $request = $this->updateModRequest($modId, $createModRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -10264,6 +11812,33 @@ class ModApi
 
                     return [
                         ObjectSerializer::deserialize($content, '\Kleister\Model\Mod', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -10349,33 +11924,6 @@ class ModApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -10442,6 +11990,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -10474,14 +12030,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -10493,15 +12041,15 @@ class ModApi
      * Update a specific mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\Mod $mod The mod data to update (required)
+     * @param  \Kleister\Model\CreateModRequest $createModRequest The mod data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateModAsync($modId, $mod, string $contentType = self::contentTypes['updateMod'][0])
+    public function updateModAsync($modId, $createModRequest, string $contentType = self::contentTypes['updateMod'][0])
     {
-        return $this->updateModAsyncWithHttpInfo($modId, $mod, $contentType)
+        return $this->updateModAsyncWithHttpInfo($modId, $createModRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -10515,16 +12063,16 @@ class ModApi
      * Update a specific mod
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\Mod $mod The mod data to update (required)
+     * @param  \Kleister\Model\CreateModRequest $createModRequest The mod data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateModAsyncWithHttpInfo($modId, $mod, string $contentType = self::contentTypes['updateMod'][0])
+    public function updateModAsyncWithHttpInfo($modId, $createModRequest, string $contentType = self::contentTypes['updateMod'][0])
     {
         $returnType = '\Kleister\Model\Mod';
-        $request = $this->updateModRequest($modId, $mod, $contentType);
+        $request = $this->updateModRequest($modId, $createModRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -10566,13 +12114,13 @@ class ModApi
      * Create request for operation 'updateMod'
      *
      * @param  string $modId A mod identifier or slug (required)
-     * @param  \Kleister\Model\Mod $mod The mod data to update (required)
+     * @param  \Kleister\Model\CreateModRequest $createModRequest The mod data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateMod'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function updateModRequest($modId, $mod, string $contentType = self::contentTypes['updateMod'][0])
+    public function updateModRequest($modId, $createModRequest, string $contentType = self::contentTypes['updateMod'][0])
     {
 
         // verify the required parameter 'modId' is set
@@ -10582,10 +12130,10 @@ class ModApi
             );
         }
 
-        // verify the required parameter 'mod' is set
-        if ($mod === null || (is_array($mod) && count($mod) === 0)) {
+        // verify the required parameter 'createModRequest' is set
+        if ($createModRequest === null || (is_array($createModRequest) && count($createModRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $mod when calling updateMod'
+                'Missing the required parameter $createModRequest when calling updateMod'
             );
         }
 
@@ -10616,12 +12164,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($mod)) {
+        if (isset($createModRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($mod));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($createModRequest));
             } else {
-                $httpBody = $mod;
+                $httpBody = $createModRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -10647,11 +12195,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -10694,16 +12237,16 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\Version $version The version data to update (required)
+     * @param  \Kleister\Model\CreateVersionRequest $createVersionRequest The version data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateVersion'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Version|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function updateVersion($modId, $versionId, $version, string $contentType = self::contentTypes['updateVersion'][0])
+    public function updateVersion($modId, $versionId, $createVersionRequest, string $contentType = self::contentTypes['updateVersion'][0])
     {
-        list($response) = $this->updateVersionWithHttpInfo($modId, $versionId, $version, $contentType);
+        list($response) = $this->updateVersionWithHttpInfo($modId, $versionId, $createVersionRequest, $contentType);
         return $response;
     }
 
@@ -10714,16 +12257,16 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\Version $version The version data to update (required)
+     * @param  \Kleister\Model\CreateVersionRequest $createVersionRequest The version data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateVersion'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Version|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function updateVersionWithHttpInfo($modId, $versionId, $version, string $contentType = self::contentTypes['updateVersion'][0])
+    public function updateVersionWithHttpInfo($modId, $versionId, $createVersionRequest, string $contentType = self::contentTypes['updateVersion'][0])
     {
-        $request = $this->updateVersionRequest($modId, $versionId, $version, $contentType);
+        $request = $this->updateVersionRequest($modId, $versionId, $createVersionRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -10788,6 +12331,33 @@ class ModApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
+                case 400:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
                 case 403:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
@@ -10870,33 +12440,6 @@ class ModApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -10963,6 +12506,14 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -10995,14 +12546,6 @@ class ModApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -11015,15 +12558,15 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\Version $version The version data to update (required)
+     * @param  \Kleister\Model\CreateVersionRequest $createVersionRequest The version data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateVersionAsync($modId, $versionId, $version, string $contentType = self::contentTypes['updateVersion'][0])
+    public function updateVersionAsync($modId, $versionId, $createVersionRequest, string $contentType = self::contentTypes['updateVersion'][0])
     {
-        return $this->updateVersionAsyncWithHttpInfo($modId, $versionId, $version, $contentType)
+        return $this->updateVersionAsyncWithHttpInfo($modId, $versionId, $createVersionRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -11038,16 +12581,16 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\Version $version The version data to update (required)
+     * @param  \Kleister\Model\CreateVersionRequest $createVersionRequest The version data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function updateVersionAsyncWithHttpInfo($modId, $versionId, $version, string $contentType = self::contentTypes['updateVersion'][0])
+    public function updateVersionAsyncWithHttpInfo($modId, $versionId, $createVersionRequest, string $contentType = self::contentTypes['updateVersion'][0])
     {
         $returnType = '\Kleister\Model\Version';
-        $request = $this->updateVersionRequest($modId, $versionId, $version, $contentType);
+        $request = $this->updateVersionRequest($modId, $versionId, $createVersionRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -11090,13 +12633,13 @@ class ModApi
      *
      * @param  string $modId A mod identifier or slug (required)
      * @param  string $versionId A version identifier or slug (required)
-     * @param  \Kleister\Model\Version $version The version data to update (required)
+     * @param  \Kleister\Model\CreateVersionRequest $createVersionRequest The version data to update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['updateVersion'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function updateVersionRequest($modId, $versionId, $version, string $contentType = self::contentTypes['updateVersion'][0])
+    public function updateVersionRequest($modId, $versionId, $createVersionRequest, string $contentType = self::contentTypes['updateVersion'][0])
     {
 
         // verify the required parameter 'modId' is set
@@ -11113,10 +12656,10 @@ class ModApi
             );
         }
 
-        // verify the required parameter 'version' is set
-        if ($version === null || (is_array($version) && count($version) === 0)) {
+        // verify the required parameter 'createVersionRequest' is set
+        if ($createVersionRequest === null || (is_array($createVersionRequest) && count($createVersionRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $version when calling updateVersion'
+                'Missing the required parameter $createVersionRequest when calling updateVersion'
             );
         }
 
@@ -11155,12 +12698,12 @@ class ModApi
         );
 
         // for model (json/xml)
-        if (isset($version)) {
+        if (isset($createVersionRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($version));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($createVersionRequest));
             } else {
-                $httpBody = $version;
+                $httpBody = $createVersionRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -11186,11 +12729,6 @@ class ModApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());

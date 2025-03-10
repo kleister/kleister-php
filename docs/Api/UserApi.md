@@ -4,32 +4,32 @@ All URIs are relative to https://try.kleister.eu/api/v1, except if the operation
 
 | Method | HTTP request | Description |
 | ------------- | ------------- | ------------- |
+| [**attachUserToGroup()**](UserApi.md#attachUserToGroup) | **POST** /users/{user_id}/groups | Attach a group to user |
 | [**attachUserToMod()**](UserApi.md#attachUserToMod) | **POST** /users/{user_id}/mods | Attach a mod to user |
 | [**attachUserToPack()**](UserApi.md#attachUserToPack) | **POST** /users/{user_id}/packs | Attach a pack to user |
-| [**attachUserToTeam()**](UserApi.md#attachUserToTeam) | **POST** /users/{user_id}/teams | Attach a team to user |
 | [**createUser()**](UserApi.md#createUser) | **POST** /users | Create a new user |
 | [**deleteUser()**](UserApi.md#deleteUser) | **DELETE** /users/{user_id} | Delete a specific user |
+| [**deleteUserFromGroup()**](UserApi.md#deleteUserFromGroup) | **DELETE** /users/{user_id}/groups | Unlink a group from user |
 | [**deleteUserFromMod()**](UserApi.md#deleteUserFromMod) | **DELETE** /users/{user_id}/mods | Unlink a mod from user |
 | [**deleteUserFromPack()**](UserApi.md#deleteUserFromPack) | **DELETE** /users/{user_id}/packs | Unlink a pack from user |
-| [**deleteUserFromTeam()**](UserApi.md#deleteUserFromTeam) | **DELETE** /users/{user_id}/teams | Unlink a team from user |
+| [**listUserGroups()**](UserApi.md#listUserGroups) | **GET** /users/{user_id}/groups | Fetch all groups attached to user |
 | [**listUserMods()**](UserApi.md#listUserMods) | **GET** /users/{user_id}/mods | Fetch all mods attached to user |
 | [**listUserPacks()**](UserApi.md#listUserPacks) | **GET** /users/{user_id}/packs | Fetch all packs attached to user |
-| [**listUserTeams()**](UserApi.md#listUserTeams) | **GET** /users/{user_id}/teams | Fetch all teams attached to user |
 | [**listUsers()**](UserApi.md#listUsers) | **GET** /users | Fetch all available users |
+| [**permitUserGroup()**](UserApi.md#permitUserGroup) | **PUT** /users/{user_id}/groups | Update group perms for user |
 | [**permitUserMod()**](UserApi.md#permitUserMod) | **PUT** /users/{user_id}/mods | Update mod perms for user |
 | [**permitUserPack()**](UserApi.md#permitUserPack) | **PUT** /users/{user_id}/packs | Update pack perms for user |
-| [**permitUserTeam()**](UserApi.md#permitUserTeam) | **PUT** /users/{user_id}/teams | Update team perms for user |
 | [**showUser()**](UserApi.md#showUser) | **GET** /users/{user_id} | Fetch a specific user |
 | [**updateUser()**](UserApi.md#updateUser) | **PUT** /users/{user_id} | Update a specific user |
 
 
-## `attachUserToMod()`
+## `attachUserToGroup()`
 
 ```php
-attachUserToMod($userId, $userModParams): \Kleister\Model\Notification
+attachUserToGroup($userId, $permitPackGroupRequest): \Kleister\Model\Notification
 ```
 
-Attach a mod to user
+Attach a group to user
 
 ### Example
 
@@ -37,11 +37,6 @@ Attach a mod to user
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -64,10 +59,80 @@ $apiInstance = new Kleister\Api\UserApi(
     $config
 );
 $userId = 'userId_example'; // string | A user identifier or slug
-$userModParams = new \Kleister\Model\UserModParams(); // \Kleister\Model\UserModParams | The user mod data to attach
+$permitPackGroupRequest = new \Kleister\Model\PermitPackGroupRequest(); // \Kleister\Model\PermitPackGroupRequest | The user group data to permit
 
 try {
-    $result = $apiInstance->attachUserToMod($userId, $userModParams);
+    $result = $apiInstance->attachUserToGroup($userId, $permitPackGroupRequest);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling UserApi->attachUserToGroup: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **userId** | **string**| A user identifier or slug | |
+| **permitPackGroupRequest** | [**\Kleister\Model\PermitPackGroupRequest**](../Model/PermitPackGroupRequest.md)| The user group data to permit | |
+
+### Return type
+
+[**\Kleister\Model\Notification**](../Model/Notification.md)
+
+### Authorization
+
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `attachUserToMod()`
+
+```php
+attachUserToMod($userId, $permitGroupModRequest): \Kleister\Model\Notification
+```
+
+Attach a mod to user
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+// Configure HTTP basic authorization: Basic
+$config = Kleister\Configuration::getDefaultConfiguration()
+              ->setUsername('YOUR_USERNAME')
+              ->setPassword('YOUR_PASSWORD');
+
+// Configure API key authorization: Header
+$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
+
+// Configure Bearer authorization: Bearer
+$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+
+$apiInstance = new Kleister\Api\UserApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$userId = 'userId_example'; // string | A user identifier or slug
+$permitGroupModRequest = new \Kleister\Model\PermitGroupModRequest(); // \Kleister\Model\PermitGroupModRequest | The user mod data to permit
+
+try {
+    $result = $apiInstance->attachUserToMod($userId, $permitGroupModRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->attachUserToMod: ', $e->getMessage(), PHP_EOL;
@@ -79,7 +144,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **userId** | **string**| A user identifier or slug | |
-| **userModParams** | [**\Kleister\Model\UserModParams**](../Model/UserModParams.md)| The user mod data to attach | |
+| **permitGroupModRequest** | [**\Kleister\Model\PermitGroupModRequest**](../Model/PermitGroupModRequest.md)| The user mod data to permit | |
 
 ### Return type
 
@@ -87,7 +152,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -101,7 +166,7 @@ try {
 ## `attachUserToPack()`
 
 ```php
-attachUserToPack($userId, $userPackParams): \Kleister\Model\Notification
+attachUserToPack($userId, $permitGroupPackRequest): \Kleister\Model\Notification
 ```
 
 Attach a pack to user
@@ -113,11 +178,6 @@ Attach a pack to user
 require_once(__DIR__ . '/vendor/autoload.php');
 
 
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
-
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
               ->setUsername('YOUR_USERNAME')
@@ -139,10 +199,10 @@ $apiInstance = new Kleister\Api\UserApi(
     $config
 );
 $userId = 'userId_example'; // string | A user identifier or slug
-$userPackParams = new \Kleister\Model\UserPackParams(); // \Kleister\Model\UserPackParams | The user pack data to attach
+$permitGroupPackRequest = new \Kleister\Model\PermitGroupPackRequest(); // \Kleister\Model\PermitGroupPackRequest | The user pack data to permit
 
 try {
-    $result = $apiInstance->attachUserToPack($userId, $userPackParams);
+    $result = $apiInstance->attachUserToPack($userId, $permitGroupPackRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->attachUserToPack: ', $e->getMessage(), PHP_EOL;
@@ -154,7 +214,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **userId** | **string**| A user identifier or slug | |
-| **userPackParams** | [**\Kleister\Model\UserPackParams**](../Model/UserPackParams.md)| The user pack data to attach | |
+| **permitGroupPackRequest** | [**\Kleister\Model\PermitGroupPackRequest**](../Model/PermitGroupPackRequest.md)| The user pack data to permit | |
 
 ### Return type
 
@@ -162,82 +222,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
-
-### HTTP request headers
-
-- **Content-Type**: `application/json`
-- **Accept**: `application/json`
-
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
-[[Back to Model list]](../../README.md#models)
-[[Back to README]](../../README.md)
-
-## `attachUserToTeam()`
-
-```php
-attachUserToTeam($userId, $userTeamParams): \Kleister\Model\Notification
-```
-
-Attach a team to user
-
-### Example
-
-```php
-<?php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
-
-// Configure HTTP basic authorization: Basic
-$config = Kleister\Configuration::getDefaultConfiguration()
-              ->setUsername('YOUR_USERNAME')
-              ->setPassword('YOUR_PASSWORD');
-
-// Configure API key authorization: Header
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
-
-// Configure Bearer authorization: Bearer
-$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
-
-
-$apiInstance = new Kleister\Api\UserApi(
-    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
-    // This is optional, `GuzzleHttp\Client` will be used as default.
-    new GuzzleHttp\Client(),
-    $config
-);
-$userId = 'userId_example'; // string | A user identifier or slug
-$userTeamParams = new \Kleister\Model\UserTeamParams(); // \Kleister\Model\UserTeamParams | The user team data to attach
-
-try {
-    $result = $apiInstance->attachUserToTeam($userId, $userTeamParams);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling UserApi->attachUserToTeam: ', $e->getMessage(), PHP_EOL;
-}
-```
-
-### Parameters
-
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **userId** | **string**| A user identifier or slug | |
-| **userTeamParams** | [**\Kleister\Model\UserTeamParams**](../Model/UserTeamParams.md)| The user team data to attach | |
-
-### Return type
-
-[**\Kleister\Model\Notification**](../Model/Notification.md)
-
-### Authorization
-
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -251,7 +236,7 @@ try {
 ## `createUser()`
 
 ```php
-createUser($user): \Kleister\Model\User
+createUser($createUserRequest): \Kleister\Model\User
 ```
 
 Create a new user
@@ -262,11 +247,6 @@ Create a new user
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -288,10 +268,10 @@ $apiInstance = new Kleister\Api\UserApi(
     new GuzzleHttp\Client(),
     $config
 );
-$user = new \Kleister\Model\User(); // \Kleister\Model\User | The user data to create
+$createUserRequest = new \Kleister\Model\CreateUserRequest(); // \Kleister\Model\CreateUserRequest | The user data to create
 
 try {
-    $result = $apiInstance->createUser($user);
+    $result = $apiInstance->createUser($createUserRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->createUser: ', $e->getMessage(), PHP_EOL;
@@ -302,7 +282,7 @@ try {
 
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **user** | [**\Kleister\Model\User**](../Model/User.md)| The user data to create | |
+| **createUserRequest** | [**\Kleister\Model\CreateUserRequest**](../Model/CreateUserRequest.md)| The user data to create | |
 
 ### Return type
 
@@ -310,7 +290,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -335,11 +315,6 @@ Delete a specific user
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -383,7 +358,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -394,13 +369,13 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
-## `deleteUserFromMod()`
+## `deleteUserFromGroup()`
 
 ```php
-deleteUserFromMod($userId, $userModParams): \Kleister\Model\Notification
+deleteUserFromGroup($userId, $deletePackFromGroupRequest): \Kleister\Model\Notification
 ```
 
-Unlink a mod from user
+Unlink a group from user
 
 ### Example
 
@@ -408,11 +383,6 @@ Unlink a mod from user
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -435,10 +405,80 @@ $apiInstance = new Kleister\Api\UserApi(
     $config
 );
 $userId = 'userId_example'; // string | A user identifier or slug
-$userModParams = new \Kleister\Model\UserModParams(); // \Kleister\Model\UserModParams | The user mod data to unlink
+$deletePackFromGroupRequest = new \Kleister\Model\DeletePackFromGroupRequest(); // \Kleister\Model\DeletePackFromGroupRequest | The user group data to unlink
 
 try {
-    $result = $apiInstance->deleteUserFromMod($userId, $userModParams);
+    $result = $apiInstance->deleteUserFromGroup($userId, $deletePackFromGroupRequest);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling UserApi->deleteUserFromGroup: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **userId** | **string**| A user identifier or slug | |
+| **deletePackFromGroupRequest** | [**\Kleister\Model\DeletePackFromGroupRequest**](../Model/DeletePackFromGroupRequest.md)| The user group data to unlink | |
+
+### Return type
+
+[**\Kleister\Model\Notification**](../Model/Notification.md)
+
+### Authorization
+
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `deleteUserFromMod()`
+
+```php
+deleteUserFromMod($userId, $deleteGroupFromModRequest): \Kleister\Model\Notification
+```
+
+Unlink a mod from user
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+// Configure HTTP basic authorization: Basic
+$config = Kleister\Configuration::getDefaultConfiguration()
+              ->setUsername('YOUR_USERNAME')
+              ->setPassword('YOUR_PASSWORD');
+
+// Configure API key authorization: Header
+$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
+
+// Configure Bearer authorization: Bearer
+$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+
+$apiInstance = new Kleister\Api\UserApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$userId = 'userId_example'; // string | A user identifier or slug
+$deleteGroupFromModRequest = new \Kleister\Model\DeleteGroupFromModRequest(); // \Kleister\Model\DeleteGroupFromModRequest | The user mod data to unlink
+
+try {
+    $result = $apiInstance->deleteUserFromMod($userId, $deleteGroupFromModRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->deleteUserFromMod: ', $e->getMessage(), PHP_EOL;
@@ -450,7 +490,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **userId** | **string**| A user identifier or slug | |
-| **userModParams** | [**\Kleister\Model\UserModParams**](../Model/UserModParams.md)| The user mod data to unlink | |
+| **deleteGroupFromModRequest** | [**\Kleister\Model\DeleteGroupFromModRequest**](../Model/DeleteGroupFromModRequest.md)| The user mod data to unlink | |
 
 ### Return type
 
@@ -458,7 +498,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -472,7 +512,7 @@ try {
 ## `deleteUserFromPack()`
 
 ```php
-deleteUserFromPack($userId, $userPackParams): \Kleister\Model\Notification
+deleteUserFromPack($userId, $deleteGroupFromPackRequest): \Kleister\Model\Notification
 ```
 
 Unlink a pack from user
@@ -484,11 +524,6 @@ Unlink a pack from user
 require_once(__DIR__ . '/vendor/autoload.php');
 
 
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
-
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
               ->setUsername('YOUR_USERNAME')
@@ -510,10 +545,10 @@ $apiInstance = new Kleister\Api\UserApi(
     $config
 );
 $userId = 'userId_example'; // string | A user identifier or slug
-$userPackParams = new \Kleister\Model\UserPackParams(); // \Kleister\Model\UserPackParams | The user pack data to unlink
+$deleteGroupFromPackRequest = new \Kleister\Model\DeleteGroupFromPackRequest(); // \Kleister\Model\DeleteGroupFromPackRequest | The user pack data to unlink
 
 try {
-    $result = $apiInstance->deleteUserFromPack($userId, $userPackParams);
+    $result = $apiInstance->deleteUserFromPack($userId, $deleteGroupFromPackRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->deleteUserFromPack: ', $e->getMessage(), PHP_EOL;
@@ -525,7 +560,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **userId** | **string**| A user identifier or slug | |
-| **userPackParams** | [**\Kleister\Model\UserPackParams**](../Model/UserPackParams.md)| The user pack data to unlink | |
+| **deleteGroupFromPackRequest** | [**\Kleister\Model\DeleteGroupFromPackRequest**](../Model/DeleteGroupFromPackRequest.md)| The user pack data to unlink | |
 
 ### Return type
 
@@ -533,7 +568,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -544,13 +579,13 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
-## `deleteUserFromTeam()`
+## `listUserGroups()`
 
 ```php
-deleteUserFromTeam($userId, $userTeamParams): \Kleister\Model\Notification
+listUserGroups($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListUserGroups200Response
 ```
 
-Unlink a team from user
+Fetch all groups attached to user
 
 ### Example
 
@@ -558,86 +593,6 @@ Unlink a team from user
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
-
-// Configure HTTP basic authorization: Basic
-$config = Kleister\Configuration::getDefaultConfiguration()
-              ->setUsername('YOUR_USERNAME')
-              ->setPassword('YOUR_PASSWORD');
-
-// Configure API key authorization: Header
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
-
-// Configure Bearer authorization: Bearer
-$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
-
-
-$apiInstance = new Kleister\Api\UserApi(
-    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
-    // This is optional, `GuzzleHttp\Client` will be used as default.
-    new GuzzleHttp\Client(),
-    $config
-);
-$userId = 'userId_example'; // string | A user identifier or slug
-$userTeamParams = new \Kleister\Model\UserTeamParams(); // \Kleister\Model\UserTeamParams | The user team data to unlink
-
-try {
-    $result = $apiInstance->deleteUserFromTeam($userId, $userTeamParams);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling UserApi->deleteUserFromTeam: ', $e->getMessage(), PHP_EOL;
-}
-```
-
-### Parameters
-
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **userId** | **string**| A user identifier or slug | |
-| **userTeamParams** | [**\Kleister\Model\UserTeamParams**](../Model/UserTeamParams.md)| The user team data to unlink | |
-
-### Return type
-
-[**\Kleister\Model\Notification**](../Model/Notification.md)
-
-### Authorization
-
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
-
-### HTTP request headers
-
-- **Content-Type**: `application/json`
-- **Accept**: `application/json`
-
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
-[[Back to Model list]](../../README.md#models)
-[[Back to README]](../../README.md)
-
-## `listUserMods()`
-
-```php
-listUserMods($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\UserMods
-```
-
-Fetch all mods attached to user
-
-### Example
-
-```php
-<?php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -661,10 +616,88 @@ $apiInstance = new Kleister\Api\UserApi(
 );
 $userId = 'userId_example'; // string | A user identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
-$limit = 56; // int | Paging limit
-$offset = 56; // int | Paging offset
+$limit = 100; // int | Paging limit
+$offset = 0; // int | Paging offset
+
+try {
+    $result = $apiInstance->listUserGroups($userId, $search, $sort, $order, $limit, $offset);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling UserApi->listUserGroups: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **userId** | **string**| A user identifier or slug | |
+| **search** | **string**| Search query | [optional] |
+| **sort** | **string**| Sorting column | [optional] |
+| **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
+| **limit** | **int**| Paging limit | [optional] [default to 100] |
+| **offset** | **int**| Paging offset | [optional] [default to 0] |
+
+### Return type
+
+[**\Kleister\Model\ListUserGroups200Response**](../Model/ListUserGroups200Response.md)
+
+### Authorization
+
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: `application/json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `listUserMods()`
+
+```php
+listUserMods($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListUserMods200Response
+```
+
+Fetch all mods attached to user
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+// Configure HTTP basic authorization: Basic
+$config = Kleister\Configuration::getDefaultConfiguration()
+              ->setUsername('YOUR_USERNAME')
+              ->setPassword('YOUR_PASSWORD');
+
+// Configure API key authorization: Header
+$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
+
+// Configure Bearer authorization: Bearer
+$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+
+$apiInstance = new Kleister\Api\UserApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$userId = 'userId_example'; // string | A user identifier or slug
+$search = 'search_example'; // string | Search query
+$sort = 'sort_example'; // string | Sorting column
+$order = 'asc'; // string | Sorting order
+$limit = 100; // int | Paging limit
+$offset = 0; // int | Paging offset
 
 try {
     $result = $apiInstance->listUserMods($userId, $search, $sort, $order, $limit, $offset);
@@ -680,18 +713,18 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **userId** | **string**| A user identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
-| **limit** | **int**| Paging limit | [optional] |
-| **offset** | **int**| Paging offset | [optional] |
+| **limit** | **int**| Paging limit | [optional] [default to 100] |
+| **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\UserMods**](../Model/UserMods.md)
+[**\Kleister\Model\ListUserMods200Response**](../Model/ListUserMods200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -705,7 +738,7 @@ try {
 ## `listUserPacks()`
 
 ```php
-listUserPacks($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\UserPacks
+listUserPacks($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListUserPacks200Response
 ```
 
 Fetch all packs attached to user
@@ -716,11 +749,6 @@ Fetch all packs attached to user
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -744,10 +772,10 @@ $apiInstance = new Kleister\Api\UserApi(
 );
 $userId = 'userId_example'; // string | A user identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
-$limit = 56; // int | Paging limit
-$offset = 56; // int | Paging offset
+$limit = 100; // int | Paging limit
+$offset = 0; // int | Paging offset
 
 try {
     $result = $apiInstance->listUserPacks($userId, $search, $sort, $order, $limit, $offset);
@@ -763,101 +791,18 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **userId** | **string**| A user identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
-| **limit** | **int**| Paging limit | [optional] |
-| **offset** | **int**| Paging offset | [optional] |
+| **limit** | **int**| Paging limit | [optional] [default to 100] |
+| **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\UserPacks**](../Model/UserPacks.md)
+[**\Kleister\Model\ListUserPacks200Response**](../Model/ListUserPacks200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
-
-### HTTP request headers
-
-- **Content-Type**: Not defined
-- **Accept**: `application/json`
-
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
-[[Back to Model list]](../../README.md#models)
-[[Back to README]](../../README.md)
-
-## `listUserTeams()`
-
-```php
-listUserTeams($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\UserTeams
-```
-
-Fetch all teams attached to user
-
-### Example
-
-```php
-<?php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
-
-// Configure HTTP basic authorization: Basic
-$config = Kleister\Configuration::getDefaultConfiguration()
-              ->setUsername('YOUR_USERNAME')
-              ->setPassword('YOUR_PASSWORD');
-
-// Configure API key authorization: Header
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
-
-// Configure Bearer authorization: Bearer
-$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
-
-
-$apiInstance = new Kleister\Api\UserApi(
-    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
-    // This is optional, `GuzzleHttp\Client` will be used as default.
-    new GuzzleHttp\Client(),
-    $config
-);
-$userId = 'userId_example'; // string | A user identifier or slug
-$search = 'search_example'; // string | Search query
-$sort = 'name'; // string | Sorting column
-$order = 'asc'; // string | Sorting order
-$limit = 56; // int | Paging limit
-$offset = 56; // int | Paging offset
-
-try {
-    $result = $apiInstance->listUserTeams($userId, $search, $sort, $order, $limit, $offset);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling UserApi->listUserTeams: ', $e->getMessage(), PHP_EOL;
-}
-```
-
-### Parameters
-
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **userId** | **string**| A user identifier or slug | |
-| **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;name&#39;] |
-| **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
-| **limit** | **int**| Paging limit | [optional] |
-| **offset** | **int**| Paging offset | [optional] |
-
-### Return type
-
-[**\Kleister\Model\UserTeams**](../Model/UserTeams.md)
-
-### Authorization
-
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -871,7 +816,7 @@ try {
 ## `listUsers()`
 
 ```php
-listUsers($search, $sort, $order, $limit, $offset): \Kleister\Model\Users
+listUsers($search, $sort, $order, $limit, $offset): \Kleister\Model\ListUsers200Response
 ```
 
 Fetch all available users
@@ -882,11 +827,6 @@ Fetch all available users
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -909,7 +849,7 @@ $apiInstance = new Kleister\Api\UserApi(
     $config
 );
 $search = 'search_example'; // string | Search query
-$sort = 'username'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -927,18 +867,18 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;username&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\Users**](../Model/Users.md)
+[**\Kleister\Model\ListUsers200Response**](../Model/ListUsers200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -949,13 +889,13 @@ try {
 [[Back to Model list]](../../README.md#models)
 [[Back to README]](../../README.md)
 
-## `permitUserMod()`
+## `permitUserGroup()`
 
 ```php
-permitUserMod($userId, $userModParams): \Kleister\Model\Notification
+permitUserGroup($userId, $permitPackGroupRequest): \Kleister\Model\Notification
 ```
 
-Update mod perms for user
+Update group perms for user
 
 ### Example
 
@@ -963,11 +903,6 @@ Update mod perms for user
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -990,10 +925,80 @@ $apiInstance = new Kleister\Api\UserApi(
     $config
 );
 $userId = 'userId_example'; // string | A user identifier or slug
-$userModParams = new \Kleister\Model\UserModParams(); // \Kleister\Model\UserModParams | The user mod data to update
+$permitPackGroupRequest = new \Kleister\Model\PermitPackGroupRequest(); // \Kleister\Model\PermitPackGroupRequest | The user group data to permit
 
 try {
-    $result = $apiInstance->permitUserMod($userId, $userModParams);
+    $result = $apiInstance->permitUserGroup($userId, $permitPackGroupRequest);
+    print_r($result);
+} catch (Exception $e) {
+    echo 'Exception when calling UserApi->permitUserGroup: ', $e->getMessage(), PHP_EOL;
+}
+```
+
+### Parameters
+
+| Name | Type | Description  | Notes |
+| ------------- | ------------- | ------------- | ------------- |
+| **userId** | **string**| A user identifier or slug | |
+| **permitPackGroupRequest** | [**\Kleister\Model\PermitPackGroupRequest**](../Model/PermitPackGroupRequest.md)| The user group data to permit | |
+
+### Return type
+
+[**\Kleister\Model\Notification**](../Model/Notification.md)
+
+### Authorization
+
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
+
+[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
+[[Back to Model list]](../../README.md#models)
+[[Back to README]](../../README.md)
+
+## `permitUserMod()`
+
+```php
+permitUserMod($userId, $permitGroupModRequest): \Kleister\Model\Notification
+```
+
+Update mod perms for user
+
+### Example
+
+```php
+<?php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+
+// Configure HTTP basic authorization: Basic
+$config = Kleister\Configuration::getDefaultConfiguration()
+              ->setUsername('YOUR_USERNAME')
+              ->setPassword('YOUR_PASSWORD');
+
+// Configure API key authorization: Header
+$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
+// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
+// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
+
+// Configure Bearer authorization: Bearer
+$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+
+$apiInstance = new Kleister\Api\UserApi(
+    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
+    // This is optional, `GuzzleHttp\Client` will be used as default.
+    new GuzzleHttp\Client(),
+    $config
+);
+$userId = 'userId_example'; // string | A user identifier or slug
+$permitGroupModRequest = new \Kleister\Model\PermitGroupModRequest(); // \Kleister\Model\PermitGroupModRequest | The user mod data to permit
+
+try {
+    $result = $apiInstance->permitUserMod($userId, $permitGroupModRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->permitUserMod: ', $e->getMessage(), PHP_EOL;
@@ -1005,7 +1010,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **userId** | **string**| A user identifier or slug | |
-| **userModParams** | [**\Kleister\Model\UserModParams**](../Model/UserModParams.md)| The user mod data to update | |
+| **permitGroupModRequest** | [**\Kleister\Model\PermitGroupModRequest**](../Model/PermitGroupModRequest.md)| The user mod data to permit | |
 
 ### Return type
 
@@ -1013,7 +1018,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1027,7 +1032,7 @@ try {
 ## `permitUserPack()`
 
 ```php
-permitUserPack($userId, $userPackParams): \Kleister\Model\Notification
+permitUserPack($userId, $permitGroupPackRequest): \Kleister\Model\Notification
 ```
 
 Update pack perms for user
@@ -1039,11 +1044,6 @@ Update pack perms for user
 require_once(__DIR__ . '/vendor/autoload.php');
 
 
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
-
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
               ->setUsername('YOUR_USERNAME')
@@ -1065,10 +1065,10 @@ $apiInstance = new Kleister\Api\UserApi(
     $config
 );
 $userId = 'userId_example'; // string | A user identifier or slug
-$userPackParams = new \Kleister\Model\UserPackParams(); // \Kleister\Model\UserPackParams | The user pack data to update
+$permitGroupPackRequest = new \Kleister\Model\PermitGroupPackRequest(); // \Kleister\Model\PermitGroupPackRequest | The user pack data to permit
 
 try {
-    $result = $apiInstance->permitUserPack($userId, $userPackParams);
+    $result = $apiInstance->permitUserPack($userId, $permitGroupPackRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->permitUserPack: ', $e->getMessage(), PHP_EOL;
@@ -1080,7 +1080,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **userId** | **string**| A user identifier or slug | |
-| **userPackParams** | [**\Kleister\Model\UserPackParams**](../Model/UserPackParams.md)| The user pack data to update | |
+| **permitGroupPackRequest** | [**\Kleister\Model\PermitGroupPackRequest**](../Model/PermitGroupPackRequest.md)| The user pack data to permit | |
 
 ### Return type
 
@@ -1088,82 +1088,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
-
-### HTTP request headers
-
-- **Content-Type**: `application/json`
-- **Accept**: `application/json`
-
-[[Back to top]](#) [[Back to API list]](../../README.md#endpoints)
-[[Back to Model list]](../../README.md#models)
-[[Back to README]](../../README.md)
-
-## `permitUserTeam()`
-
-```php
-permitUserTeam($userId, $userTeamParams): \Kleister\Model\Notification
-```
-
-Update team perms for user
-
-### Example
-
-```php
-<?php
-require_once(__DIR__ . '/vendor/autoload.php');
-
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
-
-// Configure HTTP basic authorization: Basic
-$config = Kleister\Configuration::getDefaultConfiguration()
-              ->setUsername('YOUR_USERNAME')
-              ->setPassword('YOUR_PASSWORD');
-
-// Configure API key authorization: Header
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('X-API-Key', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('X-API-Key', 'Bearer');
-
-// Configure Bearer authorization: Bearer
-$config = Kleister\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
-
-
-$apiInstance = new Kleister\Api\UserApi(
-    // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
-    // This is optional, `GuzzleHttp\Client` will be used as default.
-    new GuzzleHttp\Client(),
-    $config
-);
-$userId = 'userId_example'; // string | A user identifier or slug
-$userTeamParams = new \Kleister\Model\UserTeamParams(); // \Kleister\Model\UserTeamParams | The user team data to update
-
-try {
-    $result = $apiInstance->permitUserTeam($userId, $userTeamParams);
-    print_r($result);
-} catch (Exception $e) {
-    echo 'Exception when calling UserApi->permitUserTeam: ', $e->getMessage(), PHP_EOL;
-}
-```
-
-### Parameters
-
-| Name | Type | Description  | Notes |
-| ------------- | ------------- | ------------- | ------------- |
-| **userId** | **string**| A user identifier or slug | |
-| **userTeamParams** | [**\Kleister\Model\UserTeamParams**](../Model/UserTeamParams.md)| The user team data to update | |
-
-### Return type
-
-[**\Kleister\Model\Notification**](../Model/Notification.md)
-
-### Authorization
-
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1188,11 +1113,6 @@ Fetch a specific user
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1236,7 +1156,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -1250,7 +1170,7 @@ try {
 ## `updateUser()`
 
 ```php
-updateUser($userId, $user): \Kleister\Model\User
+updateUser($userId, $updateUserRequest): \Kleister\Model\User
 ```
 
 Update a specific user
@@ -1261,11 +1181,6 @@ Update a specific user
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -1288,10 +1203,10 @@ $apiInstance = new Kleister\Api\UserApi(
     $config
 );
 $userId = 'userId_example'; // string | A user identifier or slug
-$user = new \Kleister\Model\User(); // \Kleister\Model\User | The user data to update
+$updateUserRequest = new \Kleister\Model\UpdateUserRequest(); // \Kleister\Model\UpdateUserRequest | The user data to update
 
 try {
-    $result = $apiInstance->updateUser($userId, $user);
+    $result = $apiInstance->updateUser($userId, $updateUserRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling UserApi->updateUser: ', $e->getMessage(), PHP_EOL;
@@ -1303,7 +1218,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **userId** | **string**| A user identifier or slug | |
-| **user** | [**\Kleister\Model\User**](../Model/User.md)| The user data to update | |
+| **updateUserRequest** | [**\Kleister\Model\UpdateUserRequest**](../Model/UpdateUserRequest.md)| The user data to update | |
 
 ### Return type
 
@@ -1311,7 +1226,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 

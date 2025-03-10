@@ -51,7 +51,7 @@ class Forge implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'forge';
+    protected static $openAPIModelName = 'Forge';
 
     /**
       * Array of property to type mappings. Used for (de)serialization

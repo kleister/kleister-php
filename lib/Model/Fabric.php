@@ -51,7 +51,7 @@ class Fabric implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'fabric';
+    protected static $openAPIModelName = 'Fabric';
 
     /**
       * Array of property to type mappings. Used for (de)serialization

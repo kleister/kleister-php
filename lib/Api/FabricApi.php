@@ -141,16 +141,16 @@ class FabricApi
      * Attach a build to a Fabric version
      *
      * @param  string $fabricId A fabric identifier or slug (required)
-     * @param  \Kleister\Model\FabricBuildParams $fabricBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The fabric build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachFabricToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function attachFabricToBuild($fabricId, $fabricBuildParams, string $contentType = self::contentTypes['attachFabricToBuild'][0])
+    public function attachFabricToBuild($fabricId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachFabricToBuild'][0])
     {
-        list($response) = $this->attachFabricToBuildWithHttpInfo($fabricId, $fabricBuildParams, $contentType);
+        list($response) = $this->attachFabricToBuildWithHttpInfo($fabricId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -160,16 +160,16 @@ class FabricApi
      * Attach a build to a Fabric version
      *
      * @param  string $fabricId A fabric identifier or slug (required)
-     * @param  \Kleister\Model\FabricBuildParams $fabricBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The fabric build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachFabricToBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function attachFabricToBuildWithHttpInfo($fabricId, $fabricBuildParams, string $contentType = self::contentTypes['attachFabricToBuild'][0])
+    public function attachFabricToBuildWithHttpInfo($fabricId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachFabricToBuild'][0])
     {
-        $request = $this->attachFabricToBuildRequest($fabricId, $fabricBuildParams, $contentType);
+        $request = $this->attachFabricToBuildRequest($fabricId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -208,6 +208,33 @@ class FabricApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -343,33 +370,6 @@ class FabricApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -436,6 +436,14 @@ class FabricApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -476,14 +484,6 @@ class FabricApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -495,15 +495,15 @@ class FabricApi
      * Attach a build to a Fabric version
      *
      * @param  string $fabricId A fabric identifier or slug (required)
-     * @param  \Kleister\Model\FabricBuildParams $fabricBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The fabric build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachFabricToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachFabricToBuildAsync($fabricId, $fabricBuildParams, string $contentType = self::contentTypes['attachFabricToBuild'][0])
+    public function attachFabricToBuildAsync($fabricId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachFabricToBuild'][0])
     {
-        return $this->attachFabricToBuildAsyncWithHttpInfo($fabricId, $fabricBuildParams, $contentType)
+        return $this->attachFabricToBuildAsyncWithHttpInfo($fabricId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -517,16 +517,16 @@ class FabricApi
      * Attach a build to a Fabric version
      *
      * @param  string $fabricId A fabric identifier or slug (required)
-     * @param  \Kleister\Model\FabricBuildParams $fabricBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The fabric build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachFabricToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function attachFabricToBuildAsyncWithHttpInfo($fabricId, $fabricBuildParams, string $contentType = self::contentTypes['attachFabricToBuild'][0])
+    public function attachFabricToBuildAsyncWithHttpInfo($fabricId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachFabricToBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->attachFabricToBuildRequest($fabricId, $fabricBuildParams, $contentType);
+        $request = $this->attachFabricToBuildRequest($fabricId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -568,13 +568,13 @@ class FabricApi
      * Create request for operation 'attachFabricToBuild'
      *
      * @param  string $fabricId A fabric identifier or slug (required)
-     * @param  \Kleister\Model\FabricBuildParams $fabricBuildParams The build data to attach (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The fabric build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['attachFabricToBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function attachFabricToBuildRequest($fabricId, $fabricBuildParams, string $contentType = self::contentTypes['attachFabricToBuild'][0])
+    public function attachFabricToBuildRequest($fabricId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['attachFabricToBuild'][0])
     {
 
         // verify the required parameter 'fabricId' is set
@@ -584,10 +584,10 @@ class FabricApi
             );
         }
 
-        // verify the required parameter 'fabricBuildParams' is set
-        if ($fabricBuildParams === null || (is_array($fabricBuildParams) && count($fabricBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $fabricBuildParams when calling attachFabricToBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling attachFabricToBuild'
             );
         }
 
@@ -618,12 +618,12 @@ class FabricApi
         );
 
         // for model (json/xml)
-        if (isset($fabricBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($fabricBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $fabricBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -649,11 +649,6 @@ class FabricApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -695,16 +690,16 @@ class FabricApi
      * Unlink a build from a Fabric version
      *
      * @param  string $fabricId A fabric identifier or slug (required)
-     * @param  \Kleister\Model\FabricBuildParams $fabricBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The fabric build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteFabricFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function deleteFabricFromBuild($fabricId, $fabricBuildParams, string $contentType = self::contentTypes['deleteFabricFromBuild'][0])
+    public function deleteFabricFromBuild($fabricId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteFabricFromBuild'][0])
     {
-        list($response) = $this->deleteFabricFromBuildWithHttpInfo($fabricId, $fabricBuildParams, $contentType);
+        list($response) = $this->deleteFabricFromBuildWithHttpInfo($fabricId, $attachMinecraftToBuildRequest, $contentType);
         return $response;
     }
 
@@ -714,16 +709,16 @@ class FabricApi
      * Unlink a build from a Fabric version
      *
      * @param  string $fabricId A fabric identifier or slug (required)
-     * @param  \Kleister\Model\FabricBuildParams $fabricBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The fabric build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteFabricFromBuild'] to see the possible values for this operation
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
      * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function deleteFabricFromBuildWithHttpInfo($fabricId, $fabricBuildParams, string $contentType = self::contentTypes['deleteFabricFromBuild'][0])
+    public function deleteFabricFromBuildWithHttpInfo($fabricId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteFabricFromBuild'][0])
     {
-        $request = $this->deleteFabricFromBuildRequest($fabricId, $fabricBuildParams, $contentType);
+        $request = $this->deleteFabricFromBuildRequest($fabricId, $attachMinecraftToBuildRequest, $contentType);
 
         try {
             $options = $this->createHttpClientOption();
@@ -762,6 +757,33 @@ class FabricApi
 
             switch($statusCode) {
                 case 200:
+                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
+                        $content = $response->getBody(); //stream goes to serializer
+                    } else {
+                        $content = (string) $response->getBody();
+                        if ('\Kleister\Model\Notification' !== 'string') {
+                            try {
+                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
+                            } catch (\JsonException $exception) {
+                                throw new ApiException(
+                                    sprintf(
+                                        'Error JSON decoding server response (%s)',
+                                        $request->getUri()
+                                    ),
+                                    $statusCode,
+                                    $response->getHeaders(),
+                                    $content
+                                );
+                            }
+                        }
+                    }
+
+                    return [
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
+                        $response->getStatusCode(),
+                        $response->getHeaders()
+                    ];
+                case 400:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -870,33 +892,6 @@ class FabricApi
                         $response->getHeaders()
                     ];
                 case 500:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
-                default:
                     if ('\Kleister\Model\Notification' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
@@ -963,6 +958,14 @@ class FabricApi
                     );
                     $e->setResponseObject($data);
                     break;
+                case 400:
+                    $data = ObjectSerializer::deserialize(
+                        $e->getResponseBody(),
+                        '\Kleister\Model\Notification',
+                        $e->getResponseHeaders()
+                    );
+                    $e->setResponseObject($data);
+                    break;
                 case 403:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
@@ -995,14 +998,6 @@ class FabricApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1014,15 +1009,15 @@ class FabricApi
      * Unlink a build from a Fabric version
      *
      * @param  string $fabricId A fabric identifier or slug (required)
-     * @param  \Kleister\Model\FabricBuildParams $fabricBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The fabric build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteFabricFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteFabricFromBuildAsync($fabricId, $fabricBuildParams, string $contentType = self::contentTypes['deleteFabricFromBuild'][0])
+    public function deleteFabricFromBuildAsync($fabricId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteFabricFromBuild'][0])
     {
-        return $this->deleteFabricFromBuildAsyncWithHttpInfo($fabricId, $fabricBuildParams, $contentType)
+        return $this->deleteFabricFromBuildAsyncWithHttpInfo($fabricId, $attachMinecraftToBuildRequest, $contentType)
             ->then(
                 function ($response) {
                     return $response[0];
@@ -1036,16 +1031,16 @@ class FabricApi
      * Unlink a build from a Fabric version
      *
      * @param  string $fabricId A fabric identifier or slug (required)
-     * @param  \Kleister\Model\FabricBuildParams $fabricBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The fabric build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteFabricFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function deleteFabricFromBuildAsyncWithHttpInfo($fabricId, $fabricBuildParams, string $contentType = self::contentTypes['deleteFabricFromBuild'][0])
+    public function deleteFabricFromBuildAsyncWithHttpInfo($fabricId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteFabricFromBuild'][0])
     {
         $returnType = '\Kleister\Model\Notification';
-        $request = $this->deleteFabricFromBuildRequest($fabricId, $fabricBuildParams, $contentType);
+        $request = $this->deleteFabricFromBuildRequest($fabricId, $attachMinecraftToBuildRequest, $contentType);
 
         return $this->client
             ->sendAsync($request, $this->createHttpClientOption())
@@ -1087,13 +1082,13 @@ class FabricApi
      * Create request for operation 'deleteFabricFromBuild'
      *
      * @param  string $fabricId A fabric identifier or slug (required)
-     * @param  \Kleister\Model\FabricBuildParams $fabricBuildParams The build data to unlink (required)
+     * @param  \Kleister\Model\AttachMinecraftToBuildRequest $attachMinecraftToBuildRequest The fabric build data to create or update (required)
      * @param  string $contentType The value for the Content-Type header. Check self::contentTypes['deleteFabricFromBuild'] to see the possible values for this operation
      *
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function deleteFabricFromBuildRequest($fabricId, $fabricBuildParams, string $contentType = self::contentTypes['deleteFabricFromBuild'][0])
+    public function deleteFabricFromBuildRequest($fabricId, $attachMinecraftToBuildRequest, string $contentType = self::contentTypes['deleteFabricFromBuild'][0])
     {
 
         // verify the required parameter 'fabricId' is set
@@ -1103,10 +1098,10 @@ class FabricApi
             );
         }
 
-        // verify the required parameter 'fabricBuildParams' is set
-        if ($fabricBuildParams === null || (is_array($fabricBuildParams) && count($fabricBuildParams) === 0)) {
+        // verify the required parameter 'attachMinecraftToBuildRequest' is set
+        if ($attachMinecraftToBuildRequest === null || (is_array($attachMinecraftToBuildRequest) && count($attachMinecraftToBuildRequest) === 0)) {
             throw new \InvalidArgumentException(
-                'Missing the required parameter $fabricBuildParams when calling deleteFabricFromBuild'
+                'Missing the required parameter $attachMinecraftToBuildRequest when calling deleteFabricFromBuild'
             );
         }
 
@@ -1137,12 +1132,12 @@ class FabricApi
         );
 
         // for model (json/xml)
-        if (isset($fabricBuildParams)) {
+        if (isset($attachMinecraftToBuildRequest)) {
             if (stripos($headers['Content-Type'], 'application/json') !== false) {
                 # if Content-Type contains "application/json", json_encode the body
-                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($fabricBuildParams));
+                $httpBody = \GuzzleHttp\Utils::jsonEncode(ObjectSerializer::sanitizeForSerialization($attachMinecraftToBuildRequest));
             } else {
-                $httpBody = $fabricBuildParams;
+                $httpBody = $attachMinecraftToBuildRequest;
             }
         } elseif (count($formParams) > 0) {
             if ($multipart) {
@@ -1168,11 +1163,6 @@ class FabricApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1215,7 +1205,7 @@ class FabricApi
      *
      * @param  string $fabricId A fabric identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1223,9 +1213,9 @@ class FabricApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\FabricBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListFabricBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
-    public function listFabricBuilds($fabricId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listFabricBuilds'][0])
+    public function listFabricBuilds($fabricId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listFabricBuilds'][0])
     {
         list($response) = $this->listFabricBuildsWithHttpInfo($fabricId, $search, $sort, $order, $limit, $offset, $contentType);
         return $response;
@@ -1238,7 +1228,7 @@ class FabricApi
      *
      * @param  string $fabricId A fabric identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1246,9 +1236,9 @@ class FabricApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\FabricBuilds|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListFabricBuilds200Response|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
-    public function listFabricBuildsWithHttpInfo($fabricId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listFabricBuilds'][0])
+    public function listFabricBuildsWithHttpInfo($fabricId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listFabricBuilds'][0])
     {
         $request = $this->listFabricBuildsRequest($fabricId, $search, $sort, $order, $limit, $offset, $contentType);
 
@@ -1289,11 +1279,11 @@ class FabricApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\FabricBuilds' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListFabricBuilds200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\FabricBuilds' !== 'string') {
+                        if ('\Kleister\Model\ListFabricBuilds200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -1311,7 +1301,7 @@ class FabricApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\FabricBuilds', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListFabricBuilds200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1396,36 +1386,9 @@ class FabricApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\FabricBuilds';
+            $returnType = '\Kleister\Model\ListFabricBuilds200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -1458,7 +1421,7 @@ class FabricApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\FabricBuilds',
+                        '\Kleister\Model\ListFabricBuilds200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1487,14 +1450,6 @@ class FabricApi
                     );
                     $e->setResponseObject($data);
                     break;
-                default:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
             }
             throw $e;
         }
@@ -1507,7 +1462,7 @@ class FabricApi
      *
      * @param  string $fabricId A fabric identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1516,7 +1471,7 @@ class FabricApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listFabricBuildsAsync($fabricId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listFabricBuilds'][0])
+    public function listFabricBuildsAsync($fabricId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listFabricBuilds'][0])
     {
         return $this->listFabricBuildsAsyncWithHttpInfo($fabricId, $search, $sort, $order, $limit, $offset, $contentType)
             ->then(
@@ -1533,7 +1488,7 @@ class FabricApi
      *
      * @param  string $fabricId A fabric identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1542,9 +1497,9 @@ class FabricApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    public function listFabricBuildsAsyncWithHttpInfo($fabricId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listFabricBuilds'][0])
+    public function listFabricBuildsAsyncWithHttpInfo($fabricId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listFabricBuilds'][0])
     {
-        $returnType = '\Kleister\Model\FabricBuilds';
+        $returnType = '\Kleister\Model\ListFabricBuilds200Response';
         $request = $this->listFabricBuildsRequest($fabricId, $search, $sort, $order, $limit, $offset, $contentType);
 
         return $this->client
@@ -1588,7 +1543,7 @@ class FabricApi
      *
      * @param  string $fabricId A fabric identifier or slug (required)
      * @param  string $search Search query (optional)
-     * @param  string $sort Sorting column (optional, default to 'build_name')
+     * @param  string $sort Sorting column (optional)
      * @param  string $order Sorting order (optional, default to 'asc')
      * @param  int $limit Paging limit (optional, default to 100)
      * @param  int $offset Paging offset (optional, default to 0)
@@ -1597,7 +1552,7 @@ class FabricApi
      * @throws \InvalidArgumentException
      * @return \GuzzleHttp\Psr7\Request
      */
-    public function listFabricBuildsRequest($fabricId, $search = null, $sort = 'build_name', $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listFabricBuilds'][0])
+    public function listFabricBuildsRequest($fabricId, $search = null, $sort = null, $order = 'asc', $limit = 100, $offset = 0, string $contentType = self::contentTypes['listFabricBuilds'][0])
     {
 
         // verify the required parameter 'fabricId' is set
@@ -1708,11 +1663,6 @@ class FabricApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -1758,7 +1708,7 @@ class FabricApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Fabrics|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\ListFabrics200Response|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function listFabrics($search = null, string $contentType = self::contentTypes['listFabrics'][0])
     {
@@ -1776,7 +1726,7 @@ class FabricApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Fabrics|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\ListFabrics200Response|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function listFabricsWithHttpInfo($search = null, string $contentType = self::contentTypes['listFabrics'][0])
     {
@@ -1819,11 +1769,11 @@ class FabricApi
 
             switch($statusCode) {
                 case 200:
-                    if ('\Kleister\Model\Fabrics' === '\SplFileObject') {
+                    if ('\Kleister\Model\ListFabrics200Response' === '\SplFileObject') {
                         $content = $response->getBody(); //stream goes to serializer
                     } else {
                         $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Fabrics' !== 'string') {
+                        if ('\Kleister\Model\ListFabrics200Response' !== 'string') {
                             try {
                                 $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
                             } catch (\JsonException $exception) {
@@ -1841,7 +1791,7 @@ class FabricApi
                     }
 
                     return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Fabrics', []),
+                        ObjectSerializer::deserialize($content, '\Kleister\Model\ListFabrics200Response', []),
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
@@ -1899,36 +1849,9 @@ class FabricApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
-            $returnType = '\Kleister\Model\Fabrics';
+            $returnType = '\Kleister\Model\ListFabrics200Response';
             if ($returnType === '\SplFileObject') {
                 $content = $response->getBody(); //stream goes to serializer
             } else {
@@ -1961,7 +1884,7 @@ class FabricApi
                 case 200:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
-                        '\Kleister\Model\Fabrics',
+                        '\Kleister\Model\ListFabrics200Response',
                         $e->getResponseHeaders()
                     );
                     $e->setResponseObject($data);
@@ -1975,14 +1898,6 @@ class FabricApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -2029,7 +1944,7 @@ class FabricApi
      */
     public function listFabricsAsyncWithHttpInfo($search = null, string $contentType = self::contentTypes['listFabrics'][0])
     {
-        $returnType = '\Kleister\Model\Fabrics';
+        $returnType = '\Kleister\Model\ListFabrics200Response';
         $request = $this->listFabricsRequest($search, $contentType);
 
         return $this->client
@@ -2133,11 +2048,6 @@ class FabricApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());
@@ -2182,7 +2092,7 @@ class FabricApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
+     * @return \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification
      */
     public function updateFabric(string $contentType = self::contentTypes['updateFabric'][0])
     {
@@ -2199,7 +2109,7 @@ class FabricApi
      *
      * @throws \Kleister\ApiException on non-2xx response or if the response body is not in the expected format
      * @throws \InvalidArgumentException
-     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
+     * @return array of \Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification|\Kleister\Model\Notification, HTTP status code, HTTP response headers (array of strings)
      */
     public function updateFabricWithHttpInfo(string $contentType = self::contentTypes['updateFabric'][0])
     {
@@ -2349,33 +2259,6 @@ class FabricApi
                         $response->getStatusCode(),
                         $response->getHeaders()
                     ];
-                default:
-                    if ('\Kleister\Model\Notification' === '\SplFileObject') {
-                        $content = $response->getBody(); //stream goes to serializer
-                    } else {
-                        $content = (string) $response->getBody();
-                        if ('\Kleister\Model\Notification' !== 'string') {
-                            try {
-                                $content = json_decode($content, false, 512, JSON_THROW_ON_ERROR);
-                            } catch (\JsonException $exception) {
-                                throw new ApiException(
-                                    sprintf(
-                                        'Error JSON decoding server response (%s)',
-                                        $request->getUri()
-                                    ),
-                                    $statusCode,
-                                    $response->getHeaders(),
-                                    $content
-                                );
-                            }
-                        }
-                    }
-
-                    return [
-                        ObjectSerializer::deserialize($content, '\Kleister\Model\Notification', []),
-                        $response->getStatusCode(),
-                        $response->getHeaders()
-                    ];
             }
 
             $returnType = '\Kleister\Model\Notification';
@@ -2433,14 +2316,6 @@ class FabricApi
                     $e->setResponseObject($data);
                     break;
                 case 500:
-                    $data = ObjectSerializer::deserialize(
-                        $e->getResponseBody(),
-                        '\Kleister\Model\Notification',
-                        $e->getResponseHeaders()
-                    );
-                    $e->setResponseObject($data);
-                    break;
-                default:
                     $data = ObjectSerializer::deserialize(
                         $e->getResponseBody(),
                         '\Kleister\Model\Notification',
@@ -2578,11 +2453,6 @@ class FabricApi
             }
         }
 
-        // this endpoint requires API key authentication
-        $apiKey = $this->config->getApiKeyWithPrefix('Cookie');
-        if ($apiKey !== null) {
-            $headers['Cookie'] = $apiKey;
-        }
         // this endpoint requires HTTP basic authentication
         if (!empty($this->config->getUsername()) || !(empty($this->config->getPassword()))) {
             $headers['Authorization'] = 'Basic ' . base64_encode($this->config->getUsername() . ":" . $this->config->getPassword());

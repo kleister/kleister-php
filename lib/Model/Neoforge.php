@@ -51,7 +51,7 @@ class Neoforge implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'neoforge';
+    protected static $openAPIModelName = 'Neoforge';
 
     /**
       * Array of property to type mappings. Used for (de)serialization

@@ -51,7 +51,7 @@ class UserMod implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'user_mod';
+    protected static $openAPIModelName = 'UserMod';
 
     /**
       * Array of property to type mappings. Used for (de)serialization

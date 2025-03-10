@@ -51,7 +51,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
       *
       * @var string
       */
-    protected static $openAPIModelName = 'mod';
+    protected static $openAPIModelName = 'Mod';
 
     /**
       * Array of property to type mappings. Used for (de)serialization
@@ -60,6 +60,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPITypes = [
         'id' => 'string',
+        'avatar' => '\Kleister\Model\ModAvatar',
         'slug' => 'string',
         'name' => 'string',
         'side' => 'string',
@@ -81,6 +82,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static $openAPIFormats = [
         'id' => null,
+        'avatar' => null,
         'slug' => null,
         'name' => null,
         'side' => null,
@@ -100,6 +102,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
       */
     protected static array $openAPINullables = [
         'id' => false,
+        'avatar' => false,
         'slug' => true,
         'name' => true,
         'side' => true,
@@ -199,6 +202,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $attributeMap = [
         'id' => 'id',
+        'avatar' => 'avatar',
         'slug' => 'slug',
         'name' => 'name',
         'side' => 'side',
@@ -218,6 +222,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $setters = [
         'id' => 'setId',
+        'avatar' => 'setAvatar',
         'slug' => 'setSlug',
         'name' => 'setName',
         'side' => 'setSide',
@@ -237,6 +242,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
      */
     protected static $getters = [
         'id' => 'getId',
+        'avatar' => 'getAvatar',
         'slug' => 'getSlug',
         'name' => 'getName',
         'side' => 'getSide',
@@ -307,6 +313,7 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
     public function __construct(array $data = null)
     {
         $this->setIfExists('id', $data ?? [], null);
+        $this->setIfExists('avatar', $data ?? [], null);
         $this->setIfExists('slug', $data ?? [], null);
         $this->setIfExists('name', $data ?? [], null);
         $this->setIfExists('side', $data ?? [], null);
@@ -384,6 +391,33 @@ class Mod implements ModelInterface, ArrayAccess, \JsonSerializable
             throw new \InvalidArgumentException('non-nullable id cannot be null');
         }
         $this->container['id'] = $id;
+
+        return $this;
+    }
+
+    /**
+     * Gets avatar
+     *
+     * @return \Kleister\Model\ModAvatar|null
+     */
+    public function getAvatar()
+    {
+        return $this->container['avatar'];
+    }
+
+    /**
+     * Sets avatar
+     *
+     * @param \Kleister\Model\ModAvatar|null $avatar avatar
+     *
+     * @return self
+     */
+    public function setAvatar($avatar)
+    {
+        if (is_null($avatar)) {
+            throw new \InvalidArgumentException('non-nullable avatar cannot be null');
+        }
+        $this->container['avatar'] = $avatar;
 
         return $this;
     }

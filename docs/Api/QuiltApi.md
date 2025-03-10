@@ -14,7 +14,7 @@ All URIs are relative to https://try.kleister.eu/api/v1, except if the operation
 ## `attachQuiltToBuild()`
 
 ```php
-attachQuiltToBuild($quiltId, $quiltBuildParams): \Kleister\Model\Notification
+attachQuiltToBuild($quiltId, $attachMinecraftToBuildRequest): \Kleister\Model\Notification
 ```
 
 Attach a build to a Quilt version
@@ -25,11 +25,6 @@ Attach a build to a Quilt version
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -52,10 +47,10 @@ $apiInstance = new Kleister\Api\QuiltApi(
     $config
 );
 $quiltId = 'quiltId_example'; // string | A quilt identifier or slug
-$quiltBuildParams = new \Kleister\Model\QuiltBuildParams(); // \Kleister\Model\QuiltBuildParams | The build data to attach
+$attachMinecraftToBuildRequest = new \Kleister\Model\AttachMinecraftToBuildRequest(); // \Kleister\Model\AttachMinecraftToBuildRequest | The quilt build data to create or update
 
 try {
-    $result = $apiInstance->attachQuiltToBuild($quiltId, $quiltBuildParams);
+    $result = $apiInstance->attachQuiltToBuild($quiltId, $attachMinecraftToBuildRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling QuiltApi->attachQuiltToBuild: ', $e->getMessage(), PHP_EOL;
@@ -67,7 +62,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **quiltId** | **string**| A quilt identifier or slug | |
-| **quiltBuildParams** | [**\Kleister\Model\QuiltBuildParams**](../Model/QuiltBuildParams.md)| The build data to attach | |
+| **attachMinecraftToBuildRequest** | [**\Kleister\Model\AttachMinecraftToBuildRequest**](../Model/AttachMinecraftToBuildRequest.md)| The quilt build data to create or update | |
 
 ### Return type
 
@@ -75,7 +70,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -89,7 +84,7 @@ try {
 ## `deleteQuiltFromBuild()`
 
 ```php
-deleteQuiltFromBuild($quiltId, $quiltBuildParams): \Kleister\Model\Notification
+deleteQuiltFromBuild($quiltId, $attachMinecraftToBuildRequest): \Kleister\Model\Notification
 ```
 
 Unlink a build from a Quilt version
@@ -100,11 +95,6 @@ Unlink a build from a Quilt version
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -127,10 +117,10 @@ $apiInstance = new Kleister\Api\QuiltApi(
     $config
 );
 $quiltId = 'quiltId_example'; // string | A quilt identifier or slug
-$quiltBuildParams = new \Kleister\Model\QuiltBuildParams(); // \Kleister\Model\QuiltBuildParams | The build data to unlink
+$attachMinecraftToBuildRequest = new \Kleister\Model\AttachMinecraftToBuildRequest(); // \Kleister\Model\AttachMinecraftToBuildRequest | The quilt build data to create or update
 
 try {
-    $result = $apiInstance->deleteQuiltFromBuild($quiltId, $quiltBuildParams);
+    $result = $apiInstance->deleteQuiltFromBuild($quiltId, $attachMinecraftToBuildRequest);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling QuiltApi->deleteQuiltFromBuild: ', $e->getMessage(), PHP_EOL;
@@ -142,7 +132,7 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **quiltId** | **string**| A quilt identifier or slug | |
-| **quiltBuildParams** | [**\Kleister\Model\QuiltBuildParams**](../Model/QuiltBuildParams.md)| The build data to unlink | |
+| **attachMinecraftToBuildRequest** | [**\Kleister\Model\AttachMinecraftToBuildRequest**](../Model/AttachMinecraftToBuildRequest.md)| The quilt build data to create or update | |
 
 ### Return type
 
@@ -150,7 +140,7 @@ try {
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -164,7 +154,7 @@ try {
 ## `listQuiltBuilds()`
 
 ```php
-listQuiltBuilds($quiltId, $search, $sort, $order, $limit, $offset): \Kleister\Model\QuiltBuilds
+listQuiltBuilds($quiltId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListQuiltBuilds200Response
 ```
 
 Fetch the builds attached to a Quilt version
@@ -175,11 +165,6 @@ Fetch the builds attached to a Quilt version
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -203,7 +188,7 @@ $apiInstance = new Kleister\Api\QuiltApi(
 );
 $quiltId = 'quiltId_example'; // string | A quilt identifier or slug
 $search = 'search_example'; // string | Search query
-$sort = 'build_name'; // string | Sorting column
+$sort = 'sort_example'; // string | Sorting column
 $order = 'asc'; // string | Sorting order
 $limit = 100; // int | Paging limit
 $offset = 0; // int | Paging offset
@@ -222,18 +207,18 @@ try {
 | ------------- | ------------- | ------------- | ------------- |
 | **quiltId** | **string**| A quilt identifier or slug | |
 | **search** | **string**| Search query | [optional] |
-| **sort** | **string**| Sorting column | [optional] [default to &#39;build_name&#39;] |
+| **sort** | **string**| Sorting column | [optional] |
 | **order** | **string**| Sorting order | [optional] [default to &#39;asc&#39;] |
 | **limit** | **int**| Paging limit | [optional] [default to 100] |
 | **offset** | **int**| Paging offset | [optional] [default to 0] |
 
 ### Return type
 
-[**\Kleister\Model\QuiltBuilds**](../Model/QuiltBuilds.md)
+[**\Kleister\Model\ListQuiltBuilds200Response**](../Model/ListQuiltBuilds200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -247,7 +232,7 @@ try {
 ## `listQuilts()`
 
 ```php
-listQuilts($search): \Kleister\Model\Quilts
+listQuilts($search): \Kleister\Model\ListQuilts200Response
 ```
 
 Fetch the available Quilt versions
@@ -258,11 +243,6 @@ Fetch the available Quilt versions
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -302,11 +282,11 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\Quilts**](../Model/Quilts.md)
+[**\Kleister\Model\ListQuilts200Response**](../Model/ListQuilts200Response.md)
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
@@ -331,11 +311,6 @@ Update the available Quilt versions
 <?php
 require_once(__DIR__ . '/vendor/autoload.php');
 
-
-// Configure API key authorization: Cookie
-$config = Kleister\Configuration::getDefaultConfiguration()->setApiKey('Cookie', 'YOUR_API_KEY');
-// Uncomment below to setup prefix (e.g. Bearer) for API key, if needed
-// $config = Kleister\Configuration::getDefaultConfiguration()->setApiKeyPrefix('Cookie', 'Bearer');
 
 // Configure HTTP basic authorization: Basic
 $config = Kleister\Configuration::getDefaultConfiguration()
@@ -376,7 +351,7 @@ This endpoint does not need any parameter.
 
 ### Authorization
 
-[Cookie](../../README.md#Cookie), [Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
+[Basic](../../README.md#Basic), [Header](../../README.md#Header), [Bearer](../../README.md#Bearer)
 
 ### HTTP request headers
 
