@@ -347,7 +347,7 @@ $apiInstance = new Kleister\Api\ModApi(
     $config
 );
 $modId = 'modId_example'; // string | A mod identifier or slug
-$file = "/path/to/file.txt"; // \SplFileObject
+$file = '/path/to/file.txt'; // \SplFileObject
 
 try {
     $result = $apiInstance->createModAvatar($modId, $file);
@@ -417,7 +417,7 @@ $apiInstance = new Kleister\Api\ModApi(
     $config
 );
 $packId = 'packId_example'; // string | A pack identifier or slug
-$file = "/path/to/file.txt"; // \SplFileObject
+$file = '/path/to/file.txt'; // \SplFileObject
 
 try {
     $result = $apiInstance->createPackAvatar($packId, $file);
