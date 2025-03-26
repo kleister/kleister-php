@@ -1,7 +1,7 @@
 ---
 repository:
   name: kleister-php
-  description: "Kleister: SDK for PHP"
+  description: PHP SDK for Kleister
   homepage: https://kleister.eu
   topics: kleister, minecraft, sdk, openapi, php
 
