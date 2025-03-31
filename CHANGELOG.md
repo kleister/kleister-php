@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.1](https://github.com/kleister/kleister-php/compare/v2.2.0...v2.2.1) (2025-03-31)
+
+
+### Bugfixes
+
+* use correct spec and update definition ([8cebc8a](https://github.com/kleister/kleister-php/commit/8cebc8ad5b14839619f99ecd75ef14c9588a0892))
+
 ## [2.2.0](https://github.com/kleister/kleister-php/compare/v2.1.0...v2.2.0) (2025-03-17)
 
 
