@@ -154,7 +154,7 @@ try {
 ## `listForgeBuilds()`
 
 ```php
-listForgeBuilds($forgeId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListForgeBuilds200Response
+listForgeBuilds($forgeId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject4
 ```
 
 Fetch the builds attached to a Forge version
@@ -214,7 +214,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListForgeBuilds200Response**](../Model/ListForgeBuilds200Response.md)
+[**\Kleister\Model\InlineObject4**](../Model/InlineObject4.md)
 
 ### Authorization
 
@@ -232,7 +232,7 @@ try {
 ## `listForges()`
 
 ```php
-listForges($search): \Kleister\Model\ListForges200Response
+listForges($search): \Kleister\Model\InlineObject3
 ```
 
 Fetch the available Forge versions
@@ -282,7 +282,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListForges200Response**](../Model/ListForges200Response.md)
+[**\Kleister\Model\InlineObject3**](../Model/InlineObject3.md)
 
 ### Authorization
 
