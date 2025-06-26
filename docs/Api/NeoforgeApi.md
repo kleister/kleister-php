@@ -154,7 +154,7 @@ try {
 ## `listNeoforgeBuilds()`
 
 ```php
-listNeoforgeBuilds($neoforgeId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListNeoforgeBuilds200Response
+listNeoforgeBuilds($neoforgeId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject6
 ```
 
 Fetch the builds attached to a Neoforge version
@@ -214,7 +214,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListNeoforgeBuilds200Response**](../Model/ListNeoforgeBuilds200Response.md)
+[**\Kleister\Model\InlineObject6**](../Model/InlineObject6.md)
 
 ### Authorization
 
@@ -232,7 +232,7 @@ try {
 ## `listNeoforges()`
 
 ```php
-listNeoforges($search): \Kleister\Model\ListNeoforges200Response
+listNeoforges($search): \Kleister\Model\InlineObject5
 ```
 
 Fetch the available Neoforge versions
@@ -282,7 +282,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListNeoforges200Response**](../Model/ListNeoforges200Response.md)
+[**\Kleister\Model\InlineObject5**](../Model/InlineObject5.md)
 
 ### Authorization
 
