@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.5.0](https://github.com/kleister/kleister-php/compare/v2.4.0...v2.5.0) (2025-08-25)
+
+
+### Features
+
+* automated openapi client update ([c4c9138](https://github.com/kleister/kleister-php/commit/c4c9138f43b9eea9cd0f416d0ec277d95041f1f9))
+
 ## [2.4.0](https://github.com/kleister/kleister-php/compare/v2.3.0...v2.4.0) (2025-06-30)
 
 
