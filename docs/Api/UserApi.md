@@ -582,7 +582,7 @@ try {
 ## `listUserGroups()`
 
 ```php
-listUserGroups($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject26
+listUserGroups($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListUserGroups200Response
 ```
 
 Fetch all groups attached to user
@@ -642,7 +642,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject26**](../Model/InlineObject26.md)
+[**\Kleister\Model\ListUserGroups200Response**](../Model/ListUserGroups200Response.md)
 
 ### Authorization
 
@@ -660,7 +660,7 @@ try {
 ## `listUserMods()`
 
 ```php
-listUserMods($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject27
+listUserMods($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListUserMods200Response
 ```
 
 Fetch all mods attached to user
@@ -720,7 +720,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject27**](../Model/InlineObject27.md)
+[**\Kleister\Model\ListUserMods200Response**](../Model/ListUserMods200Response.md)
 
 ### Authorization
 
@@ -738,7 +738,7 @@ try {
 ## `listUserPacks()`
 
 ```php
-listUserPacks($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject28
+listUserPacks($userId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListUserPacks200Response
 ```
 
 Fetch all packs attached to user
@@ -798,7 +798,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject28**](../Model/InlineObject28.md)
+[**\Kleister\Model\ListUserPacks200Response**](../Model/ListUserPacks200Response.md)
 
 ### Authorization
 
@@ -816,7 +816,7 @@ try {
 ## `listUsers()`
 
 ```php
-listUsers($search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject25
+listUsers($search, $sort, $order, $limit, $offset): \Kleister\Model\ListUsers200Response
 ```
 
 Fetch all available users
@@ -874,7 +874,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject25**](../Model/InlineObject25.md)
+[**\Kleister\Model\ListUsers200Response**](../Model/ListUsers200Response.md)
 
 ### Authorization
 

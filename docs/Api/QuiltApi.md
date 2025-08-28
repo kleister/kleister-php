@@ -154,7 +154,7 @@ try {
 ## `listQuiltBuilds()`
 
 ```php
-listQuiltBuilds($quiltId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject8
+listQuiltBuilds($quiltId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListQuiltBuilds200Response
 ```
 
 Fetch the builds attached to a Quilt version
@@ -214,7 +214,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject8**](../Model/InlineObject8.md)
+[**\Kleister\Model\ListQuiltBuilds200Response**](../Model/ListQuiltBuilds200Response.md)
 
 ### Authorization
 
@@ -232,7 +232,7 @@ try {
 ## `listQuilts()`
 
 ```php
-listQuilts($search): \Kleister\Model\InlineObject7
+listQuilts($search): \Kleister\Model\ListQuilts200Response
 ```
 
 Fetch the available Quilt versions
@@ -282,7 +282,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject7**](../Model/InlineObject7.md)
+[**\Kleister\Model\ListQuilts200Response**](../Model/ListQuilts200Response.md)
 
 ### Authorization
 
