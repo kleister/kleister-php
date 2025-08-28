@@ -1010,7 +1010,7 @@ try {
 ## `listModGroups()`
 
 ```php
-listModGroups($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject13
+listModGroups($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListModGroups200Response
 ```
 
 Fetch all groups attached to mod
@@ -1070,7 +1070,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject13**](../Model/InlineObject13.md)
+[**\Kleister\Model\ListModGroups200Response**](../Model/ListModGroups200Response.md)
 
 ### Authorization
 
@@ -1088,7 +1088,7 @@ try {
 ## `listModUsers()`
 
 ```php
-listModUsers($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject12
+listModUsers($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListModUsers200Response
 ```
 
 Fetch all users attached to mod
@@ -1148,7 +1148,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject12**](../Model/InlineObject12.md)
+[**\Kleister\Model\ListModUsers200Response**](../Model/ListModUsers200Response.md)
 
 ### Authorization
 
@@ -1166,7 +1166,7 @@ try {
 ## `listMods()`
 
 ```php
-listMods($search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject11
+listMods($search, $sort, $order, $limit, $offset): \Kleister\Model\ListMods200Response
 ```
 
 Fetch all available mods
@@ -1224,7 +1224,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject11**](../Model/InlineObject11.md)
+[**\Kleister\Model\ListMods200Response**](../Model/ListMods200Response.md)
 
 ### Authorization
 
@@ -1242,7 +1242,7 @@ try {
 ## `listVersionBuilds()`
 
 ```php
-listVersionBuilds($modId, $versionId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject15
+listVersionBuilds($modId, $versionId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListVersionBuilds200Response
 ```
 
 Fetch all builds attached to version
@@ -1304,7 +1304,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject15**](../Model/InlineObject15.md)
+[**\Kleister\Model\ListVersionBuilds200Response**](../Model/ListVersionBuilds200Response.md)
 
 ### Authorization
 
@@ -1322,7 +1322,7 @@ try {
 ## `listVersions()`
 
 ```php
-listVersions($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject14
+listVersions($modId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListVersions200Response
 ```
 
 Fetch all available versions for a mod
@@ -1382,7 +1382,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject14**](../Model/InlineObject14.md)
+[**\Kleister\Model\ListVersions200Response**](../Model/ListVersions200Response.md)
 
 ### Authorization
 
