@@ -154,7 +154,7 @@ try {
 ## `listFabricBuilds()`
 
 ```php
-listFabricBuilds($fabricId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject10
+listFabricBuilds($fabricId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListFabricBuilds200Response
 ```
 
 Fetch the builds attached to a Fabric version
@@ -214,7 +214,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject10**](../Model/InlineObject10.md)
+[**\Kleister\Model\ListFabricBuilds200Response**](../Model/ListFabricBuilds200Response.md)
 
 ### Authorization
 
@@ -232,7 +232,7 @@ try {
 ## `listFabrics()`
 
 ```php
-listFabrics($search): \Kleister\Model\InlineObject9
+listFabrics($search): \Kleister\Model\ListFabrics200Response
 ```
 
 Fetch the available Fabric versions
@@ -282,7 +282,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject9**](../Model/InlineObject9.md)
+[**\Kleister\Model\ListFabrics200Response**](../Model/ListFabrics200Response.md)
 
 ### Authorization
 
