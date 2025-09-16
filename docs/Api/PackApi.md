@@ -730,7 +730,7 @@ try {
 ## `listBuildVersions()`
 
 ```php
-listBuildVersions($packId, $buildId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListBuildVersions200Response
+listBuildVersions($packId, $buildId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject20
 ```
 
 Fetch all versions attached to build
@@ -792,7 +792,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListBuildVersions200Response**](../Model/ListBuildVersions200Response.md)
+[**\Kleister\Model\InlineObject20**](../Model/InlineObject20.md)
 
 ### Authorization
 
@@ -810,7 +810,7 @@ try {
 ## `listBuilds()`
 
 ```php
-listBuilds($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListBuilds200Response
+listBuilds($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject19
 ```
 
 Fetch all available builds for a pack
@@ -870,7 +870,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListBuilds200Response**](../Model/ListBuilds200Response.md)
+[**\Kleister\Model\InlineObject19**](../Model/InlineObject19.md)
 
 ### Authorization
 
@@ -888,7 +888,7 @@ try {
 ## `listPackGroups()`
 
 ```php
-listPackGroups($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListPackGroups200Response
+listPackGroups($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject18
 ```
 
 Fetch all groups attached to pack
@@ -948,7 +948,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListPackGroups200Response**](../Model/ListPackGroups200Response.md)
+[**\Kleister\Model\InlineObject18**](../Model/InlineObject18.md)
 
 ### Authorization
 
@@ -966,7 +966,7 @@ try {
 ## `listPackUsers()`
 
 ```php
-listPackUsers($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListPackUsers200Response
+listPackUsers($packId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject17
 ```
 
 Fetch all users attached to pack
@@ -1026,7 +1026,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListPackUsers200Response**](../Model/ListPackUsers200Response.md)
+[**\Kleister\Model\InlineObject17**](../Model/InlineObject17.md)
 
 ### Authorization
 
@@ -1044,7 +1044,7 @@ try {
 ## `listPacks()`
 
 ```php
-listPacks($search, $sort, $order, $limit, $offset): \Kleister\Model\ListPacks200Response
+listPacks($search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject16
 ```
 
 Fetch all available packs
@@ -1102,7 +1102,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListPacks200Response**](../Model/ListPacks200Response.md)
+[**\Kleister\Model\InlineObject16**](../Model/InlineObject16.md)
 
 ### Authorization
 
