@@ -154,7 +154,7 @@ try {
 ## `listMinecraftBuilds()`
 
 ```php
-listMinecraftBuilds($minecraftId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject2
+listMinecraftBuilds($minecraftId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListMinecraftBuilds200Response
 ```
 
 Fetch the builds attached to a Minecraft version
@@ -214,7 +214,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject2**](../Model/InlineObject2.md)
+[**\Kleister\Model\ListMinecraftBuilds200Response**](../Model/ListMinecraftBuilds200Response.md)
 
 ### Authorization
 
@@ -232,7 +232,7 @@ try {
 ## `listMinecrafts()`
 
 ```php
-listMinecrafts($search): \Kleister\Model\InlineObject1
+listMinecrafts($search): \Kleister\Model\ListMinecrafts200Response
 ```
 
 Fetch the available Minecraft versions
@@ -282,7 +282,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\InlineObject1**](../Model/InlineObject1.md)
+[**\Kleister\Model\ListMinecrafts200Response**](../Model/ListMinecrafts200Response.md)
 
 ### Authorization
 
