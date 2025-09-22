@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.8.0](https://github.com/kleister/kleister-php/compare/v2.7.0...v2.8.0) (2025-09-22)
+
+
+### Features
+
+* automated openapi client update ([9660b15](https://github.com/kleister/kleister-php/commit/9660b15afcd23691b1203d066f835c10ef002e09))
+* automated openapi client update ([264a32f](https://github.com/kleister/kleister-php/commit/264a32f1851689fd9c6c7c41d58931177c5f7d51))
+* automated openapi client update ([0a2ebdc](https://github.com/kleister/kleister-php/commit/0a2ebdc421ad5a16be1611acb37287f8d33caf4b))
+
 ## [2.7.0](https://github.com/kleister/kleister-php/compare/v2.6.0...v2.7.0) (2025-09-15)
 
 
