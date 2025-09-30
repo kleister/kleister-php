@@ -582,7 +582,7 @@ try {
 ## `listGroupMods()`
 
 ```php
-listGroupMods($groupId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListGroupMods200Response
+listGroupMods($groupId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject23
 ```
 
 Fetch all mods attached to group
@@ -642,7 +642,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListGroupMods200Response**](../Model/ListGroupMods200Response.md)
+[**\Kleister\Model\InlineObject23**](../Model/InlineObject23.md)
 
 ### Authorization
 
@@ -660,7 +660,7 @@ try {
 ## `listGroupPacks()`
 
 ```php
-listGroupPacks($groupId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListGroupPacks200Response
+listGroupPacks($groupId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject24
 ```
 
 Fetch all packs attached to group
@@ -720,7 +720,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListGroupPacks200Response**](../Model/ListGroupPacks200Response.md)
+[**\Kleister\Model\InlineObject24**](../Model/InlineObject24.md)
 
 ### Authorization
 
@@ -738,7 +738,7 @@ try {
 ## `listGroupUsers()`
 
 ```php
-listGroupUsers($groupId, $search, $sort, $order, $limit, $offset): \Kleister\Model\ListGroupUsers200Response
+listGroupUsers($groupId, $search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject22
 ```
 
 Fetch all users attached to group
@@ -798,7 +798,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListGroupUsers200Response**](../Model/ListGroupUsers200Response.md)
+[**\Kleister\Model\InlineObject22**](../Model/InlineObject22.md)
 
 ### Authorization
 
@@ -816,7 +816,7 @@ try {
 ## `listGroups()`
 
 ```php
-listGroups($search, $sort, $order, $limit, $offset): \Kleister\Model\ListGroups200Response
+listGroups($search, $sort, $order, $limit, $offset): \Kleister\Model\InlineObject21
 ```
 
 Fetch all available groups
@@ -874,7 +874,7 @@ try {
 
 ### Return type
 
-[**\Kleister\Model\ListGroups200Response**](../Model/ListGroups200Response.md)
+[**\Kleister\Model\InlineObject21**](../Model/InlineObject21.md)
 
 ### Authorization
 
