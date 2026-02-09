@@ -1,6 +1,6 @@
 {
   "name": "kleister/kleister-php",
-  "version": "2.12.0",
+  "version": "3.0.0",
   "type": "library",
   "description": "OpenAPI client for Kleister",
   "keywords": [

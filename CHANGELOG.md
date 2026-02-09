@@ -1,5 +1,27 @@
 # Changelog
 
+## [3.0.0](https://github.com/kleister/kleister-php/compare/v2.12.0...v3.0.0) (2026-02-09)
+
+### Dependencies
+
+* **major:** update dependency phpunit/phpunit to v13 ([#94](https://github.com/kleister/kleister-php/issues/94)) ([23ea29b](https://github.com/kleister/kleister-php/commit/23ea29bdae1c8bbf7205e054356cb5441b92f7e4))
+
+### Miscellaneous
+
+* drop issue and pull request template ([40db17b](https://github.com/kleister/kleister-php/commit/40db17b74f93d1373a360f18115deb0560bb6c96))
+* **flake:** updated lockfile [skip ci] ([0d30e1e](https://github.com/kleister/kleister-php/commit/0d30e1e39cc40bf1e05529b6bc04c8b5642485b8))
+* **flake:** updated lockfile [skip ci] ([b8c307d](https://github.com/kleister/kleister-php/commit/b8c307d6cc3c939598d47ad5a6c5df9b29660be2))
+* **flake:** updated lockfile [skip ci] ([98b60ac](https://github.com/kleister/kleister-php/commit/98b60ace66321d8363742f297ac9c3df33707839))
+* **flake:** updated lockfile [skip ci] ([a03f953](https://github.com/kleister/kleister-php/commit/a03f953039fa1785a3214a24191ba19978315b11))
+* **flake:** updated lockfile [skip ci] ([34a3086](https://github.com/kleister/kleister-php/commit/34a3086a272fdbd9651ead14b3120b2dfa977716))
+* **flake:** updated lockfile [skip ci] ([9490811](https://github.com/kleister/kleister-php/commit/9490811ee86653b2caa19c96f60ed7fb51cb6df2))
+* **flake:** updated lockfile [skip ci] ([934ae30](https://github.com/kleister/kleister-php/commit/934ae30b89234126e3477ef7828679d706946ada))
+* **flake:** updated lockfile [skip ci] ([555986e](https://github.com/kleister/kleister-php/commit/555986ed6b8963e3d1396685f0eb4aec3d63ec38))
+* **flake:** updated lockfile [skip ci] ([a7770ed](https://github.com/kleister/kleister-php/commit/a7770edf479fac4081929bd17fe0a3cb01ad4d9c))
+* **flake:** updated lockfile [skip ci] ([72f26cc](https://github.com/kleister/kleister-php/commit/72f26ccea68be402628e3039ffb2eeb1069665c9))
+* **flake:** updated lockfile [skip ci] ([803a379](https://github.com/kleister/kleister-php/commit/803a379d8fe1d7837396b1975d2795eb90302f14))
+* **flake:** updated lockfile [skip ci] ([76ac981](https://github.com/kleister/kleister-php/commit/76ac981585b0d872d69ca908c1c323881f838c76))
+
 ## [2.12.0](https://github.com/kleister/kleister-php/compare/v2.11.0...v2.12.0) (2025-11-17)
 
 
