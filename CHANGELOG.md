@@ -1,5 +1,15 @@
 # Changelog
 
+## [4.1.0](https://github.com/kleister/kleister-php/compare/v4.0.0...v4.1.0) (2026-08-10)
+
+### Features
+
+* restructure repo and build processes ([80ea2f4](https://github.com/kleister/kleister-php/commit/80ea2f40d570bda26456cbf77d6e1e53538fac30))
+
+### Dependencies
+
+* **minor:** update dependency php to v8.5.9 ([#102](https://github.com/kleister/kleister-php/issues/102)) ([301b24e](https://github.com/kleister/kleister-php/commit/301b24e40ba7a4dfbfa5082d427cf53677ccff45))
+
 ## [4.0.0](https://github.com/kleister/kleister-php/compare/v3.0.0...v4.0.0) (2026-07-27)
 
 ## [3.0.0](https://github.com/kleister/kleister-php/compare/v2.12.0...v3.0.0) (2026-02-09)
