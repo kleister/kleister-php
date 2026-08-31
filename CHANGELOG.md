@@ -1,5 +1,11 @@
 # Changelog
 
+## [4.1.2](https://github.com/kleister/kleister-php/compare/v4.1.1...v4.1.2) (2026-08-31)
+
+### Dependencies
+
+* **patch:** update dependency php to v8.5.10 ([#106](https://github.com/kleister/kleister-php/issues/106)) ([81d1237](https://github.com/kleister/kleister-php/commit/81d12376caad22f2292ed96ef9faa1f70ff508bd))
+
 ## [4.1.1](https://github.com/kleister/kleister-php/compare/v4.1.0...v4.1.1) (2026-08-17)
 
 ### Dependencies
