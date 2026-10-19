@@ -1,5 +1,19 @@
 # Changelog
 
+## [4.2.0](https://github.com/kleister/kleister-php/compare/v4.1.2...v4.2.0) (2026-10-19)
+
+### Features
+
+* automated openapi client update ([d383b7f](https://github.com/kleister/kleister-php/commit/d383b7f07f697481c3d7770249437a7bdc4dccae))
+
+### Dependencies
+
+* **mise:** update dependency php to v8.5.11 ([#108](https://github.com/kleister/kleister-php/issues/108)) ([9599df9](https://github.com/kleister/kleister-php/commit/9599df9feb6eac1bced4bf1e44a14ff7686abbab))
+* **mise:** update dependency prek to v0.5.3 ([#107](https://github.com/kleister/kleister-php/issues/107)) ([78f5554](https://github.com/kleister/kleister-php/commit/78f555472dc7dc931f2409567e72fdc831d1298c))
+* **mise:** update dependency prek to v0.5.4 ([#109](https://github.com/kleister/kleister-php/issues/109)) ([a53addb](https://github.com/kleister/kleister-php/commit/a53addb49f9bdda318d46d7bb3f8115cdf99394c))
+* **mise:** update dependency prek to v0.5.5 ([#111](https://github.com/kleister/kleister-php/issues/111)) ([62ccc03](https://github.com/kleister/kleister-php/commit/62ccc03345514b13b5f6d3d1aee1a8e7a5f06819))
+* **mise:** update dependency prek to v0.5.6 ([#113](https://github.com/kleister/kleister-php/issues/113)) ([402e3e6](https://github.com/kleister/kleister-php/commit/402e3e60d44a046c08e5524324dead6a67783bd9))
+
 ## [4.1.2](https://github.com/kleister/kleister-php/compare/v4.1.1...v4.1.2) (2026-08-31)
 
 ### Dependencies
